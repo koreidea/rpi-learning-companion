@@ -33,7 +33,7 @@ class PrivacyConfig(BaseModel):
 class HardwareConfig(BaseModel):
     mic_enabled: bool = True
     camera_enabled: bool = True
-    wake_word: str = "hey buddy"
+    wake_word: str = "hey jarvis"
 
 
 class AppConfig(BaseModel):

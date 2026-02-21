@@ -8,9 +8,17 @@ from loguru import logger
 class WakeWordDetector:
     """Detects wake word using OpenWakeWord."""
 
-    def __init__(self, model_dir: Path, wake_word: str = "hey buddy"):
+    # Map friendly names to bundled model filenames
+    _BUILTIN_MODELS = {
+        "hey jarvis": "hey_jarvis_v0.1",
+        "alexa": "alexa_v0.1",
+        "hey mycroft": "hey_mycroft_v0.1",
+        "hey marvin": "hey_marvin_v0.1",
+    }
+
+    def __init__(self, model_dir: Path, wake_word: str = "hey jarvis"):
         self.model_dir = model_dir
-        self.wake_word = wake_word
+        self.wake_word = wake_word.lower().strip()
         self._model = None
         self._threshold = 0.5
 
@@ -20,16 +28,29 @@ class WakeWordDetector:
         await loop.run_in_executor(None, self._load_sync)
 
     def _load_sync(self):
-        import openwakeword
         from openwakeword.model import Model
 
-        # Download default models if not present
-        openwakeword.utils.download_models()
+        model_paths = []
 
-        self._model = Model(
-            wakeword_models=[],  # Use built-in models
-            inference_framework="onnx",
-        )
+        # Check for custom model in model_dir
+        custom_onnx = self.model_dir / f"{self.wake_word.replace(' ', '_')}.onnx"
+        if custom_onnx.exists():
+            model_paths = [str(custom_onnx)]
+            logger.info("Using custom wake word model: {}", custom_onnx)
+        elif self.wake_word in self._BUILTIN_MODELS:
+            # Use bundled model from openwakeword package
+            import openwakeword
+            pkg_models = Path(openwakeword.__file__).parent / "resources" / "models"
+            builtin = pkg_models / f"{self._BUILTIN_MODELS[self.wake_word]}.onnx"
+            if builtin.exists():
+                model_paths = [str(builtin)]
+                logger.info("Using built-in wake word model: {}", builtin.name)
+
+        # If no specific model found, load all bundled models
+        if not model_paths:
+            logger.info("No specific model for '{}', loading all built-in models.", self.wake_word)
+
+        self._model = Model(wakeword_model_paths=model_paths)
         logger.info("Wake word detector loaded. Listening for: '{}'", self.wake_word)
 
     async def listen(self, audio_stream) -> None:
