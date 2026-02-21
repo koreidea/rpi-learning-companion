@@ -6,6 +6,9 @@ from loguru import logger
 
 from audio.audio_capture import SAMPLE_RATE
 
+# Silero-VAD requires exactly this many samples per call at 16kHz
+_VAD_CHUNK_SAMPLES = 512
+
 
 class VADDetector:
     """Voice Activity Detection using Silero-VAD.
@@ -58,35 +61,47 @@ class VADDetector:
         loop = asyncio.get_event_loop()
         frames = []
         speech_started = False
-        silence_frames = 0
-        total_frames = 0
+        silence_time = 0.0
+        total_time = 0.0
 
-        frames_per_chunk = audio_capture.chunk_size
-        chunks_per_second = self.sample_rate / frames_per_chunk
-        silence_chunks_needed = int(self.silence_duration * chunks_per_second)
-        max_chunks = int(self.max_duration * chunks_per_second)
-        initial_wait_chunks = int(3.0 * chunks_per_second)
+        # Buffer to accumulate samples for VAD (needs exactly 512 samples)
+        vad_buffer = np.array([], dtype=np.int16)
 
-        while total_frames < max_chunks:
+        while total_time < self.max_duration:
             chunk = await loop.run_in_executor(None, audio_capture.read_chunk)
             frames.append(chunk)
-            total_frames += 1
+            total_time += len(chunk) / self.sample_rate
 
-            # Check VAD
-            is_speech = await loop.run_in_executor(None, self._is_speech, chunk)
+            # Accumulate into VAD buffer
+            vad_buffer = np.concatenate([vad_buffer, chunk])
 
-            if is_speech:
-                speech_started = True
-                silence_frames = 0
-            elif speech_started:
-                silence_frames += 1
-                if silence_frames >= silence_chunks_needed:
-                    logger.debug(
-                        "End of speech detected after {:.1f}s",
-                        total_frames / chunks_per_second,
-                    )
-                    break
-            elif total_frames >= initial_wait_chunks and not speech_started:
+            # Process all complete 512-sample windows in the buffer
+            while len(vad_buffer) >= _VAD_CHUNK_SAMPLES:
+                vad_chunk = vad_buffer[:_VAD_CHUNK_SAMPLES]
+                vad_buffer = vad_buffer[_VAD_CHUNK_SAMPLES:]
+
+                is_speech = await loop.run_in_executor(
+                    None, self._is_speech, vad_chunk
+                )
+
+                if is_speech:
+                    speech_started = True
+                    silence_time = 0.0
+                elif speech_started:
+                    silence_time += _VAD_CHUNK_SAMPLES / self.sample_rate
+
+                    if silence_time >= self.silence_duration:
+                        logger.debug(
+                            "End of speech detected after {:.1f}s",
+                            total_time,
+                        )
+                        audio = np.concatenate(frames)
+                        duration = len(audio) / self.sample_rate
+                        logger.debug("Captured {:.1f}s of audio.", duration)
+                        return audio
+
+            # Timeout if no speech within first 3 seconds
+            if total_time >= 3.0 and not speech_started:
                 logger.debug("No speech detected within 3s timeout.")
                 return None
 
@@ -99,7 +114,11 @@ class VADDetector:
         return audio
 
     def _is_speech(self, chunk: np.ndarray) -> bool:
-        """Check if an audio chunk contains speech."""
+        """Check if an audio chunk contains speech.
+
+        Args:
+            chunk: Must be exactly 512 samples (int16) at 16kHz.
+        """
         import torch
 
         # Silero-VAD expects float32 tensor normalized to [-1, 1]
