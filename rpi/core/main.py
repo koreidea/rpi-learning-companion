@@ -162,6 +162,7 @@ class Orchestrator:
                 # Step 3: Capture speech with VAD
                 # Give more time in follow-up mode (child needs time to think)
                 wait_time = 10.0 if follow_up else 3.0
+                t0 = time.monotonic()
                 audio_data = await self._vad.capture_until_silence(
                     self._audio_capture, initial_wait=wait_time
                 )
@@ -172,10 +173,14 @@ class Orchestrator:
                         continue
                     logger.debug("No speech detected after wake word.")
                     continue
+                t_vad = time.monotonic()
+                logger.info("[TIMING] VAD capture: {:.1f}s", t_vad - t0)
 
                 # Step 4: Speech-to-text
                 self.state.set_state(BotState.PROCESSING)
                 transcript = await self._stt.transcribe(audio_data)
+                t_stt = time.monotonic()
+                logger.info("[TIMING] STT: {:.1f}s", t_stt - t_vad)
                 logger.info("Child said: '{}'", transcript)
 
                 if not transcript or len(transcript.strip()) < 2:
@@ -228,12 +233,20 @@ class Orchestrator:
     async def _stream_response(self, transcript: str):
         """Stream LLM tokens → buffer sentences → TTS each sentence → play.
 
-        Supports interruption via self.state.interrupt_event — when set,
-        stops LLM streaming, cancels pending audio, and returns to listening.
+        Three concurrent stages forming a pipeline:
+          1. LLM streaming → feeds sentences to TTS queue
+          2. TTS synthesis  → processes sentences into audio, feeds play queue
+          3. Audio playback → plays WAV chunks through speaker
+
+        All three run concurrently so LLM keeps generating while TTS
+        synthesizes while audio plays — minimizing time-to-first-sound.
+
+        Supports interruption via self.state.interrupt_event.
         """
+        t_start = time.monotonic()
         self.state.set_state(BotState.PROCESSING)
         self.state.current_response = ""
-        self.state.interrupt_event.clear()  # Reset at start
+        self.state.interrupt_event.clear()
 
         provider = self._llm_router.get_provider()
         messages = self._llm_router.build_messages(transcript)
@@ -243,53 +256,74 @@ class Orchestrator:
         self._audio_capture.pause()
 
         interrupted = False
+        first_audio_logged = False
 
-        # Queue for TTS audio chunks ready to play
-        audio_queue: asyncio.Queue = asyncio.Queue()
+        # Queue: sentences waiting for TTS synthesis
+        tts_queue: asyncio.Queue = asyncio.Queue()
+        # Queue: WAV audio waiting for playback
+        play_queue: asyncio.Queue = asyncio.Queue()
         speaking_done = asyncio.Event()
 
-        # Task: continuously play audio chunks from queue
+        # --- Stage 3: Audio playback task ---
         async def play_audio_chunks():
-            self.state.set_state(BotState.SPEAKING)
             while True:
-                chunk = await audio_queue.get()
-                if chunk is None:  # Sentinel: done
+                chunk = await play_queue.get()
+                if chunk is None:
                     break
-                # Check for interrupt before playing each chunk
                 if self.state.interrupt_event.is_set():
                     break
+                self.state.set_state(BotState.SPEAKING)
                 await self._audio_player.play(chunk)
-                # Check again after playing (user may have pressed stop mid-sentence)
                 if self.state.interrupt_event.is_set():
                     break
             speaking_done.set()
 
-        player_task = asyncio.create_task(play_audio_chunks())
+        # --- Stage 2: TTS synthesis task ---
+        async def tts_worker():
+            nonlocal first_audio_logged
+            while True:
+                sentence = await tts_queue.get()
+                if sentence is None:
+                    break
+                if self.state.interrupt_event.is_set():
+                    break
+                audio_data = await self._tts.synthesize(sentence)
+                if not first_audio_logged:
+                    logger.info("[TIMING] First audio ready: {:.1f}s",
+                                time.monotonic() - t_start)
+                    first_audio_logged = True
+                await play_queue.put(audio_data)
+            # Signal player that no more audio is coming
+            await play_queue.put(None)
 
-        # Stream tokens from LLM
+        player_task = asyncio.create_task(play_audio_chunks())
+        tts_task = asyncio.create_task(tts_worker())
+
+        # --- Stage 1: LLM streaming (runs in this coroutine) ---
         response_text = []
+        first_token_time = None
         async for token in provider.stream(messages):
-            # Check for interrupt during LLM streaming
             if self.state.interrupt_event.is_set():
                 logger.info("Response interrupted by user during LLM streaming.")
                 interrupted = True
                 break
 
+            if first_token_time is None:
+                first_token_time = time.monotonic()
+                logger.info("[TIMING] LLM first token: {:.1f}s",
+                            first_token_time - t_start)
+
             sentence = self._sentence_buffer.feed(token)
             if sentence:
-                # Safety check on each sentence
                 safe = self._safety_filter.check_output(sentence)
                 if safe.blocked:
                     sentence = safe.redirect_response
-
                 response_text.append(sentence)
                 self.state.current_response = " ".join(response_text)
+                # Send to TTS pipeline (non-blocking)
+                await tts_queue.put(sentence)
 
-                # TTS the sentence and queue audio for playback
-                audio_data = await self._tts.synthesize(sentence)
-                await audio_queue.put(audio_data)
-
-        # Flush any remaining text in the buffer (only if not interrupted)
+        # Flush remaining text
         if not interrupted:
             remaining = self._sentence_buffer.flush()
             if remaining:
@@ -297,21 +331,23 @@ class Orchestrator:
                 text = safe.redirect_response if safe.blocked else remaining
                 response_text.append(text)
                 self.state.current_response = " ".join(response_text)
-                audio_data = await self._tts.synthesize(text)
-                await audio_queue.put(audio_data)
+                await tts_queue.put(text)
 
-        # Signal player to stop and wait for it to finish
-        await audio_queue.put(None)
+        # Signal TTS worker that LLM is done
+        await tts_queue.put(None)
+
+        # Wait for all audio to finish playing
         await speaking_done.wait()
         player_task.cancel()
+        tts_task.cancel()
 
         if interrupted:
-            # Stop any currently playing audio
             await self._audio_player.stop()
             logger.info("Response stopped. Returning to listening mode.")
 
-        # Clear the interrupt flag
         self.state.interrupt_event.clear()
+
+        logger.info("[TIMING] Total response: {:.1f}s", time.monotonic() - t_start)
 
         # Wait for BT speaker buffer to fully flush, then resume mic
         await asyncio.sleep(1.0)

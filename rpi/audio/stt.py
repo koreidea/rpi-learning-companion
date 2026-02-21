@@ -13,9 +13,10 @@ class SpeechToText:
     Uses whisper-tiny.en for fast inference on RPi 5.
     """
 
-    def __init__(self, model_dir: Path, model_name: str = "tiny.en"):
+    def __init__(self, model_dir: Path, model_name: str = "tiny.en", n_threads: int = 4):
         self.model_dir = model_dir
         self.model_name = model_name
+        self.n_threads = n_threads
         self._model = None
 
     async def load(self):
@@ -30,10 +31,10 @@ class SpeechToText:
 
         if not model_path.exists():
             logger.info("Whisper model not found at {}. Will download on first use.", model_path)
-            # pywhispercpp downloads the model automatically if not found
-            self._model = Model(self.model_name, models_dir=str(self.model_dir))
+            self._model = Model(self.model_name, models_dir=str(self.model_dir),
+                                n_threads=self.n_threads)
         else:
-            self._model = Model(str(model_path))
+            self._model = Model(str(model_path), n_threads=self.n_threads)
 
         logger.info("Whisper STT loaded: {}", self.model_name)
 
