@@ -39,11 +39,6 @@ def create_app(config_manager: ConfigManager, state: SharedState) -> FastAPI:
     app.include_router(control_router, prefix="/api/control", tags=["control"])
     app.include_router(data_router, prefix="/api/data", tags=["data"])
 
-    # Serve React static files (built app)
-    static_dir = Path(__file__).resolve().parent.parent / "static"
-    if static_dir.exists():
-        app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
-
     @app.get("/api/health")
     async def health():
         return {
@@ -53,5 +48,11 @@ def create_app(config_manager: ConfigManager, state: SharedState) -> FastAPI:
             "consent": config_manager.has_consent,
             "model_loaded": state.is_model_loaded,
         }
+
+    # Serve React static files (built app)
+    # MUST be mounted AFTER all API routes — mount at "/" catches everything
+    static_dir = Path(__file__).resolve().parent.parent / "static"
+    if static_dir.exists():
+        app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
     return app

@@ -5,10 +5,10 @@ Wants=bluetooth.target
 
 [Service]
 Type=simple
-User=pi
-Group=pi
-WorkingDirectory=/home/pi/rpi-bot/rpi
-ExecStart=/home/pi/rpi-bot/rpi/.venv/bin/python -m core.main
+User=hairobo
+Group=hairobo
+WorkingDirectory=/home/hairobo/rpi-bot/rpi
+ExecStart=/home/hairobo/rpi-bot/rpi/.venv/bin/python -m core.main
 Restart=always
 RestartSec=5
 Environment=PYTHONUNBUFFERED=1
@@ -16,7 +16,7 @@ Environment=PYTHONUNBUFFERED=1
 # Security hardening
 NoNewPrivileges=true
 ProtectSystem=strict
-ReadWritePaths=/home/pi/rpi-bot/rpi/data
+ReadWritePaths=/home/hairobo/rpi-bot/rpi/data
 
 [Install]
 WantedBy=multi-user.target
