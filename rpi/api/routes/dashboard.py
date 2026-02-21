@@ -43,3 +43,20 @@ async def get_device_status(request: Request, _=Depends(require_parent_auth)):
         "model_loaded": state.is_model_loaded,
         "last_error": state.last_error,
     }
+
+
+@router.get("/live")
+async def get_live_status(request: Request, _=Depends(require_parent_auth)):
+    """Live status for real-time dashboard updates.
+
+    Returns current bot state, what the child said, and the bot's response.
+    Designed to be polled every 1-2 seconds.
+    """
+    state = request.app.state.shared_state
+    return {
+        "state": state.bot_state.value,
+        "transcript": state.current_transcript,
+        "response": state.current_response,
+        "follow_up": state.in_follow_up,
+        "last_error": state.last_error,
+    }

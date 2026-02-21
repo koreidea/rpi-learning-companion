@@ -35,8 +35,10 @@ class SharedState:
 
     # Current interaction info (ephemeral, not persisted)
     current_transcript: Optional[str] = None
+    current_response: Optional[str] = None
     is_model_loaded: bool = False
     last_error: Optional[str] = None
+    in_follow_up: bool = False
 
     # Latency tracking
     interaction_start_time: Optional[float] = None

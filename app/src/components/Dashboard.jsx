@@ -1,14 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 export default function Dashboard({ pin }) {
   const [dashboard, setDashboard] = useState(null)
+  const [live, setLive] = useState(null)
   const [loading, setLoading] = useState(true)
+  const liveRef = useRef(null)
 
   useEffect(() => {
     fetchDashboard()
-    const interval = setInterval(fetchDashboard, 10000) // Refresh every 10s
-    return () => clearInterval(interval)
+    const dashInterval = setInterval(fetchDashboard, 30000) // Stats every 30s
+    return () => clearInterval(dashInterval)
   }, [])
+
+  // Fast poll for live status
+  useEffect(() => {
+    fetchLive()
+    const liveInterval = setInterval(fetchLive, 1000) // Every 1s
+    return () => clearInterval(liveInterval)
+  }, [])
+
+  // Auto-scroll conversation to bottom
+  useEffect(() => {
+    if (liveRef.current) {
+      liveRef.current.scrollTop = liveRef.current.scrollHeight
+    }
+  }, [live])
 
   async function fetchDashboard() {
     try {
@@ -24,6 +40,18 @@ export default function Dashboard({ pin }) {
     }
   }
 
+  async function fetchLive() {
+    try {
+      const res = await fetch('/api/dashboard/live', {
+        headers: { 'X-Parent-PIN': pin },
+      })
+      const data = await res.json()
+      setLive(data)
+    } catch (err) {
+      // Silently ignore live poll errors
+    }
+  }
+
   if (loading) {
     return <div className="text-center py-12 text-gray-500">Loading dashboard...</div>
   }
@@ -34,28 +62,93 @@ export default function Dashboard({ pin }) {
 
   const { device, stats, recent_sessions } = dashboard
 
-  const stateColors = {
-    ready: 'bg-green-100 text-green-800',
-    listening: 'bg-blue-100 text-blue-800',
-    processing: 'bg-yellow-100 text-yellow-800',
-    speaking: 'bg-purple-100 text-purple-800',
-    setup: 'bg-gray-100 text-gray-800',
-    loading: 'bg-orange-100 text-orange-800',
-    error: 'bg-red-100 text-red-800',
+  const stateConfig = {
+    ready:      { color: 'bg-green-100 text-green-800', dot: 'bg-green-500', label: 'Waiting for wake word' },
+    listening:  { color: 'bg-blue-100 text-blue-800', dot: 'bg-blue-500', label: 'Listening...' },
+    processing: { color: 'bg-yellow-100 text-yellow-800', dot: 'bg-yellow-500', label: 'Thinking...' },
+    speaking:   { color: 'bg-purple-100 text-purple-800', dot: 'bg-purple-500', label: 'Speaking...' },
+    setup:      { color: 'bg-gray-100 text-gray-800', dot: 'bg-gray-400', label: 'Setup required' },
+    loading:    { color: 'bg-orange-100 text-orange-800', dot: 'bg-orange-500', label: 'Loading models...' },
+    error:      { color: 'bg-red-100 text-red-800', dot: 'bg-red-500', label: 'Error' },
   }
+
+  const currentState = live?.state || device.state
+  const sc = stateConfig[currentState] || stateConfig.ready
+  const isActive = ['listening', 'processing', 'speaking'].includes(currentState)
 
   return (
     <div className="space-y-6">
+      {/* Live Status Panel */}
+      <div className={`bg-white rounded-xl shadow-sm p-6 border-2 ${isActive ? 'border-blue-300' : 'border-transparent'}`}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Live Status</h2>
+          <div className="flex items-center gap-2">
+            <div className={`w-3 h-3 rounded-full ${sc.dot} ${isActive ? 'animate-pulse' : ''}`} />
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${sc.color}`}>
+              {sc.label}
+            </span>
+          </div>
+        </div>
+
+        {live?.follow_up && (
+          <div className="mb-3 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm">
+            Follow-up mode — no wake word needed
+          </div>
+        )}
+
+        {/* Conversation area */}
+        <div ref={liveRef} className="bg-gray-50 rounded-xl p-4 min-h-[120px] max-h-[300px] overflow-y-auto space-y-3">
+          {!live?.transcript && !live?.response && (
+            <p className="text-gray-400 text-sm text-center py-6">
+              {currentState === 'ready'
+                ? 'Say "Hey Jarvis" to start a conversation'
+                : currentState === 'listening'
+                ? '🎤 Listening...'
+                : currentState === 'loading'
+                ? 'Loading models, please wait...'
+                : 'Waiting...'}
+            </p>
+          )}
+
+          {live?.transcript && (
+            <div className="flex gap-2">
+              <span className="text-lg">👦</span>
+              <div className="bg-blue-100 text-blue-900 rounded-xl rounded-tl-sm px-4 py-2 text-sm max-w-[85%]">
+                {live.transcript}
+              </div>
+            </div>
+          )}
+
+          {live?.response && (
+            <div className="flex gap-2 justify-end">
+              <div className="bg-white border border-gray-200 text-gray-800 rounded-xl rounded-tr-sm px-4 py-2 text-sm max-w-[85%]">
+                {live.response}
+              </div>
+              <span className="text-lg">🤖</span>
+            </div>
+          )}
+
+          {currentState === 'processing' && !live?.response && live?.transcript && (
+            <div className="flex gap-2 justify-end">
+              <div className="bg-white border border-gray-200 text-gray-400 rounded-xl rounded-tr-sm px-4 py-2 text-sm">
+                <span className="animate-pulse">Thinking...</span>
+              </div>
+              <span className="text-lg">🤖</span>
+            </div>
+          )}
+        </div>
+
+        {live?.last_error && (
+          <div className="mt-3 px-3 py-2 bg-red-50 text-red-600 rounded-lg text-xs">
+            Error: {live.last_error}
+          </div>
+        )}
+      </div>
+
       {/* Device Status */}
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-4">Device Status</h2>
+        <h2 className="text-lg font-semibold mb-4">Device Info</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <label className="text-xs text-gray-500 uppercase">State</label>
-            <div className={`inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium ${stateColors[device.state] || 'bg-gray-100'}`}>
-              {device.state}
-            </div>
-          </div>
           <div>
             <label className="text-xs text-gray-500 uppercase">Mode</label>
             <div className="mt-1 text-sm font-medium">
@@ -73,6 +166,12 @@ export default function Dashboard({ pin }) {
             <label className="text-xs text-gray-500 uppercase">Camera</label>
             <div className={`mt-1 text-sm font-medium ${device.camera_enabled ? 'text-green-600' : 'text-red-600'}`}>
               {device.camera_enabled ? 'On' : 'Off'}
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 uppercase">Models</label>
+            <div className={`mt-1 text-sm font-medium ${device.model_loaded ? 'text-green-600' : 'text-orange-600'}`}>
+              {device.model_loaded ? 'Loaded' : 'Loading...'}
             </div>
           </div>
         </div>

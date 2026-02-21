@@ -135,6 +135,9 @@ class Orchestrator:
             try:
                 if not follow_up:
                     self.state.set_state(BotState.READY)
+                    self.state.in_follow_up = False
+                    self.state.current_transcript = None
+                    self.state.current_response = None
 
                     # Step 1: Wait for wake word
                     audio_stream = self._audio_capture.stream()
@@ -196,6 +199,7 @@ class Orchestrator:
 
                 # Enter follow-up mode: listen again without wake word
                 follow_up = True
+                self.state.in_follow_up = True
                 logger.info("Listening for follow-up (no wake word needed)...")
 
             except asyncio.CancelledError:
@@ -210,6 +214,7 @@ class Orchestrator:
     async def _stream_response(self, transcript: str):
         """Stream LLM tokens → buffer sentences → TTS each sentence → play."""
         self.state.set_state(BotState.PROCESSING)
+        self.state.current_response = ""
 
         provider = self._llm_router.get_provider()
         messages = self._llm_router.build_messages(transcript)
@@ -232,6 +237,7 @@ class Orchestrator:
         player_task = asyncio.create_task(play_audio_chunks())
 
         # Stream tokens from LLM
+        response_text = []
         async for token in provider.stream(messages):
             sentence = self._sentence_buffer.feed(token)
             if sentence:
@@ -239,6 +245,9 @@ class Orchestrator:
                 safe = self._safety_filter.check_output(sentence)
                 if safe.blocked:
                     sentence = safe.redirect_response
+
+                response_text.append(sentence)
+                self.state.current_response = " ".join(response_text)
 
                 # TTS the sentence and queue audio for playback
                 audio_data = await self._tts.synthesize(sentence)
@@ -249,6 +258,8 @@ class Orchestrator:
         if remaining:
             safe = self._safety_filter.check_output(remaining)
             text = safe.redirect_response if safe.blocked else remaining
+            response_text.append(text)
+            self.state.current_response = " ".join(response_text)
             audio_data = await self._tts.synthesize(text)
             await audio_queue.put(audio_data)
 
