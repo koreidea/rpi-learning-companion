@@ -15,10 +15,11 @@ class AudioPlayer:
     - Playing WAV bytes (from TTS)
     - Playing WAV files (for sound effects)
     - Queued playback for streaming TTS
+    - Stop (kill) currently playing audio
     """
 
     def __init__(self):
-        pass
+        self._current_process: subprocess.Popen | None = None
 
     async def play(self, wav_bytes: bytes) -> None:
         """Play WAV audio bytes through the speaker.
@@ -39,15 +40,21 @@ class AudioPlayer:
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=True) as tmp:
                 tmp.write(wav_bytes)
                 tmp.flush()
-                result = subprocess.run(
+                proc = subprocess.Popen(
                     ["paplay", tmp.name],
-                    capture_output=True,
-                    timeout=30,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.PIPE,
                 )
-                if result.returncode != 0:
-                    stderr = result.stderr.decode().strip()
+                self._current_process = proc
+                proc.wait(timeout=30)
+                self._current_process = None
+                if proc.returncode != 0 and proc.returncode != -9:
+                    stderr = proc.stderr.read().decode().strip()
                     logger.error("paplay error: {}", stderr)
         except subprocess.TimeoutExpired:
+            if self._current_process:
+                self._current_process.kill()
+                self._current_process = None
             logger.error("Audio playback timed out (30s)")
         except FileNotFoundError:
             logger.error("paplay not found. Install pulseaudio-utils.")
@@ -66,23 +73,45 @@ class AudioPlayer:
     def _play_file_sync(self, path: Path) -> None:
         """Play a file directly with paplay (no temp file needed)."""
         try:
-            result = subprocess.run(
+            proc = subprocess.Popen(
                 ["paplay", str(path)],
-                capture_output=True,
-                timeout=30,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
             )
-            if result.returncode != 0:
-                stderr = result.stderr.decode().strip()
+            self._current_process = proc
+            proc.wait(timeout=30)
+            self._current_process = None
+            if proc.returncode != 0 and proc.returncode != -9:
+                stderr = proc.stderr.read().decode().strip()
                 logger.error("paplay error: {}", stderr)
         except subprocess.TimeoutExpired:
+            if self._current_process:
+                self._current_process.kill()
+                self._current_process = None
             logger.error("Audio playback timed out (30s)")
         except FileNotFoundError:
             logger.error("paplay not found. Install pulseaudio-utils.")
         except Exception as e:
             logger.error("Audio playback error: {}", e)
 
+    async def stop(self) -> None:
+        """Stop any currently playing audio immediately."""
+        proc = self._current_process
+        if proc is not None:
+            try:
+                proc.kill()
+                logger.info("Audio playback stopped (killed paplay).")
+            except Exception as e:
+                logger.debug("Error killing paplay: {}", e)
+            self._current_process = None
+
     def close(self):
-        pass
+        if self._current_process:
+            try:
+                self._current_process.kill()
+            except Exception:
+                pass
+            self._current_process = None
 
     def __del__(self):
-        pass
+        self.close()

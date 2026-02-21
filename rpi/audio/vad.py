@@ -20,7 +20,7 @@ class VADDetector:
     def __init__(
         self,
         sample_rate: int = SAMPLE_RATE,
-        silence_duration: float = 0.8,  # seconds of silence to end capture
+        silence_duration: float = 0.4,  # seconds of silence to end capture
         max_duration: float = 15.0,     # max recording length in seconds
         speech_threshold: float = 0.5,
     ):
@@ -45,18 +45,27 @@ class VADDetector:
         self._get_speech_timestamps = utils[0]
         logger.info("Silero-VAD loaded.")
 
-    async def capture_until_silence(self, audio_capture) -> Optional[np.ndarray]:
+    async def capture_until_silence(
+        self, audio_capture, initial_wait: float = 3.0
+    ) -> Optional[np.ndarray]:
         """Record audio until the speaker stops talking.
 
         Uses VAD to detect speech activity. Recording ends when:
         - silence_duration of non-speech is detected after speech started
         - max_duration is reached
-        - No speech detected within first 3 seconds
+        - No speech detected within initial_wait seconds
+
+        Args:
+            audio_capture: AudioCapture instance to read from.
+            initial_wait: Seconds to wait for speech before giving up.
 
         Returns:
             numpy array of the captured audio, or None if no speech.
         """
         self._ensure_model()
+
+        # Reset Silero-VAD internal state between captures
+        self._model.reset_states()
 
         loop = asyncio.get_event_loop()
         frames = []
@@ -100,8 +109,8 @@ class VADDetector:
                         logger.debug("Captured {:.1f}s of audio.", duration)
                         return audio
 
-            # Timeout if no speech within first 3 seconds
-            if total_time >= 3.0 and not speech_started:
+            # Timeout if no speech within initial_wait
+            if total_time >= initial_wait and not speech_started:
                 logger.debug("No speech detected within 3s timeout.")
                 return None
 

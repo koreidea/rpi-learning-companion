@@ -42,6 +42,14 @@ async def toggle_camera(
     return {"camera_enabled": body.enabled}
 
 
+@router.post("/stop-response")
+async def stop_response(request: Request, _=Depends(require_parent_auth)):
+    """Stop the current response and go back to listening mode."""
+    state = request.app.state.shared_state
+    state.interrupt_event.set()
+    return {"status": "stopping"}
+
+
 @router.post("/restart")
 async def restart_bot(request: Request, _=Depends(require_parent_auth)):
     """Restart the bot (reload models)."""

@@ -19,7 +19,7 @@ class SentenceBuffer:
     natural-sounding TTS output.
     """
 
-    def __init__(self, min_chars: int = 10):
+    def __init__(self, min_chars: int = 5):
         self._buffer = ""
         self._min_chars = min_chars  # Minimum chars before we check for sentence end
 

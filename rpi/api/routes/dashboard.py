@@ -59,4 +59,6 @@ async def get_live_status(request: Request, _=Depends(require_parent_auth)):
         "response": state.current_response,
         "follow_up": state.in_follow_up,
         "last_error": state.last_error,
+        "image": state.current_image_b64,
+        "detections": state.current_detections,
     }

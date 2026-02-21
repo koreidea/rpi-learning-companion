@@ -94,6 +94,25 @@ class AudioCapture:
         chunk = np.frombuffer(raw, dtype=FORMAT_DTYPE)
         return self._resample(chunk)
 
+    def pause(self):
+        """Stop the mic stream so it doesn't buffer audio during playback."""
+        if self._stream is not None and self._stream.is_active():
+            self._stream.stop_stream()
+            logger.debug("Mic paused")
+
+    def resume(self):
+        """Restart the mic stream and discard any stale data."""
+        if self._stream is not None and not self._stream.is_active():
+            self._stream.start_stream()
+            # Drain anything that was left over
+            try:
+                avail = self._stream.get_read_available()
+                if avail > 0:
+                    self._stream.read(avail, exception_on_overflow=False)
+            except Exception:
+                pass
+            logger.debug("Mic resumed")
+
     def close(self):
         if self._stream is not None:
             self._stream.stop_stream()

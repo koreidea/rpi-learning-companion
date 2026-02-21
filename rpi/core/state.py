@@ -32,6 +32,7 @@ class SharedState:
     # Set by orchestrator for inter-component signaling
     wake_event: asyncio.Event = field(default_factory=asyncio.Event)
     stop_event: asyncio.Event = field(default_factory=asyncio.Event)
+    interrupt_event: asyncio.Event = field(default_factory=asyncio.Event)
 
     # Current interaction info (ephemeral, not persisted)
     current_transcript: Optional[str] = None
@@ -39,6 +40,10 @@ class SharedState:
     is_model_loaded: bool = False
     last_error: Optional[str] = None
     in_follow_up: bool = False
+
+    # Vision: base64 PNG of last captured image + detected objects
+    current_image_b64: Optional[str] = None
+    current_detections: Optional[list] = None
 
     # Latency tracking
     interaction_start_time: Optional[float] = None

@@ -138,6 +138,8 @@ class Orchestrator:
                     self.state.in_follow_up = False
                     self.state.current_transcript = None
                     self.state.current_response = None
+                    self.state.current_image_b64 = None
+                    self.state.current_detections = None
 
                     # Step 1: Wait for wake word
                     audio_stream = self._audio_capture.stream()
@@ -154,8 +156,10 @@ class Orchestrator:
                     asyncio.create_task(self._play_sound("ding"))
 
                 # Step 3: Capture speech with VAD
+                # Give more time in follow-up mode (child needs time to think)
+                wait_time = 10.0 if follow_up else 3.0
                 audio_data = await self._vad.capture_until_silence(
-                    self._audio_capture
+                    self._audio_capture, initial_wait=wait_time
                 )
                 if audio_data is None or len(audio_data) == 0:
                     if follow_up:
@@ -173,6 +177,12 @@ class Orchestrator:
                 if not transcript or len(transcript.strip()) < 2:
                     if follow_up:
                         follow_up = False
+                    continue
+
+                # Echo detection: if follow-up transcript sounds like the
+                # bot's own previous response (speaker → mic bleed), skip it.
+                if follow_up and self._is_echo(transcript):
+                    logger.info("Detected echo of bot's own speech, ignoring.")
                     continue
 
                 self.state.current_transcript = transcript
@@ -212,13 +222,23 @@ class Orchestrator:
                 await asyncio.sleep(1)
 
     async def _stream_response(self, transcript: str):
-        """Stream LLM tokens → buffer sentences → TTS each sentence → play."""
+        """Stream LLM tokens → buffer sentences → TTS each sentence → play.
+
+        Supports interruption via self.state.interrupt_event — when set,
+        stops LLM streaming, cancels pending audio, and returns to listening.
+        """
         self.state.set_state(BotState.PROCESSING)
         self.state.current_response = ""
+        self.state.interrupt_event.clear()  # Reset at start
 
         provider = self._llm_router.get_provider()
         messages = self._llm_router.build_messages(transcript)
         self._sentence_buffer.reset()
+
+        # Pause mic while bot is speaking to prevent echo feedback
+        self._audio_capture.pause()
+
+        interrupted = False
 
         # Queue for TTS audio chunks ready to play
         audio_queue: asyncio.Queue = asyncio.Queue()
@@ -231,7 +251,13 @@ class Orchestrator:
                 chunk = await audio_queue.get()
                 if chunk is None:  # Sentinel: done
                     break
+                # Check for interrupt before playing each chunk
+                if self.state.interrupt_event.is_set():
+                    break
                 await self._audio_player.play(chunk)
+                # Check again after playing (user may have pressed stop mid-sentence)
+                if self.state.interrupt_event.is_set():
+                    break
             speaking_done.set()
 
         player_task = asyncio.create_task(play_audio_chunks())
@@ -239,6 +265,12 @@ class Orchestrator:
         # Stream tokens from LLM
         response_text = []
         async for token in provider.stream(messages):
+            # Check for interrupt during LLM streaming
+            if self.state.interrupt_event.is_set():
+                logger.info("Response interrupted by user during LLM streaming.")
+                interrupted = True
+                break
+
             sentence = self._sentence_buffer.feed(token)
             if sentence:
                 # Safety check on each sentence
@@ -253,20 +285,33 @@ class Orchestrator:
                 audio_data = await self._tts.synthesize(sentence)
                 await audio_queue.put(audio_data)
 
-        # Flush any remaining text in the buffer
-        remaining = self._sentence_buffer.flush()
-        if remaining:
-            safe = self._safety_filter.check_output(remaining)
-            text = safe.redirect_response if safe.blocked else remaining
-            response_text.append(text)
-            self.state.current_response = " ".join(response_text)
-            audio_data = await self._tts.synthesize(text)
-            await audio_queue.put(audio_data)
+        # Flush any remaining text in the buffer (only if not interrupted)
+        if not interrupted:
+            remaining = self._sentence_buffer.flush()
+            if remaining:
+                safe = self._safety_filter.check_output(remaining)
+                text = safe.redirect_response if safe.blocked else remaining
+                response_text.append(text)
+                self.state.current_response = " ".join(response_text)
+                audio_data = await self._tts.synthesize(text)
+                await audio_queue.put(audio_data)
 
-        # Signal player to stop
+        # Signal player to stop and wait for it to finish
         await audio_queue.put(None)
         await speaking_done.wait()
         player_task.cancel()
+
+        if interrupted:
+            # Stop any currently playing audio
+            await self._audio_player.stop()
+            logger.info("Response stopped. Returning to listening mode.")
+
+        # Clear the interrupt flag
+        self.state.interrupt_event.clear()
+
+        # Wait for BT speaker buffer to fully flush, then resume mic
+        await asyncio.sleep(1.0)
+        self._audio_capture.resume()
 
     async def _handle_vision_request(self, transcript: str):
         """Capture image, detect/OCR, send to LLM with visual context."""
@@ -276,9 +321,18 @@ class Orchestrator:
 
         image = await self._camera.capture()
 
+        # Encode image to base64 PNG for the dashboard
+        if image is not None:
+            self.state.current_image_b64 = self._image_to_base64(image)
+        else:
+            self.state.current_image_b64 = None
+
         from vision.object_detector import ObjectDetector
         detector = ObjectDetector(model_dir=MODELS_DIR / "vision")
         detections = await detector.detect(image)
+
+        # Store detections for dashboard display
+        self.state.current_detections = detections
 
         # Build a visual context description
         objects = ", ".join(d["label"] for d in detections) if detections else "unknown object"
@@ -291,6 +345,52 @@ class Orchestrator:
 
         await self._stream_response(visual_prompt)
 
+    @staticmethod
+    def _image_to_base64(image) -> str:
+        """Convert a captured image to a base64-encoded JPEG string."""
+        import base64
+        import io
+        from PIL import Image
+
+        # picamera2 capture_array() returns BGR despite RGB888 config
+        # Swap R and B channels: [:, :, ::-1] converts BGR → RGB
+        rgb_image = image[:, :, ::-1]
+        img = Image.fromarray(rgb_image)
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=60)
+        return base64.b64encode(buf.getvalue()).decode("ascii")
+
+    def _is_echo(self, transcript: str) -> bool:
+        """Check if transcript is an echo of the bot's own last response.
+
+        When the mic picks up the speaker output, STT will transcribe it.
+        We detect this by checking if significant words from the transcript
+        overlap with the bot's last response.
+        """
+        last_response = self.state.current_response
+        if not last_response:
+            return False
+
+        # Normalize both strings
+        t_words = set(transcript.lower().split())
+        r_words = set(last_response.lower().split())
+
+        # Remove very common short words
+        stop = {"the", "a", "an", "is", "it", "to", "and", "of", "in", "i", "you", "that", "this"}
+        t_words -= stop
+        r_words -= stop
+
+        if not t_words:
+            return False
+
+        # If most of the transcript words appear in the response, it's echo
+        overlap = t_words & r_words
+        ratio = len(overlap) / len(t_words)
+        if ratio > 0.5:
+            logger.debug("Echo ratio: {:.0%} ({} / {})", ratio, len(overlap), len(t_words))
+            return True
+        return False
+
     def _is_vision_request(self, transcript: str) -> bool:
         """Check if the child's speech is asking about something visual."""
         vision_triggers = [
@@ -302,10 +402,22 @@ class Orchestrator:
         return any(trigger in lower for trigger in vision_triggers)
 
     async def _speak_text(self, text: str):
-        """Synthesize and speak a single text string."""
+        """Synthesize and speak a single text string. Supports interruption."""
+        self._audio_capture.pause()
         self.state.set_state(BotState.SPEAKING)
+        self.state.interrupt_event.clear()
+
         audio_data = await self._tts.synthesize(text)
-        await self._audio_player.play(audio_data)
+
+        if not self.state.interrupt_event.is_set():
+            await self._audio_player.play(audio_data)
+
+        if self.state.interrupt_event.is_set():
+            await self._audio_player.stop()
+            self.state.interrupt_event.clear()
+
+        await asyncio.sleep(1.0)
+        self._audio_capture.resume()
 
     async def _play_sound(self, sound_name: str):
         """Play a pre-loaded sound effect (ding, thinking, ready)."""

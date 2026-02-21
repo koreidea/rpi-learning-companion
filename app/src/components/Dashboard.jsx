@@ -75,6 +75,18 @@ export default function Dashboard({ pin }) {
   const currentState = live?.state || device.state
   const sc = stateConfig[currentState] || stateConfig.ready
   const isActive = ['listening', 'processing', 'speaking'].includes(currentState)
+  const canStop = ['processing', 'speaking'].includes(currentState)
+
+  async function stopResponse() {
+    try {
+      await fetch('/api/control/stop-response', {
+        method: 'POST',
+        headers: { 'X-Parent-PIN': pin },
+      })
+    } catch (err) {
+      console.error('Stop response error:', err)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -83,6 +95,17 @@ export default function Dashboard({ pin }) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Live Status</h2>
           <div className="flex items-center gap-2">
+            {canStop && (
+              <button
+                onClick={stopResponse}
+                className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-full text-sm font-medium transition-colors flex items-center gap-1"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <rect x="5" y="5" width="10" height="10" rx="1" />
+                </svg>
+                Stop
+              </button>
+            )}
             <div className={`w-3 h-3 rounded-full ${sc.dot} ${isActive ? 'animate-pulse' : ''}`} />
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${sc.color}`}>
               {sc.label}
@@ -115,6 +138,25 @@ export default function Dashboard({ pin }) {
               <span className="text-lg">👦</span>
               <div className="bg-blue-100 text-blue-900 rounded-xl rounded-tl-sm px-4 py-2 text-sm max-w-[85%]">
                 {live.transcript}
+              </div>
+            </div>
+          )}
+
+          {/* Camera image when vision request */}
+          {live?.image && (
+            <div className="flex gap-2">
+              <span className="text-lg">📷</span>
+              <div className="rounded-xl overflow-hidden border border-gray-200 max-w-[85%]">
+                <img
+                  src={`data:image/jpeg;base64,${live.image}`}
+                  alt="Camera capture"
+                  className="w-full rounded-xl"
+                />
+                {live.detections && live.detections.length > 0 && (
+                  <div className="px-3 py-1.5 bg-gray-50 text-xs text-gray-600">
+                    Detected: {live.detections.map(d => d.label).join(', ')}
+                  </div>
+                )}
               </div>
             </div>
           )}

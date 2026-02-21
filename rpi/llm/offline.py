@@ -17,10 +17,10 @@ class OfflineLLM(BaseLLM):
         self,
         model_dir: Path,
         model_name: str = "Llama-3.2-1B-Instruct-Q4_K_M.gguf",
-        n_ctx: int = 2048,
-        n_threads: int = 4,
-        max_tokens: int = 150,
-        temperature: float = 0.4,
+        n_ctx: int = 512,
+        n_threads: int = 3,
+        max_tokens: int = 60,
+        temperature: float = 0.5,
     ):
         self.model_dir = model_dir
         self.model_name = model_name
@@ -61,11 +61,8 @@ class OfflineLLM(BaseLLM):
 
         loop = asyncio.get_event_loop()
 
-        # llama-cpp-python's create_chat_completion with stream=True
-        # returns a generator, so we process it in an executor
-        import queue
-        token_queue = queue.Queue()
-        done_event = asyncio.Event()
+        # Use asyncio.Queue for zero-overhead async token passing
+        token_queue: asyncio.Queue = asyncio.Queue()
 
         def generate():
             try:
@@ -79,23 +76,22 @@ class OfflineLLM(BaseLLM):
                     delta = chunk.get("choices", [{}])[0].get("delta", {})
                     content = delta.get("content", "")
                     if content:
-                        token_queue.put(content)
+                        asyncio.run_coroutine_threadsafe(
+                            token_queue.put(content), loop
+                        )
             except Exception as e:
                 logger.error("Offline LLM generation error: {}", e)
             finally:
-                token_queue.put(None)  # Sentinel
+                asyncio.run_coroutine_threadsafe(
+                    token_queue.put(None), loop
+                )
 
         # Run generation in background thread
         loop.run_in_executor(None, generate)
 
-        # Yield tokens as they arrive
+        # Yield tokens as they arrive — no polling, true async await
         while True:
-            try:
-                token = await loop.run_in_executor(None, token_queue.get, True, 0.1)
-            except Exception:
-                await asyncio.sleep(0.05)
-                continue
-
+            token = await token_queue.get()
             if token is None:
                 break
             yield token
