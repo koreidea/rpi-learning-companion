@@ -57,18 +57,30 @@ class LLMRouter:
             await self._offline_llm.load()
 
     def _get_online_provider(self, name: str) -> BaseLLM:
-        """Get or create a cloud LLM provider."""
-        if name not in self._providers:
-            api_keys = self.config_manager.config.api_keys
-            if name == "openai":
-                from llm.providers.openai_provider import OpenAIProvider
-                self._providers[name] = OpenAIProvider(api_key=api_keys.openai)
-            elif name == "gemini":
-                from llm.providers.gemini_provider import GeminiProvider
-                self._providers[name] = GeminiProvider(api_key=api_keys.gemini)
-            elif name == "claude":
-                from llm.providers.claude_provider import ClaudeProvider
-                self._providers[name] = ClaudeProvider(api_key=api_keys.claude)
+        """Get or create a cloud LLM provider.
+
+        Re-reads the API key from config each time so that key updates
+        via the settings page take effect without restart.
+        """
+        api_keys = self.config_manager.config.api_keys
+        current_key = getattr(api_keys, name, "")
+
+        # Recreate the provider if the key changed or first time
+        cached = self._providers.get(name)
+        if cached is not None and getattr(cached, "api_key", None) == current_key:
+            return cached
+
+        if name == "openai":
+            from llm.providers.openai_provider import OpenAIProvider
+            self._providers[name] = OpenAIProvider(api_key=current_key)
+        elif name == "gemini":
+            from llm.providers.gemini_provider import GeminiProvider
+            self._providers[name] = GeminiProvider(api_key=current_key)
+        elif name == "claude":
+            from llm.providers.claude_provider import ClaudeProvider
+            self._providers[name] = ClaudeProvider(api_key=current_key)
+
+        logger.info("Online provider '{}' initialized.", name)
         return self._providers[name]
 
     def get_provider(self) -> BaseLLM:

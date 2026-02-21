@@ -18,12 +18,20 @@ class CameraToggle(BaseModel):
 async def toggle_mic(
     body: MicToggle, request: Request, _=Depends(require_parent_auth)
 ):
-    """Enable or disable the microphone."""
+    """Enable or disable the microphone.
+
+    When disabled, the interaction loop pauses (no wake word listening).
+    When re-enabled, the bot resumes listening.
+    """
     state = request.app.state.shared_state
     state.mic_enabled = body.enabled
 
     cm = request.app.state.config_manager
     cm.update_nested("hardware", mic_enabled=body.enabled)
+
+    # If disabling mid-response, also interrupt
+    if not body.enabled:
+        state.interrupt_event.set()
 
     return {"mic_enabled": body.enabled}
 

@@ -133,6 +133,13 @@ class Orchestrator:
 
         while self.state.is_running:
             try:
+                # If mic is disabled, pause until it's re-enabled
+                if not self.state.mic_enabled:
+                    self.state.set_state(BotState.READY)
+                    follow_up = False
+                    await asyncio.sleep(1)
+                    continue
+
                 if not follow_up:
                     self.state.set_state(BotState.READY)
                     self.state.in_follow_up = False
@@ -145,9 +152,6 @@ class Orchestrator:
                     audio_stream = self._audio_capture.stream()
                     await self._wake_word.listen(audio_stream)
                     logger.info("Wake word detected!")
-
-                    if not self.state.mic_enabled:
-                        continue
 
                 # Step 2: Play acknowledgment sound
                 self.state.set_state(BotState.LISTENING)
