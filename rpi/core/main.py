@@ -124,29 +124,41 @@ class Orchestrator:
         logger.info("All components loaded.")
 
     async def _interaction_loop(self):
-        """Main loop: wake word → capture → STT → LLM stream → TTS stream → speak."""
+        """Main loop: wake word → capture → STT → LLM stream → TTS stream → speak.
+
+        After each response, opens a follow-up window (5s) so the child
+        can keep talking without repeating the wake word.
+        """
+        follow_up = False  # True when in follow-up listening mode
+
         while self.state.is_running:
             try:
-                self.state.set_state(BotState.READY)
+                if not follow_up:
+                    self.state.set_state(BotState.READY)
 
-                # Step 1: Wait for wake word
-                audio_stream = self._audio_capture.stream()
-                await self._wake_word.listen(audio_stream)
-                logger.info("Wake word detected!")
+                    # Step 1: Wait for wake word
+                    audio_stream = self._audio_capture.stream()
+                    await self._wake_word.listen(audio_stream)
+                    logger.info("Wake word detected!")
 
-                if not self.state.mic_enabled:
-                    continue
+                    if not self.state.mic_enabled:
+                        continue
 
-                # Step 2: Play acknowledgment sound immediately
+                # Step 2: Play acknowledgment sound
                 self.state.set_state(BotState.LISTENING)
                 self.state.interaction_start_time = time.monotonic()
-                asyncio.create_task(self._play_sound("ding"))
+                if not follow_up:
+                    asyncio.create_task(self._play_sound("ding"))
 
                 # Step 3: Capture speech with VAD
                 audio_data = await self._vad.capture_until_silence(
                     self._audio_capture
                 )
                 if audio_data is None or len(audio_data) == 0:
+                    if follow_up:
+                        logger.debug("No follow-up speech. Back to wake word mode.")
+                        follow_up = False
+                        continue
                     logger.debug("No speech detected after wake word.")
                     continue
 
@@ -156,6 +168,8 @@ class Orchestrator:
                 logger.info("Child said: '{}'", transcript)
 
                 if not transcript or len(transcript.strip()) < 2:
+                    if follow_up:
+                        follow_up = False
                     continue
 
                 self.state.current_transcript = transcript
@@ -164,11 +178,13 @@ class Orchestrator:
                 safe_input = self._safety_filter.check_input(transcript)
                 if safe_input.blocked:
                     await self._speak_text(safe_input.redirect_response)
+                    follow_up = True
                     continue
 
                 # Step 6: Check if this is a vision request
                 if self._is_vision_request(transcript) and self.state.camera_enabled:
                     await self._handle_vision_request(transcript)
+                    follow_up = True
                     continue
 
                 # Step 7: Stream LLM → sentence buffer → TTS → speak
@@ -178,12 +194,17 @@ class Orchestrator:
                 elapsed = time.monotonic() - self.state.interaction_start_time
                 logger.info("Interaction complete. Latency: {:.1f}s", elapsed)
 
+                # Enter follow-up mode: listen again without wake word
+                follow_up = True
+                logger.info("Listening for follow-up (no wake word needed)...")
+
             except asyncio.CancelledError:
                 break
             except Exception as e:
                 logger.error("Error in interaction loop: {}", e)
                 self.state.set_state(BotState.ERROR)
                 self.state.last_error = str(e)
+                follow_up = False
                 await asyncio.sleep(1)
 
     async def _stream_response(self, transcript: str):
