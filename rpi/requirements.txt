@@ -1,0 +1,51 @@
+# Core
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+aiosqlite==0.20.0
+python-multipart==0.0.18
+
+# Audio
+pyaudio==0.2.14
+numpy==1.26.4
+sounddevice==0.5.1
+
+# Wake Word
+openwakeword==0.6.0
+
+# Voice Activity Detection
+silero-vad==5.1.2
+torch==2.5.1
+torchaudio==2.5.1
+
+# Speech-to-Text
+pywhispercpp==1.2.0
+
+# Local LLM
+llama-cpp-python==0.3.4
+
+# Cloud LLM Providers
+openai==1.58.1
+google-generativeai==0.8.4
+anthropic==0.42.0
+
+# Text-to-Speech
+piper-tts==1.2.0
+
+# Vision
+ultralytics==8.3.54
+paddleocr==2.9.1
+paddlepaddle==2.6.2
+# picamera2 installed via apt on RPi (not pip)
+
+# Privacy & Encryption
+cryptography==44.0.0
+
+# Utilities
+python-dotenv==1.0.1
+loguru==0.7.3
+httpx==0.28.1
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0

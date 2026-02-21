@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Models (large files, download separately)
+rpi/models/**/*.gguf
+rpi/models/**/*.bin
+rpi/models/**/*.onnx
+rpi/models/**/*.pt
+rpi/models/**/*.pth
+
+# Runtime data (encrypted, private)
+rpi/data/
+
+# Node
+app/node_modules/
+app/dist/
+
+# Built static files served by Pi
+rpi/static/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
