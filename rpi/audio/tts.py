@@ -71,13 +71,27 @@ class TextToSpeech:
             logger.warning("TTS not loaded. Returning empty audio.")
             return b""
 
-        # Piper synthesizes to a WAV buffer
+        # Piper synthesize() returns an iterable of AudioChunk objects
+        # Each chunk has audio_float_array (float32 normalized to [-1, 1])
+        all_audio = []
+        for chunk in self._piper.synthesize(text):
+            # Convert float32 [-1, 1] to int16
+            audio_int16 = (chunk.audio_float_array * 32767).astype(np.int16)
+            all_audio.append(audio_int16)
+
+        if not all_audio:
+            logger.warning("TTS produced no audio for: '{}'", text[:50])
+            return b""
+
+        audio_data = np.concatenate(all_audio)
+
+        # Write to WAV buffer
         wav_buffer = io.BytesIO()
         with wave.open(wav_buffer, "wb") as wav:
             wav.setnchannels(1)
             wav.setsampwidth(2)  # 16-bit
             wav.setframerate(self.sample_rate)
-            self._piper.synthesize(text, wav)
+            wav.writeframes(audio_data.tobytes())
 
         audio_bytes = wav_buffer.getvalue()
         logger.debug("TTS: synthesized {} bytes for '{}'", len(audio_bytes), text[:50])
