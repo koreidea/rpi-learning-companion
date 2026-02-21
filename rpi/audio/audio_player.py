@@ -1,14 +1,15 @@
 import asyncio
-import io
-import wave
+import subprocess
+import tempfile
 from pathlib import Path
 
-import numpy as np
 from loguru import logger
 
 
 class AudioPlayer:
-    """Plays audio through the Bluetooth speaker (or default audio output).
+    """Plays audio through PipeWire/PulseAudio (paplay).
+
+    Uses paplay for reliable Bluetooth speaker output via PipeWire.
 
     Supports:
     - Playing WAV bytes (from TTS)
@@ -16,25 +17,8 @@ class AudioPlayer:
     - Queued playback for streaming TTS
     """
 
-    def __init__(self, sample_rate: int = 22050):
-        self.sample_rate = sample_rate
-        self._pa = None
-        self._stream = None
-
-    def _ensure_output(self, rate: int = None):
-        """Lazily open the PyAudio output stream."""
-        rate = rate or self.sample_rate
-        if self._stream is not None:
-            return
-
-        import pyaudio
-        self._pa = pyaudio.PyAudio()
-        self._stream = self._pa.open(
-            format=pyaudio.paInt16,
-            channels=1,
-            rate=rate,
-            output=True,
-        )
+    def __init__(self):
+        pass
 
     async def play(self, wav_bytes: bytes) -> None:
         """Play WAV audio bytes through the speaker.
@@ -49,18 +33,24 @@ class AudioPlayer:
         await loop.run_in_executor(None, self._play_sync, wav_bytes)
 
     def _play_sync(self, wav_bytes: bytes) -> None:
-        """Synchronous WAV playback."""
+        """Synchronous WAV playback using paplay."""
         try:
-            wav_buffer = io.BytesIO(wav_bytes)
-            with wave.open(wav_buffer, "rb") as wf:
-                rate = wf.getframerate()
-                self._ensure_output(rate)
-
-                chunk_size = 4096
-                data = wf.readframes(chunk_size)
-                while data:
-                    self._stream.write(data)
-                    data = wf.readframes(chunk_size)
+            # Write WAV bytes to a temp file, then play with paplay
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=True) as tmp:
+                tmp.write(wav_bytes)
+                tmp.flush()
+                result = subprocess.run(
+                    ["paplay", tmp.name],
+                    capture_output=True,
+                    timeout=30,
+                )
+                if result.returncode != 0:
+                    stderr = result.stderr.decode().strip()
+                    logger.error("paplay error: {}", stderr)
+        except subprocess.TimeoutExpired:
+            logger.error("Audio playback timed out (30s)")
+        except FileNotFoundError:
+            logger.error("paplay not found. Install pulseaudio-utils.")
         except Exception as e:
             logger.error("Audio playback error: {}", e)
 
@@ -70,17 +60,29 @@ class AudioPlayer:
             logger.warning("Sound file not found: {}", path)
             return
 
-        wav_bytes = path.read_bytes()
-        await self.play(wav_bytes)
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, self._play_file_sync, path)
+
+    def _play_file_sync(self, path: Path) -> None:
+        """Play a file directly with paplay (no temp file needed)."""
+        try:
+            result = subprocess.run(
+                ["paplay", str(path)],
+                capture_output=True,
+                timeout=30,
+            )
+            if result.returncode != 0:
+                stderr = result.stderr.decode().strip()
+                logger.error("paplay error: {}", stderr)
+        except subprocess.TimeoutExpired:
+            logger.error("Audio playback timed out (30s)")
+        except FileNotFoundError:
+            logger.error("paplay not found. Install pulseaudio-utils.")
+        except Exception as e:
+            logger.error("Audio playback error: {}", e)
 
     def close(self):
-        if self._stream is not None:
-            self._stream.stop_stream()
-            self._stream.close()
-            self._stream = None
-        if self._pa is not None:
-            self._pa.terminate()
-            self._pa = None
+        pass
 
     def __del__(self):
-        self.close()
+        pass
