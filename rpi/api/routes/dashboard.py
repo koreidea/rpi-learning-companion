@@ -61,4 +61,6 @@ async def get_live_status(request: Request, _=Depends(require_parent_auth)):
         "last_error": state.last_error,
         "image": state.current_image_b64,
         "detections": state.current_detections,
+        "messages": state.conversation_messages,
+        "bot_enabled": state.mic_enabled,
     }

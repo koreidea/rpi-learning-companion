@@ -93,6 +93,8 @@ export default function ConsentGate({ onComplete }) {
                 <li>- Session metadata (timestamps, topic categories) will be stored on this device</li>
                 <li>- No data is sent to external servers in offline mode</li>
                 <li>- In online mode, the child's question text (not audio) is sent to the selected AI provider</li>
+                <li>- For camera-based questions, images are sent to OpenAI with all faces automatically blurred and metadata stripped for privacy</li>
+                <li>- If cloud speech recognition is enabled, audio of your child's voice is sent to OpenAI for transcription. Audio is processed in real-time and is not stored by OpenAI.</li>
                 <li>- You can revoke consent and delete all data at any time</li>
               </ul>
             </div>

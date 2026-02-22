@@ -34,6 +34,7 @@ class HardwareConfig(BaseModel):
     mic_enabled: bool = True
     camera_enabled: bool = True
     wake_word: str = "hey jarvis"
+    cloud_stt: bool = False  # When True + online mode, use OpenAI Whisper API
 
 
 class AppConfig(BaseModel):

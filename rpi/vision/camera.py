@@ -19,6 +19,7 @@ class Camera:
 
         try:
             from picamera2 import Picamera2
+            from libcamera import controls
 
             self._camera = Picamera2()
             config = self._camera.create_still_configuration(
@@ -26,6 +27,17 @@ class Camera:
             )
             self._camera.configure(config)
             self._camera.start()
+
+            # Enable continuous autofocus on RPi Camera Module 3
+            try:
+                self._camera.set_controls({
+                    "AfMode": controls.AfModeEnum.Continuous,
+                    "AfSpeed": controls.AfSpeedEnum.Fast,
+                })
+                logger.info("Autofocus enabled: continuous + fast mode")
+            except Exception as e:
+                logger.warning("Could not enable autofocus ({}). Camera may not support AF.", e)
+
             logger.info("Camera initialized: {}x{}", *self.resolution)
         except ImportError:
             logger.warning("picamera2 not available. Camera features disabled.")
@@ -47,6 +59,16 @@ class Camera:
             return None
 
         try:
+            import time
+
+            # Trigger autofocus and wait for it to lock
+            try:
+                from libcamera import controls
+                self._camera.set_controls({"AfTrigger": controls.AfTriggerEnum.Start})
+                time.sleep(0.5)  # Give AF time to lock
+            except Exception:
+                pass  # AF not available, continue anyway
+
             frame = self._camera.capture_array()
             logger.debug("Captured frame: shape={}", frame.shape)
             return frame

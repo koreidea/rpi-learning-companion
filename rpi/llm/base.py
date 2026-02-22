@@ -42,9 +42,11 @@ class LLMRouter:
         self._providers: dict[str, BaseLLM] = {}
 
     async def load(self):
-        """Load the appropriate LLM based on current mode."""
+        """Initialize the LLM router. Offline model is loaded lazily on first use."""
         if self.state.llm_mode == LLMMode.OFFLINE:
             await self._ensure_offline_llm()
+        else:
+            logger.info("Online mode — offline LLM will load on demand.")
         logger.info("LLM Router ready. Mode: {}", self.state.llm_mode.value)
 
     async def _ensure_offline_llm(self):
@@ -83,19 +85,38 @@ class LLMRouter:
         logger.info("Online provider '{}' initialized.", name)
         return self._providers[name]
 
-    def get_provider(self) -> BaseLLM:
+    async def ensure_offline_ready(self):
+        """Public method to ensure offline LLM is loaded (for mode switching)."""
+        await self._ensure_offline_llm()
+
+    async def get_provider(self) -> BaseLLM:
         """Get the active LLM provider based on current mode and settings."""
         if self.state.llm_mode == LLMMode.ONLINE:
             provider_name = self.state.active_provider
+            logger.info("[LLM] Using ONLINE provider: {}", provider_name)
             return self._get_online_provider(provider_name)
 
-        # Offline mode — ensure local model is ready
+        # Offline mode — lazy-load if not yet loaded
         if self._offline_llm is None:
-            logger.warning("Offline LLM not loaded yet!")
+            logger.info("[LLM] Loading offline model on demand...")
+            await self._ensure_offline_llm()
+        model_name = getattr(self._offline_llm, "model_name", "unknown")
+        logger.info("[LLM] Using OFFLINE ({})", model_name)
         return self._offline_llm
 
-    def build_messages(self, user_text: str) -> list[dict]:
-        """Build the message list with system prompt and user input."""
+    def build_messages(
+        self, user_text: str, history: list[dict] | None = None
+    ) -> list[dict]:
+        """Build the message list with system prompt, conversation history, and user input.
+
+        Args:
+            user_text: The current user message.
+            history: Optional list of prior {"role": "user"/"assistant", "content": ...} dicts.
+                     These are inserted between the system prompt and the new user message.
+
+        Returns:
+            Full message list ready for the LLM provider.
+        """
         config = self.config_manager.config
         system_prompt = build_system_prompt(
             age_min=config.child.age_min,
@@ -103,10 +124,14 @@ class LLMRouter:
             language=config.child.language,
         )
 
-        return [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_text},
-        ]
+        messages = [{"role": "system", "content": system_prompt}]
+
+        # Add conversation history (prior turns)
+        if history:
+            messages.extend(history)
+
+        messages.append({"role": "user", "content": user_text})
+        return messages
 
     async def unload(self):
         """Unload all models."""

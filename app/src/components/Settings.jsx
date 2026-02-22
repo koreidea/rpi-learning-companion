@@ -4,6 +4,7 @@ export default function Settings({ pin }) {
   const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [restarting, setRestarting] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -26,7 +27,7 @@ export default function Settings({ pin }) {
   async function updateSetting(endpoint, body) {
     setSaving(true)
     try {
-      await fetch(`/api/settings/${endpoint}`, {
+      const res = await fetch(`/api/settings/${endpoint}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -34,6 +35,34 @@ export default function Settings({ pin }) {
         },
         body: JSON.stringify(body),
       })
+      const data = await res.json()
+
+      // If the server is restarting (e.g., language change), show overlay and wait
+      if (data.restarting) {
+        setRestarting(true)
+        // Wait for the service to come back up (poll every 2s)
+        const waitForRestart = async () => {
+          await new Promise((r) => setTimeout(r, 3000))
+          for (let i = 0; i < 30; i++) {
+            try {
+              const check = await fetch('/api/settings/', {
+                headers: { 'X-Parent-PIN': pin },
+              })
+              if (check.ok) {
+                setRestarting(false)
+                await fetchSettings()
+                return
+              }
+            } catch {}
+            await new Promise((r) => setTimeout(r, 2000))
+          }
+          setRestarting(false)
+          await fetchSettings()
+        }
+        waitForRestart()
+        return
+      }
+
       await fetchSettings()
     } catch (err) {
       console.error('Update error:', err)
@@ -64,6 +93,16 @@ export default function Settings({ pin }) {
 
   if (!settings) {
     return <div className="text-center py-12 text-red-500">Could not load settings.</div>
+  }
+
+  if (restarting) {
+    return (
+      <div className="text-center py-16">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+        <p className="text-gray-600 font-medium">Restarting with new voice model...</p>
+        <p className="text-xs text-gray-400 mt-2">This takes about 10 seconds.</p>
+      </div>
+    )
   }
 
   return (
@@ -122,6 +161,26 @@ export default function Settings({ pin }) {
         </div>
       )}
 
+      {/* Cloud Speech Recognition (only when online) */}
+      {settings.mode === 'online' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold mb-4">Cloud Speech Recognition</h2>
+          <Toggle
+            label={settings.hardware.cloud_stt ? 'Enabled' : 'Disabled'}
+            description={
+              settings.hardware.cloud_stt
+                ? 'Speech sent to OpenAI for faster recognition (~0.5s). Audio is not stored.'
+                : 'Speech processed on device. Private but slower (~3s).'
+            }
+            enabled={settings.hardware.cloud_stt}
+            onChange={(v) => updateSetting('cloud-stt', { enabled: v })}
+          />
+          <p className="text-xs text-amber-600 mt-3">
+            When enabled, your child's voice audio is sent to OpenAI for transcription. Audio is processed and immediately discarded — it is not stored.
+          </p>
+        </div>
+      )}
+
       {/* Hardware Controls */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-lg font-semibold mb-4">Hardware</h2>
@@ -144,7 +203,19 @@ export default function Settings({ pin }) {
       {/* Child Settings */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h2 className="text-lg font-semibold mb-4">Child Settings</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-600">Language</label>
+            <select
+              value={settings.child.language || 'en'}
+              onChange={(e) => updateSetting('child', { language: e.target.value })}
+              className="w-full mt-1 border rounded-lg px-3 py-2"
+            >
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="te">Telugu</option>
+            </select>
+          </div>
           <div>
             <label className="text-sm font-medium text-gray-600">Age Min</label>
             <select
@@ -170,6 +241,9 @@ export default function Settings({ pin }) {
             </select>
           </div>
         </div>
+        <p className="text-xs text-gray-400 mt-3">
+          Changing language will automatically restart the bot to load the appropriate voice model.
+        </p>
       </div>
     </div>
   )

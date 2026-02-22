@@ -20,7 +20,7 @@ class WakeWordDetector:
         self.model_dir = model_dir
         self.wake_word = wake_word.lower().strip()
         self._model = None
-        self._threshold = 0.3  # Lowered for USB mic sensitivity
+        self._threshold = 0.4  # Balanced: rejects false positives (0.3x) while catching real wake words (0.4+)
         self._target_label = self._LABEL_MAP.get(self.wake_word, self.wake_word)
 
     async def load(self):

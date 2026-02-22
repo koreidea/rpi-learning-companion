@@ -102,8 +102,22 @@ class AudioCapture:
 
     def resume(self):
         """Restart the mic stream and discard any stale data."""
-        if self._stream is not None and not self._stream.is_active():
-            self._stream.start_stream()
+        if self._stream is None:
+            # Stream was closed entirely, re-open it
+            self._ensure_stream()
+            logger.debug("Mic re-opened after close")
+            return
+
+        if self._stream.is_stopped():
+            try:
+                self._stream.start_stream()
+            except Exception as e:
+                # Stream is broken, close and re-create
+                logger.warning("Failed to resume stream ({}), re-opening...", e)
+                self.close()
+                self._ensure_stream()
+                return
+
             # Drain anything that was left over
             try:
                 avail = self._stream.get_read_available()

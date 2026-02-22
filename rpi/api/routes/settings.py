@@ -27,6 +27,10 @@ class ChildSettingsUpdate(BaseModel):
     language: Optional[str] = None
 
 
+class CloudSTTToggle(BaseModel):
+    enabled: bool
+
+
 class HardwareUpdate(BaseModel):
     wake_word: Optional[str] = None
 
@@ -101,12 +105,36 @@ async def update_api_keys(
 async def update_child_settings(
     body: ChildSettingsUpdate, request: Request, _=Depends(require_parent_auth)
 ):
-    """Update child age and language settings."""
+    """Update child age and language settings.
+
+    If the language is changed, the service will restart automatically
+    to load the appropriate STT and TTS voice models.
+    """
     cm = request.app.state.config_manager
+    old_language = cm.config.child.language
     updates = body.model_dump(exclude_none=True)
     if updates:
         cm.update_nested("child", **updates)
-    return {"status": "updated", "child": cm.config.child.model_dump()}
+
+    new_language = cm.config.child.language
+    needs_restart = body.language is not None and body.language != old_language
+
+    if needs_restart:
+        import asyncio
+        import os
+        import signal
+
+        async def _restart():
+            await asyncio.sleep(1)  # Let the response return first
+            os.kill(os.getpid(), signal.SIGTERM)
+
+        asyncio.create_task(_restart())
+
+    return {
+        "status": "updated",
+        "child": cm.config.child.model_dump(),
+        "restarting": needs_restart,
+    }
 
 
 @router.put("/hardware")
@@ -119,3 +147,21 @@ async def update_hardware_settings(
     if updates:
         cm.update_nested("hardware", **updates)
     return {"status": "updated", "hardware": cm.config.hardware.model_dump()}
+
+
+@router.put("/cloud-stt")
+async def toggle_cloud_stt(
+    body: CloudSTTToggle, request: Request, _=Depends(require_parent_auth)
+):
+    """Enable or disable cloud speech recognition (OpenAI Whisper API).
+
+    When enabled AND mode is online, audio is sent to OpenAI for faster
+    transcription (~0.5s vs ~3s local). Audio is not stored by OpenAI.
+    """
+    cm = request.app.state.config_manager
+    cm.update_nested("hardware", cloud_stt=body.enabled)
+
+    state = request.app.state.shared_state
+    state.cloud_stt = body.enabled
+
+    return {"cloud_stt": body.enabled, "status": "updated"}

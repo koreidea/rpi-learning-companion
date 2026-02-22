@@ -77,6 +77,20 @@ export default function Dashboard({ pin }) {
   const isActive = ['listening', 'processing', 'speaking'].includes(currentState)
   const canStop = ['processing', 'speaking'].includes(currentState)
 
+  const botEnabled = live?.bot_enabled ?? true
+
+  async function toggleBot() {
+    try {
+      await fetch('/api/control/mic', {
+        method: 'PUT',
+        headers: { 'X-Parent-PIN': pin, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !botEnabled }),
+      })
+    } catch (err) {
+      console.error('Toggle bot error:', err)
+    }
+  }
+
   async function stopResponse() {
     try {
       await fetch('/api/control/stop-response', {
@@ -91,11 +105,11 @@ export default function Dashboard({ pin }) {
   return (
     <div className="space-y-6">
       {/* Live Status Panel */}
-      <div className={`bg-white rounded-xl shadow-sm p-6 border-2 ${isActive ? 'border-blue-300' : 'border-transparent'}`}>
+      <div className={`bg-white rounded-xl shadow-sm p-6 border-2 ${!botEnabled ? 'border-gray-300' : isActive ? 'border-blue-300' : 'border-transparent'}`}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Live Status</h2>
           <div className="flex items-center gap-2">
-            {canStop && (
+            {canStop && botEnabled && (
               <button
                 onClick={stopResponse}
                 className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-full text-sm font-medium transition-colors flex items-center gap-1"
@@ -106,10 +120,18 @@ export default function Dashboard({ pin }) {
                 Stop
               </button>
             )}
-            <div className={`w-3 h-3 rounded-full ${sc.dot} ${isActive ? 'animate-pulse' : ''}`} />
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${sc.color}`}>
-              {sc.label}
-            </span>
+            {botEnabled ? (
+              <>
+                <div className={`w-3 h-3 rounded-full ${sc.dot} ${isActive ? 'animate-pulse' : ''}`} />
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${sc.color}`}>
+                  {sc.label}
+                </span>
+              </>
+            ) : (
+              <span className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-500">
+                Companion Off
+              </span>
+            )}
           </div>
         </div>
 
@@ -120,8 +142,8 @@ export default function Dashboard({ pin }) {
         )}
 
         {/* Conversation area */}
-        <div ref={liveRef} className="bg-gray-50 rounded-xl p-4 min-h-[120px] max-h-[300px] overflow-y-auto space-y-3">
-          {!live?.transcript && !live?.response && (
+        <div ref={liveRef} className="bg-gray-50 rounded-xl p-4 min-h-[120px] max-h-[400px] overflow-y-auto space-y-3">
+          {(!live?.messages || live.messages.length === 0) && !live?.transcript && !live?.response && (
             <p className="text-gray-400 text-sm text-center py-6">
               {currentState === 'ready'
                 ? 'Say "Hey Jarvis" to start a conversation'
@@ -133,51 +155,96 @@ export default function Dashboard({ pin }) {
             </p>
           )}
 
-          {live?.transcript && (
-            <div className="flex gap-2">
-              <span className="text-lg">👦</span>
-              <div className="bg-blue-100 text-blue-900 rounded-xl rounded-tl-sm px-4 py-2 text-sm max-w-[85%]">
-                {live.transcript}
-              </div>
-            </div>
-          )}
-
-          {/* Camera image when vision request */}
-          {live?.image && (
-            <div className="flex gap-2">
-              <span className="text-lg">📷</span>
-              <div className="rounded-xl overflow-hidden border border-gray-200 max-w-[85%]">
-                <img
-                  src={`data:image/jpeg;base64,${live.image}`}
-                  alt="Camera capture"
-                  className="w-full rounded-xl"
-                />
-                {live.detections && live.detections.length > 0 && (
-                  <div className="px-3 py-1.5 bg-gray-50 text-xs text-gray-600">
-                    Detected: {live.detections.map(d => d.label).join(', ')}
+          {/* Past conversation messages (completed exchanges) */}
+          {live?.messages?.map((msg, i) => (
+            msg.role === 'user' ? (
+              <div key={`h-${i}`}>
+                <div className="flex gap-2">
+                  <span className="text-lg">👦</span>
+                  <div className="bg-blue-100 text-blue-900 rounded-xl rounded-tl-sm px-4 py-2 text-sm max-w-[85%]">
+                    {msg.content}
+                  </div>
+                </div>
+                {msg.image && (
+                  <div className="flex gap-2 mt-1">
+                    <span className="text-lg">📷</span>
+                    <div className="rounded-xl overflow-hidden border border-gray-200 max-w-[60%]">
+                      <img
+                        src={`data:image/jpeg;base64,${msg.image}`}
+                        alt="Camera capture"
+                        className="w-full rounded-xl"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
-            </div>
-          )}
-
-          {live?.response && (
-            <div className="flex gap-2 justify-end">
-              <div className="bg-white border border-gray-200 text-gray-800 rounded-xl rounded-tr-sm px-4 py-2 text-sm max-w-[85%]">
-                {live.response}
+            ) : (
+              <div key={`h-${i}`} className="flex gap-2 justify-end">
+                <div className="bg-white border border-gray-200 text-gray-800 rounded-xl rounded-tr-sm px-4 py-2 text-sm max-w-[85%]">
+                  {msg.content}
+                </div>
+                <span className="text-lg">🤖</span>
               </div>
-              <span className="text-lg">🤖</span>
-            </div>
-          )}
+            )
+          ))}
 
-          {currentState === 'processing' && !live?.response && live?.transcript && (
-            <div className="flex gap-2 justify-end">
-              <div className="bg-white border border-gray-200 text-gray-400 rounded-xl rounded-tr-sm px-4 py-2 text-sm">
-                <span className="animate-pulse">Thinking...</span>
-              </div>
-              <span className="text-lg">🤖</span>
-            </div>
-          )}
+          {/* Current live interaction (in-progress)
+              Only show if not already the last message in history (avoids duplication) */}
+          {(() => {
+            const msgs = live?.messages || []
+            const lastUserMsg = msgs.filter(m => m.role === 'user').pop()
+            const isDuplicate = lastUserMsg && live?.transcript && lastUserMsg.content === live.transcript
+            if (isDuplicate) return null
+
+            return (
+              <>
+                {live?.transcript && (
+                  <div className="flex gap-2">
+                    <span className="text-lg">👦</span>
+                    <div className="bg-blue-100 text-blue-900 rounded-xl rounded-tl-sm px-4 py-2 text-sm max-w-[85%]">
+                      {live.transcript}
+                    </div>
+                  </div>
+                )}
+
+                {live?.image && (
+                  <div className="flex gap-2">
+                    <span className="text-lg">📷</span>
+                    <div className="rounded-xl overflow-hidden border border-gray-200 max-w-[60%]">
+                      <img
+                        src={`data:image/jpeg;base64,${live.image}`}
+                        alt="Camera capture"
+                        className="w-full rounded-xl"
+                      />
+                      {live.detections && live.detections.length > 0 && (
+                        <div className="px-3 py-1.5 bg-gray-50 text-xs text-gray-600">
+                          Detected: {live.detections.map(d => d.label).join(', ')}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {live?.response && (
+                  <div className="flex gap-2 justify-end">
+                    <div className="bg-white border border-gray-200 text-gray-800 rounded-xl rounded-tr-sm px-4 py-2 text-sm max-w-[85%]">
+                      {live.response}
+                    </div>
+                    <span className="text-lg">🤖</span>
+                  </div>
+                )}
+
+                {currentState === 'processing' && !live?.response && live?.transcript && (
+                  <div className="flex gap-2 justify-end">
+                    <div className="bg-white border border-gray-200 text-gray-400 rounded-xl rounded-tr-sm px-4 py-2 text-sm">
+                      <span className="animate-pulse">Thinking...</span>
+                    </div>
+                    <span className="text-lg">🤖</span>
+                  </div>
+                )}
+              </>
+            )
+          })()}
         </div>
 
         {live?.last_error && (
@@ -185,6 +252,29 @@ export default function Dashboard({ pin }) {
             Error: {live.last_error}
           </div>
         )}
+      </div>
+
+      {/* Companion ON/OFF Toggle */}
+      <div className={`rounded-xl shadow-sm p-4 flex items-center justify-between ${botEnabled ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-200'}`}>
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">{botEnabled ? '🟢' : '⚫'}</span>
+          <div>
+            <div className="font-semibold text-sm">{botEnabled ? 'Companion is ON' : 'Companion is OFF'}</div>
+            <div className="text-xs text-gray-500">{botEnabled ? 'Listening and responding to your child' : 'Not listening — tap to turn on'}</div>
+          </div>
+        </div>
+        <button
+          onClick={toggleBot}
+          className={`relative inline-flex h-9 w-[72px] items-center rounded-full transition-colors focus:outline-none shadow-inner ${
+            botEnabled ? 'bg-green-500' : 'bg-gray-300'
+          }`}
+        >
+          <span
+            className={`inline-block h-7 w-7 transform rounded-full bg-white shadow-md transition-transform ${
+              botEnabled ? 'translate-x-10' : 'translate-x-1'
+            }`}
+          />
+        </button>
       </div>
 
       {/* Device Status */}

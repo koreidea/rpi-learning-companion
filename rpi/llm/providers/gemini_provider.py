@@ -29,21 +29,35 @@ class GeminiProvider(BaseLLM):
         self._ensure_client()
 
         try:
-            # Convert messages to Gemini format
-            # Gemini uses a different message format: system instruction + contents
+            # Convert OpenAI-style messages to Gemini format.
+            # Gemini uses system_instruction on the model and a list of
+            # {"role": "user"/"model", "parts": [text]} for conversation.
             system_msg = ""
-            user_msg = ""
+            gemini_history = []
             for msg in messages:
                 if msg["role"] == "system":
                     system_msg = msg["content"]
                 elif msg["role"] == "user":
-                    user_msg = msg["content"]
+                    gemini_history.append({"role": "user", "parts": [msg["content"]]})
+                elif msg["role"] == "assistant":
+                    gemini_history.append({"role": "model", "parts": [msg["content"]]})
 
-            # Combine system + user for Gemini (it handles system differently)
-            prompt = f"{system_msg}\n\nChild says: {user_msg}"
+            # Use system instruction if supported, otherwise prepend to first user msg
+            if system_msg and gemini_history:
+                first = gemini_history[0]
+                first["parts"] = [f"{system_msg}\n\nChild says: {first['parts'][0]}"]
 
-            response = self._client.generate_content(
-                prompt,
+            # The last message is the current user turn
+            # Start a chat with the history (all but last) and send the last message
+            if len(gemini_history) > 1:
+                chat = self._client.start_chat(history=gemini_history[:-1])
+                last_msg = gemini_history[-1]["parts"][0]
+            else:
+                chat = self._client.start_chat()
+                last_msg = gemini_history[0]["parts"][0] if gemini_history else ""
+
+            response = chat.send_message(
+                last_msg,
                 generation_config={
                     "max_output_tokens": 150,
                     "temperature": 0.4,

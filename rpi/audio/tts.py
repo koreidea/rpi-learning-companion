@@ -12,16 +12,24 @@ class TextToSpeech:
 
     Optimized for sentence-level streaming: synthesize one sentence at a time
     for low-latency output while the LLM continues generating.
+    Supports multiple languages via Piper voice models.
     """
+
+    # Map language codes to Piper voice names
+    VOICE_MAP = {
+        "en": "en_US-lessac-medium",
+        "hi": "hi_IN-rohan-medium",
+        "te": "te_IN-padmavathi-medium",
+    }
 
     def __init__(
         self,
         model_dir: Path,
-        voice: str = "en_US-lessac-medium",
+        language: str = "en",
         sample_rate: int = 22050,
     ):
         self.model_dir = model_dir
-        self.voice = voice
+        self.voice = self.VOICE_MAP.get(language, self.VOICE_MAP["en"])
         self.sample_rate = sample_rate
         self._piper = None
 

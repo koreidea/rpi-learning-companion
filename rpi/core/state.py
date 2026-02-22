@@ -28,6 +28,7 @@ class SharedState:
     active_provider: str = "openai"
     mic_enabled: bool = True
     camera_enabled: bool = True
+    cloud_stt: bool = False
 
     # Set by orchestrator for inter-component signaling
     wake_event: asyncio.Event = field(default_factory=asyncio.Event)
@@ -44,6 +45,10 @@ class SharedState:
     # Vision: base64 PNG of last captured image + detected objects
     current_image_b64: Optional[str] = None
     current_detections: Optional[list] = None
+
+    # Conversation history for the live dashboard display.
+    # Each item: {"role": "user"/"assistant", "content": "...", "image": optional_b64}
+    conversation_messages: list = field(default_factory=list)
 
     # Latency tracking
     interaction_start_time: Optional[float] = None
