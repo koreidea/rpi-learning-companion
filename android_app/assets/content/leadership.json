@@ -1,0 +1,173 @@
+[
+  {
+    "id": "s05_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Little Girl Who Planted Trees",
+    "body": "There was a little girl in Kenya named Wangari who loved climbing trees. When she grew up, she saw that many trees had been cut down and the land was turning dry and dusty. So she started planting trees, one by one.\n\nOther women saw her and asked, \"Can we plant trees too?\" Wangari said yes and taught them how. Soon, hundreds of women were planting trees together. Then thousands! They planted over 51 million trees!\n\nWangari Maathai became the first African woman to win the Nobel Peace Prize. She started by planting just one tree, but she inspired a whole country to follow her.",
+    "lesson": "A leader does not need to be big or powerful. They just need to start doing the right thing, and others will follow!",
+    "tags": ["Kenya", "trees", "Wangari Maathai", "nature", "Nobel Prize"]
+  },
+  {
+    "id": "s05_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Boy Who Collected Books",
+    "body": "In a small village in India, a boy named Sai noticed that many children had no books to read. Their school had a tiny library with only a few torn books. Sai loved reading and knew how sad it was to have nothing new to read.\n\nSo Sai wrote letters to people in his town asking them to donate old books. He put up a small box outside his house with a sign: \"Share a Book, Share a Smile.\" At first, only a few books came. But Sai did not give up.\n\nSlowly, more and more people brought books. His neighbors, shopkeepers, even the postman brought books! Soon Sai had collected hundreds of books and started a little free library for all the children in his village. He was just eight years old.",
+    "lesson": "You are never too young to lead. If you see a problem, you can be the one to fix it!",
+    "tags": ["India", "books", "library", "children", "initiative"]
+  },
+  {
+    "id": "s05_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Penguin Who Went First",
+    "body": "In Antarctica, when penguins need to jump into the cold ocean to find fish, they all stand at the edge looking nervous. The water might have hungry seals! Nobody wants to jump first.\n\nThen one brave penguin takes a deep breath and jumps in. SPLASH! When the other penguins see that it is safe, they all jump in too. That first penguin is the leader, not because it is the biggest or the strongest, but because it is the bravest.\n\nSometimes being a leader means being the first one to try something new, even when it feels a little scary. When you go first, you help everyone else feel brave too.",
+    "lesson": "A leader is someone brave enough to go first, so others feel safe to follow!",
+    "tags": ["penguins", "bravery", "courage", "nature"]
+  },
+  {
+    "id": "s05_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Elephants Follow the Oldest Grandmother",
+    "body": "In elephant families, the leader is always the oldest grandmother, called the matriarch. She remembers where to find water during droughts and which paths are safe. The whole family follows her wisdom!",
+    "tags": ["elephants", "wisdom", "family", "nature"]
+  },
+  {
+    "id": "s05_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "A 9-Year-Old Led a Beach Cleanup",
+    "body": "A nine-year-old Indian girl named Licypriya Kangujam started a movement to fight climate change. She spoke at the United Nations when she was just eight! She proves that age does not matter when you have the courage to speak up.",
+    "tags": ["India", "climate", "young leader", "environment"]
+  },
+  {
+    "id": "s05_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Shivaji's Clever Strategies",
+    "body": "Chhatrapati Shivaji Maharaj built the Maratha Empire in the 17th century, not by having the biggest army, but by being the smartest leader on the battlefield. His forces were often outnumbered by the mighty Mughal army, so he had to think differently.\n\nShivaji used guerrilla warfare, a strategy where a smaller force uses surprise, speed, and knowledge of the land to defeat a larger enemy. He built forts on hilltops throughout the Western Ghats, creating a network of strongholds that were nearly impossible to attack. His soldiers knew every path, every cave, and every river crossing in the mountains.\n\nBut Shivaji was not just a military leader. He treated people of all religions with respect, which earned him loyalty from Hindus, Muslims, and others alike. He created a navy to protect the Konkan coast, something no Indian ruler had done in centuries. He set up a fair tax system so farmers were not exploited.\n\nWhat made Shivaji a great leader was his ability to combine military brilliance with compassion, strategic thinking with fairness, and bold action with careful planning.",
+    "lesson": "True leadership is not about having the most power. It is about using whatever you have wisely, treating people fairly, and thinking creatively when the odds are against you.",
+    "tags": ["Shivaji", "India", "Maratha", "strategy", "history"]
+  },
+  {
+    "id": "s05_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Vikram Sarabhai: Convincing India That Space Matters",
+    "body": "In the early 1960s, India was a young, poor nation struggling to feed its people. Most of the world would have laughed at the idea of India having a space program. But one man, Vikram Sarabhai, saw something others did not.\n\nSarabhai argued that space technology was not a luxury for rich countries. It was a necessity for a developing one. Satellites could forecast monsoons to help farmers. Telecommunication satellites could connect remote villages. Space research could inspire a generation of scientists and engineers.\n\nHis challenge was not technical but political. He had to convince a skeptical government that spending money on rockets was justified when people needed food and medicine. He did not fight this skepticism. Instead, he listened to it and addressed it directly. He showed how every space investment would have practical benefits for ordinary Indians.\n\nSarabhai founded the Indian Space Research Organisation (ISRO) in 1969. He did not live to see India reach Mars, but every ISRO success traces back to his ability to lead through vision and persuasion rather than authority.",
+    "lesson": "A great leader does not just have a vision. They have the patience and communication skill to help others see it too.",
+    "tags": ["Sarabhai", "ISRO", "India", "space", "vision"]
+  },
+  {
+    "id": "s05_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Captain Who Saved Everyone by Admitting He Was Wrong",
+    "body": "In January 2009, US Airways Flight 1549 struck a flock of geese shortly after takeoff from New York. Both engines failed completely. Captain Chesley \"Sully\" Sullenberger had about 208 seconds to save 155 lives.\n\nAir traffic control suggested returning to the airport. Sully quickly calculated and concluded they would not make it. Instead of following the standard procedure, he made a decision that had almost never been done successfully: he would land the plane on the Hudson River.\n\nWhat made Sully a great leader in that moment was not just his flying skill. It was his ability to quickly assess the situation, reject the standard answer when it would not work, communicate clearly with his co-pilot and crew, and stay calm under unimaginable pressure. He walked the entire plane twice after landing to make sure every single passenger had evacuated before he was the last one to leave.\n\nSully later said that his decades of experience allowed him to make that split-second decision. Leadership in a crisis is not about being fearless. It is about having prepared so thoroughly that you can think clearly even when everyone else is panicking.",
+    "lesson": "The best leaders prepare for years so they can make the right decision in seconds. And they always put others before themselves.",
+    "tags": ["aviation", "crisis", "Sully", "decision making", "courage"]
+  },
+  {
+    "id": "s05_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "The Youngest Prime Minister",
+    "body": "The youngest head of government in modern history was Sanna Marin of Finland, who became Prime Minister at age 34 in 2019. India's youngest Prime Minister was Rajiv Gandhi, who took office at age 40 in 1984.",
+    "tags": ["politics", "young leaders", "Finland", "India"]
+  },
+  {
+    "id": "s05_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Wolves Choose the Wisest Leader",
+    "body": "Wolf packs are not led by the strongest wolf. The alpha pair is usually the oldest and most experienced. They lead by making good decisions about where to hunt and when to rest, not by bullying other wolves. Young wolves learn leadership by watching, not fighting.",
+    "tags": ["wolves", "leadership", "nature", "wisdom"]
+  },
+  {
+    "id": "s05_j_fw_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "Lead by Example: The \"Go First\" Principle",
+    "body": "The most effective way to lead is not to tell people what to do but to show them by doing it yourself. This is the \"Go First\" principle.\n\nWant your team to work hard? Be the hardest worker. Want people to be honest? Be honest first, even when it is uncomfortable. Want your group to include the quiet kid? Be the one who invites them in.\n\nGandhi is the most famous example. When he asked Indians to spin their own cloth, he spun every day himself. When he asked people to live simply, he wore simple clothes and ate simple food. When he asked people to be brave, he walked into danger himself.\n\nThe Go First principle works because people trust actions more than words. If you say \"teamwork is important\" but always take credit, people will follow your actions, not your words. If you say \"mistakes are okay\" but get angry when someone makes one, people will learn to hide mistakes.\n\nAs a young leader, start small. If you want your project group to be organized, be the first one to set up a shared document. If you want honest feedback, ask for it first and accept it gracefully.",
+    "tags": ["leadership", "framework", "example", "Gandhi"]
+  },
+  {
+    "id": "s05_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "How Mary Kom Fought Her Way From a Village to Olympic Glory",
+    "body": "Mangte Chungneijang Mary Kom grew up in a poor family in Kangathei village in Manipur, India. Her parents were farmers. There was no boxing gym, no coach, and no support system for a girl who wanted to box.\n\nMary Kom's father initially opposed her boxing because it was considered inappropriate for girls. She practiced in secret, jogging before dawn and training when no one was watching. When she won her first state championship, her father saw the newspaper headline and finally supported her.\n\nShe went on to win six World Championship gold medals, an Olympic bronze medal, and became the first Indian female boxer to qualify for the Olympics. But what makes Mary Kom a leader is not just her personal success. She opened a boxing academy in Imphal to train young girls from underprivileged backgrounds. She proved to millions of Indian girls that sports was not just for boys.\n\nMary Kom led by breaking a path through territory where no path existed. She did not wait for the system to change. She changed it by being undeniable. Every girl boxer in India today walks on a path Mary Kom carved.",
+    "lesson": "Sometimes leadership means being the first to do something nobody thought was possible, so that others can follow in your footsteps.",
+    "tags": ["Mary Kom", "India", "boxing", "sports", "women"]
+  },
+  {
+    "id": "s05_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Gandhi's Salt March: Leading Through Symbolism",
+    "body": "On March 12, 1930, Mohandas Karamchand Gandhi set out from his ashram in Sabarmati with 78 followers on a 390-kilometer walk to the coastal village of Dandi. His goal was absurdly simple: to pick up a handful of salt from the seashore.\n\nThe British had made it illegal for Indians to make or collect their own salt, imposing a tax that affected every single Indian regardless of caste, religion, or wealth. Gandhi chose salt deliberately. It was not the most oppressive British law, but it was the one that every Indian could understand and feel. A poor laborer who could barely afford food also had to pay a tax on salt.\n\nThe march took 24 days. Along the way, thousands joined. By the time Gandhi reached Dandi, the march had become international news. When he picked up the salt on April 6, it was an act of civil disobedience that electrified the nation. Millions of Indians began making their own salt. Over 60,000 people were arrested.\n\nGandhi's genius was in understanding that leadership is about communication as much as action. He chose a symbol that united all of India. He chose a method, nonviolent civil disobedience, that gave moral authority to the powerless. He chose a pace, walking rather than riding, that showed solidarity with the poorest Indians.\n\nThe Salt March did not end British rule immediately. But it shifted the moral balance of power. It showed the world that India's independence movement was led by a people of dignity and discipline, not anger and chaos. It demonstrated a new kind of leadership: one that derived its power from moral authority rather than military might.",
+    "lesson": "The greatest leaders choose battles that unite people and methods that give moral authority to their cause.",
+    "tags": ["Gandhi", "India", "Salt March", "civil disobedience", "freedom"]
+  },
+  {
+    "id": "s05_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Narayana Murthy and the Infosys Foundation",
+    "body": "In 1981, N.R. Narayana Murthy and six colleagues founded Infosys with just 10,000 rupees, borrowed from Murthy's wife Sudha. They had no office, no clients, and no reputation. Murthy was 35 years old and had already spent years working in France and India.\n\nWhat set Murthy apart as a leader was his obsession with values at a time when Indian business was dominated by corruption, nepotism, and crony capitalism. He established principles that were radical for Indian business: transparent accounting, no bribes to win contracts, meritocratic hiring, and sharing wealth with employees through stock options.\n\nThere were moments when sticking to these values cost Infosys business. Competitors who paid bribes won contracts that Infosys lost. Murthy held firm, betting that in the long run, integrity would be a competitive advantage. He was right. Infosys became India's most respected company and one of the world's leading IT services firms.\n\nMurthy also practiced what he preached in personal life. He flew economy class, lived modestly, and once said, \"Growth is painful. Change is painful. But nothing is as painful as staying stuck somewhere you do not belong.\" His leadership style was not charismatic or dramatic. It was consistent, principled, and patient.\n\nPerhaps his most significant leadership act was stepping down. In an era when Indian business founders clung to power for decades, Murthy handed over leadership to professional managers, proving that the institution was more important than the individual.",
+    "lesson": "Principled leadership is slow and sometimes costly in the short term, but it builds institutions that outlast individuals.",
+    "tags": ["Narayana Murthy", "Infosys", "India", "values", "business"]
+  },
+  {
+    "id": "s05_s_story_03",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Malala: Standing Alone Before Standing Tall",
+    "body": "Before Malala Yousafzai became a global icon for girls' education, she was a frightened 11-year-old in Pakistan's Swat Valley, watching the Taliban shut down girls' schools one by one. Her diary entries for the BBC paint a picture of a child trying to be brave while living in genuine terror.\n\nMalala's leadership did not begin with a grand speech or a strategic plan. It began with a choice: to go to school when the Taliban said she could not. Every morning, she and her friends walked to school knowing the Taliban had threatened to kill girls who attended. Some days, they hid their books under their shawls. Some days, they wore plain clothes instead of uniforms to avoid detection.\n\nOn October 9, 2012, a Taliban gunman boarded her school bus and shot her in the head. She was 15 years old. She survived, spent months in recovery, and emerged more determined than ever. On her 16th birthday, she addressed the United Nations. She did not speak with anger but with clarity: \"One child, one teacher, one book, one pen can change the world.\"\n\nMalala's story challenges comfortable notions of leadership. She did not choose to be a leader. Circumstances thrust leadership upon her, and she had the courage not to look away. She showed that leadership sometimes means simply refusing to accept what is unacceptable, even when the cost could be your life.\n\nThe Malala Fund has now helped over 130 million girls access education. She won the Nobel Peace Prize at 17. But she remains, in her own words, \"just a girl who wants every child to go to school.\" The most powerful leaders are often those who see themselves not as leaders but as people who could not live with themselves if they did nothing.",
+    "lesson": "Leadership is not always a choice. Sometimes it is simply the refusal to be silent when silence would be complicity.",
+    "tags": ["Malala", "Pakistan", "education", "Nobel Prize", "courage"]
+  },
+  {
+    "id": "s05_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Servant Leadership Is Ancient",
+    "body": "The concept of servant leadership, where the leader's primary role is to serve the team, was practiced by Chanakya in ancient India over 2,300 years ago. In his Arthashastra, he wrote: \"The happiness of the subjects is the happiness of the king. Their welfare is his welfare.\" Robert Greenleaf popularized the term in the West only in 1970.",
+    "tags": ["Chanakya", "India", "servant leadership", "history"]
+  },
+  {
+    "id": "s05_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Introverts Can Be Exceptional Leaders",
+    "body": "Some of the most effective leaders in history have been introverts: Abraham Lincoln, Rosa Parks, Gandhi, and Bill Gates. Research by Adam Grant at Wharton shows that introverted leaders often outperform extroverts when leading proactive teams because they listen more and create space for others' ideas.",
+    "tags": ["introvert", "leadership", "research", "personality"]
+  },
+  {
+    "id": "s05_s_fw_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Situational Leadership: No One Style Fits All",
+    "body": "Developed by Hersey and Blanchard, Situational Leadership argues that effective leaders adapt their style based on the situation and the readiness of their team:\n\nDirecting (high task, low relationship): Best for beginners who need clear instructions. \"Here is exactly what to do and how to do it.\"\n\nCoaching (high task, high relationship): For people who have some ability but lack confidence. You still provide guidance but also explain why and encourage questions.\n\nSupporting (low task, high relationship): For capable people who need motivation, not instruction. You listen, encourage, and facilitate rather than direct.\n\nDelegating (low task, low relationship): For experienced, motivated people. You set the goal and get out of the way.\n\nThe mistake most leaders make is using one style for everyone. A new team member needs directing, while a veteran needs delegating. Using the same approach for both will frustrate both: the newbie feels lost and the veteran feels micromanaged.\n\nIn Indian context, consider how a teacher adapts: nursery students need directing (clear, step-by-step), while senior students need coaching or even delegating. The best teachers, like the best leaders, read the room and adjust.",
+    "tags": ["situational leadership", "framework", "adaptability", "management"]
+  },
+  {
+    "id": "s05_s_fw_02",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "The Five Practices of Exemplary Leadership",
+    "body": "Researchers James Kouzes and Barry Posner studied thousands of leadership cases and found five practices that consistently appeared:\n\n1. Model the Way: Clarify your values and set the example. People watch what you do more than what you say.\n\n2. Inspire a Shared Vision: Envision an exciting future and enlist others in that vision. Vikram Sarabhai inspired India to dream of space.\n\n3. Challenge the Process: Search for opportunities, experiment, and take risks. Every innovation requires someone willing to challenge \"the way things are done.\"\n\n4. Enable Others to Act: Foster collaboration and strengthen others. Give people autonomy and the tools they need. Trust them.\n\n5. Encourage the Heart: Recognize contributions and celebrate values and victories. People need to know their work matters.\n\nThese practices are not about position or title. A student leading a group project uses the same practices as a CEO running a company. Leadership is a set of behaviors, not a position on an organizational chart.",
+    "tags": ["Kouzes", "Posner", "framework", "leadership practices"]
+  },
+  {
+    "id": "s05_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "Ambedkar: Leading the Fight for Equality Through Law",
+    "body": "Bhimrao Ramji Ambedkar was born in 1891 into the Mahar caste, classified as \"untouchable\" in the Hindu caste system. He was made to sit outside the classroom, denied water from the common pot, and humiliated daily. Most people in his position would have been crushed by the system. Ambedkar decided to dismantle it.\n\nHis weapon was education and law, not violence. Despite almost impossible odds, he earned doctorates from Columbia University and the London School of Economics. He became one of the most educated Indians of his era precisely because education was what the caste system tried to deny him.\n\nWhen India became independent, Ambedkar was appointed chairman of the committee that drafted the Indian Constitution. He embedded protections for oppressed castes, women, and minorities into the foundational law of the nation. Reservations in education and government jobs, the abolition of untouchability, fundamental rights for all citizens, these came from Ambedkar's pen.\n\nAmbedkar's leadership style was different from Gandhi's. While Gandhi used moral persuasion and mass movements, Ambedkar used legal frameworks and institutional change. He understood that feelings of goodwill could change, but laws and constitutions endure. He wanted structural change, not just attitudinal change.\n\nHis approach was not popular with everyone. He was criticized by both the left and the right, by both upper-caste reformers and militant lower-caste activists. But he persisted with a clear vision: dignity through law, equality through institutions, freedom through education.\n\nAmbedkar's legacy is the Constitution of India, one of the longest and most detailed constitutions in the world, designed to protect the most vulnerable people in one of the most complex societies on Earth.",
+    "lesson": "The most enduring form of leadership creates systems and institutions that protect the vulnerable long after the leader is gone.",
+    "tags": ["Ambedkar", "India", "Constitution", "equality", "caste", "law"]
+  }
+]

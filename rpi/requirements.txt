@@ -41,6 +41,12 @@ paddlepaddle==2.6.2
 # Privacy & Encryption
 cryptography==44.0.0
 
+# Bluetooth Serial (car chassis, modules)
+pyserial==3.5
+
+# Touch (XPT2046 SPI)
+spidev==3.6
+
 # Utilities
 python-dotenv==1.0.1
 loguru==0.7.3

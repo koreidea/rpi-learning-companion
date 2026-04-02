@@ -37,6 +37,19 @@ Thumbs.db
 *.swp
 *.swo
 
+# Android build artifacts
+android_app/build/
+android_app/android/.gradle/
+android_app/android/app/build/
+android_app/.dart_tool/
+android_app/.flutter-plugins
+android_app/.flutter-plugins-dependencies
+*.apk
+*.aab
+
+# Audio files (large, download separately)
+rpi/audio/songs_mp3/
+
 # Environment
 .env
 .env.local

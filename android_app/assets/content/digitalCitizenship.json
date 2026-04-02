@@ -1,0 +1,203 @@
+[
+  {
+    "id": "s09_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Friendly Robot Rule",
+    "body": "Tinku got a new tablet for his birthday. He loved watching cartoons and playing games on it. One day, a message popped up saying, \"You won a free toy! Click here!\"\n\nTinku was about to click when his Amma stopped him. \"Wait! Would you take candy from a stranger on the street?\" she asked. Tinku shook his head no. \"The internet is like a big street,\" Amma explained. \"Not everyone there is your friend.\"\n\nTinku learned a new rule that day: before clicking on anything, always ask a grown-up first. Just like you would not open the door for a stranger at home!",
+    "lesson": "On the internet, just like in real life, be careful with strangers and always ask a grown-up before clicking!",
+    "tags": ["safety", "internet", "Indian context", "strangers"]
+  },
+  {
+    "id": "s09_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Kind Words Online",
+    "body": "Sana loved drawing pictures and showing them to her friends. One day, her friend Zara drew a picture of a cat. It was a bit wobbly, but Zara was very proud of it.\n\nAnother friend typed \"That looks ugly!\" in the chat. Zara felt so sad she closed her tablet and started crying.\n\nSana typed back: \"I love your cat, Zara! The big eyes are so cute!\" Then she told the other friend, \"Words can hurt even on a screen. Would you say that to Zara's face?\" The friend felt bad and said sorry.\n\nSana's Nanna always said: \"If you would not say it to someone's face, do not type it either.\"",
+    "lesson": "Be kind with your words online, just like you would be in person. Words on screens can hurt feelings too!",
+    "tags": ["kindness", "cyberbullying", "empathy", "Indian context"]
+  },
+  {
+    "id": "s09_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Screen Time and Play Time",
+    "body": "Arjun loved his tablet so much that he wanted to play on it all day. He watched videos during breakfast, played games during lunch, and watched more videos before bed.\n\nBut soon Arjun noticed something. His eyes felt tired and itchy. He had a headache. And he had not played with his toy cars or his dog Bruno all week! Bruno looked at him with sad puppy eyes.\n\nArjun's Appa helped him make a fun chart. Tablet time was for one hour after homework. The rest of the time was for playing outside, reading books, playing with Bruno, and using his imagination. Soon Arjun felt much better, and Bruno was wagging his tail again!",
+    "lesson": "Screens are fun, but your eyes, body, and friends need time away from screens too!",
+    "tags": ["screen time", "balance", "health", "Indian context"]
+  },
+  {
+    "id": "s09_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "The Internet Is Underwater!",
+    "body": "Most of the internet travels through thick cables at the bottom of the ocean! These cables stretch over 1.2 million kilometers — enough to wrap around the Earth 30 times. That is how your video call reaches Grandma in another city!",
+    "tags": ["internet", "technology", "ocean", "cables"]
+  },
+  {
+    "id": "s09_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Passwords Are Like Toothbrushes!",
+    "body": "Good passwords are like toothbrushes: never share them with anyone, and change them regularly! The most common password in the world is '123456' — that is like locking your door and leaving the key under the mat!",
+    "tags": ["passwords", "safety", "internet", "funny"]
+  },
+  {
+    "id": "s09_n_fact_03",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Emojis Were Born in Japan!",
+    "body": "The first emojis were created in Japan in 1999 by an artist named Shigetaka Kurita. He drew 176 tiny pictures for mobile phones. The word 'emoji' comes from Japanese: 'e' means picture and 'moji' means character. Today there are over 3,600 emojis!",
+    "tags": ["emojis", "Japan", "history", "communication"]
+  },
+  {
+    "id": "s09_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Digital Footprint Detective",
+    "body": "Neha, a 10-year-old from Pune, was excited to create her first social media account (with her parents' permission). She posted photos of her art, her school, her house, and even a photo of her school ID card.\n\nHer older cousin Rohan, who studied cybersecurity in college, came to visit. \"Let me show you something,\" he said. From just her posts, he figured out her school name, her class, her neighborhood, the route she walked to school, and even when her parents were not home.\n\n\"This is your digital footprint,\" Rohan explained. \"Everything you post online stays there forever, like footprints in wet cement. And strangers can piece together a lot of information from small clues.\"\n\nNeha was shocked. Together, they cleaned up her profile. She removed her school name, her house photos, and her ID card. She learned to share fun things without giving away personal details.\n\n\"Think of it like this,\" Rohan said. \"Would you put a poster of your home address on a busy road? That is what sharing too much online is like — except the road has millions of people walking on it.\"",
+    "lesson": "Everything you post online creates a permanent digital footprint. Share carefully and never post personal details like your address, school name, or ID.",
+    "tags": ["privacy", "digital footprint", "safety", "Indian context", "social media"]
+  },
+  {
+    "id": "s09_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Fake News and the Mango Festival",
+    "body": "One morning, a WhatsApp message went viral in Vikram's town: \"The famous Mango Festival is cancelled because of a dangerous storm! Share this with everyone!\" The message had dramatic photos of dark clouds and broken trees.\n\nVikram's father was about to forward it when Vikram said, \"Wait, Appa. Our teacher taught us to check before we share.\" They did three things:\n\n1. They searched Google News for any storm warnings. There were none.\n2. They reverse-image-searched the storm photos and found they were from a typhoon in the Philippines two years ago.\n3. They called the festival organizers directly, who confirmed everything was on track.\n\nThe message was completely fake! Someone had created it as a prank, and thousands of people shared it without checking. Many vendors who depended on the festival lost business because people stayed home.\n\nVikram made a poster for his class: \"Before you share, STOP and VERIFY. Search, Think, ask the Original source, and only Press share if it is true.\"",
+    "lesson": "Never forward information without verifying it first. Fake news spreads because people share without thinking.",
+    "tags": ["fake news", "misinformation", "critical thinking", "WhatsApp", "Indian context"]
+  },
+  {
+    "id": "s09_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Game That Was Not Free",
+    "body": "Rahul downloaded a \"free\" mobile game that was incredibly fun. You had to build a castle and fight monsters. But every few minutes, the game offered special weapons and power-ups for \"just 10 rupees\" or \"only 50 rupees.\"\n\nRahul used his mother's phone, which had UPI linked. He thought, \"It is just 10 rupees, that is nothing!\" Over two weeks, he spent small amounts here and there without realizing how much it was adding up.\n\nWhen his mother checked her bank statement, she was shocked. Rahul had spent 4,500 rupees on a \"free\" game! Each purchase was tiny, but together they added up to more than the family's weekly grocery budget.\n\nRahul felt terrible. His mother was not angry but used it as a teaching moment. Together, they turned off in-app purchases, set a monthly app spending limit, and Rahul earned back the money by doing extra chores over two months.\n\nHe learned that \"free\" games are often designed to make you spend more than you would on a paid game. The real price is hidden in thousands of tiny temptations.",
+    "lesson": "Free apps often make money through small purchases that add up fast. Always be aware of what you are spending, even in tiny amounts.",
+    "tags": ["gaming", "spending", "apps", "Indian context", "awareness"]
+  },
+  {
+    "id": "s09_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "India Has the Most Internet Users Under 25!",
+    "body": "India has over 350 million internet users under the age of 25 — more than any other country. With Jio's 4G revolution starting in 2016, data costs in India dropped to among the lowest in the world, bringing hundreds of millions of people online for the first time!",
+    "tags": ["India", "internet", "Jio", "statistics", "youth"]
+  },
+  {
+    "id": "s09_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Your Data Is Worth Money!",
+    "body": "Every time you use a free app, you are paying with your data. Your likes, clicks, and searches are sold to advertisers. One estimate says each Facebook user's data is worth about $40 per year to the company. If the product is free, you are the product!",
+    "tags": ["privacy", "data", "advertising", "social media", "economics"]
+  },
+  {
+    "id": "s09_j_fact_03",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Two-Factor Authentication Stops 99% of Hacks!",
+    "body": "Google found that simply adding two-factor authentication (like an OTP on your phone) stops 99.9% of automated hacking attempts. It is like having two locks on your door instead of one. Yet most people do not use it because they think it is inconvenient!",
+    "tags": ["security", "passwords", "hacking", "practical"]
+  },
+  {
+    "id": "s09_j_framework_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "THINK Before You Post",
+    "body": "Before posting anything online, run it through the THINK test:\n\nT — Is it TRUE? Have you verified this information is accurate?\n\nH — Is it HELPFUL? Does it add value for the people who will see it?\n\nI — Is it INSPIRING? Does it lift people up rather than bring them down?\n\nN — Is it NECESSARY? Does it need to be shared, or is it just noise?\n\nK — Is it KIND? Would you be comfortable if someone posted this about you?\n\nIf a post does not pass at least 3 of these 5 checks, think twice before sharing it. The internet never forgets, and something posted in a moment of anger or silliness can follow you for years.",
+    "tags": ["framework", "social media", "posting", "kindness", "safety"]
+  },
+  {
+    "id": "s09_j_framework_02",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The Privacy Settings Checklist",
+    "body": "Every time you join a new app or website, go through this checklist:\n\n1. Set your profile to PRIVATE, not public.\n2. Turn OFF location sharing.\n3. Disable the option for strangers to message you.\n4. Check what permissions the app wants. Does a flashlight app really need access to your contacts and camera? If not, deny those permissions.\n5. Use a nickname instead of your real full name.\n6. Never share your school name, home address, or phone number.\n7. Use a strong, unique password (at least 12 characters, mix of letters, numbers, and symbols).\n8. Turn ON two-factor authentication if available.\n\nDoing this takes 5 minutes and protects you for years.",
+    "tags": ["framework", "privacy", "security", "practical", "settings"]
+  },
+  {
+    "id": "s09_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "Wikipedia: The Internet's Greatest Collaboration",
+    "body": "In 2001, Jimmy Wales had a wild idea: create an encyclopedia that anyone in the world could edit. Experts laughed. Surely it would be filled with nonsense and vandalism!\n\nBut something remarkable happened. Millions of volunteers around the world started writing and editing articles for free. When someone added wrong information, others quickly fixed it. When someone vandalized a page, automated bots detected it and reverted the changes within minutes.\n\nToday, Wikipedia has over 60 million articles in 300 languages. The English version alone has over 6.7 million articles. Studies have found it is about as accurate as traditional encyclopedias like Britannica.\n\nBut Wikipedia also shows the challenges of digital citizenship. Editors sometimes have \"edit wars\" where they keep changing each other's work. Some topics have biases because most editors are from English-speaking countries. And the site struggles to get editors from India and Africa where it is needed most.\n\nWikipedia works because of digital citizens who contribute knowledge for free, follow community rules, and work together across every country. It is proof that the internet can be a force for tremendous good when people participate responsibly.",
+    "tags": ["Wikipedia", "collaboration", "internet", "knowledge", "volunteering"]
+  },
+  {
+    "id": "s09_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Cambridge Analytica Scandal",
+    "body": "In 2018, the world discovered that a company called Cambridge Analytica had harvested the personal data of 87 million Facebook users without their knowledge or consent. They did it through a seemingly innocent personality quiz app. When you took the quiz, the app secretly collected not just your data but the data of all your Facebook friends too.\n\nCambridge Analytica used this data to build detailed psychological profiles and then targeted people with personalized political advertisements during the 2016 US presidential election and the Brexit referendum in the UK. The ads were designed to exploit each person's specific fears and biases.\n\nThe scandal revealed several uncomfortable truths about digital life. First, when we give apps permission to access our profiles, we often do not realize the extent of data they can collect. Second, our online behavior — what we like, share, and click on — reveals far more about us than we realize. Researchers found that with just 300 Facebook likes, an algorithm could predict your personality better than your spouse could.\n\nThe fallout was enormous. Facebook was fined $5 billion by the US Federal Trade Commission. The EU passed the GDPR, the world's strictest data protection law. India began drafting its own Digital Personal Data Protection Act.\n\nThe lesson was clear: in the digital age, your data is not just information. It is power. And protecting it is not paranoia — it is wisdom.",
+    "lesson": "Personal data is a form of power. Understanding how it is collected and used is essential digital literacy.",
+    "tags": ["privacy", "data", "Facebook", "politics", "GDPR", "awareness"]
+  },
+  {
+    "id": "s09_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Aaron Swartz and the Fight for Open Knowledge",
+    "body": "Aaron Swartz was a programming prodigy who helped create RSS feeds at age 14 and later co-founded Reddit. But what drove him was a deep belief that knowledge should be free and accessible to everyone.\n\nIn 2010, Swartz downloaded millions of academic papers from JSTOR, a digital library that charged high fees for access. His argument: most of this research was funded by taxpayers, so why should people have to pay again to read it? He did not sell the papers or profit from them.\n\nThe US government charged Swartz with 13 felony counts, threatening up to 50 years in prison. The case highlighted a huge tension in the digital world: Who owns knowledge? Should publicly funded research be locked behind paywalls? Is downloading information the same as stealing physical property?\n\nTragically, Swartz died in 2013 at age 26. But his activism had a lasting impact. The open access movement exploded. India's own NPTEL (National Programme on Technology Enhanced Learning) makes IIT lectures free for everyone. Sci-Hub, created by a Kazakhstani researcher, provides free access to millions of research papers.\n\nSwartz's story forces us to grapple with complex questions about digital citizenship: What are our rights and responsibilities in the digital commons? When does sharing become stealing? And what kind of internet do we want to build?\n\nAs Swartz wrote in his Guerilla Open Access Manifesto: \"There is no justice in following unjust laws.\"",
+    "lesson": "Digital citizenship involves wrestling with complex questions about who owns information and how knowledge should be shared.",
+    "tags": ["open access", "knowledge", "activism", "internet freedom", "ethics"]
+  },
+  {
+    "id": "s09_s_story_03",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "How India Built Aadhaar: The World's Largest Digital ID",
+    "body": "In 2009, India embarked on an audacious project: giving a unique digital identity to each of its 1.3 billion citizens. Nandan Nilekani, co-founder of Infosys, was appointed to lead this effort called Aadhaar, meaning \"foundation\" in Hindi.\n\nThe technical challenges were staggering. They needed to capture fingerprints and iris scans from over a billion people, many of whom lived in remote villages with no electricity. The system had to be able to verify any person's identity in under 200 milliseconds. And it had to work for manual laborers whose fingerprints were often worn down from years of hard work.\n\nBy 2023, over 1.35 billion Aadhaar numbers had been issued, making it the largest biometric database in human history. Linked with bank accounts and mobile phones, it created the India Stack — a digital infrastructure that enabled UPI payments, paperless KYC, and direct benefit transfers that saved the government an estimated 2.2 lakh crore rupees in leakages.\n\nBut Aadhaar also raised serious concerns. Privacy advocates argued that a single number linking your identity, bank account, phone, and government benefits created a surveillance tool. In 2017, the Supreme Court of India ruled that privacy is a fundamental right, and in 2018, struck down mandatory Aadhaar linking for mobile phones and bank accounts.\n\nAadhaar represents the central tension of digital citizenship in the 21st century: the same technology that empowers and includes can also surveil and exclude. Being a good digital citizen means understanding both sides and advocating for systems that protect individual rights while enabling collective progress.",
+    "lesson": "Digital identity systems offer immense benefits but require strong privacy protections to prevent misuse.",
+    "tags": ["India", "Aadhaar", "identity", "privacy", "technology", "governance"]
+  },
+  {
+    "id": "s09_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "90% of the World's Data Was Created in the Last 2 Years",
+    "body": "Humanity creates about 2.5 quintillion bytes of data every single day. That is so much that 90% of all the data that has ever existed was created in just the last two years. Every Google search, every Instagram post, every WhatsApp message contributes to this data explosion.",
+    "tags": ["data", "technology", "statistics", "internet"]
+  },
+  {
+    "id": "s09_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Deepfakes Can Create People Who Never Existed",
+    "body": "AI can now generate photorealistic images of people who have never existed, clone anyone's voice from a 3-second sample, and create video of real people saying things they never said. In 2023, a deepfake video of an Indian business leader was used to scam investors out of crores. The technology to create these fakes is free and available to anyone.",
+    "tags": ["AI", "deepfakes", "misinformation", "technology", "India"]
+  },
+  {
+    "id": "s09_s_fact_03",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "The Right to Be Forgotten",
+    "body": "In 2014, the European Court of Justice ruled that people have the 'right to be forgotten' — they can request Google to remove search results about them. Since then, Google has received over 1.5 million removal requests. India's DPDP Act 2023 also includes data erasure rights, though implementation is still evolving.",
+    "tags": ["privacy", "law", "GDPR", "India", "digital rights"]
+  },
+  {
+    "id": "s09_s_framework_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "The Digital Wellness Framework",
+    "body": "Managing your digital life holistically across five dimensions:\n\n1. Digital Security: Use unique passwords, 2FA, VPNs on public WiFi. Keep software updated. Assume any data you share online could become public.\n\n2. Digital Health: Follow the 20-20-20 rule (every 20 minutes, look at something 20 feet away for 20 seconds). Set screen time limits. No screens 1 hour before bed. Recognize signs of digital addiction.\n\n3. Digital Literacy: Verify information before sharing. Check sources, look for corroboration, understand that algorithms show you what you want to see, not necessarily what is true.\n\n4. Digital Rights: Understand your privacy rights under India's DPDP Act. Know that you can request your data from companies and ask for deletion. Report cyberbullying and harassment.\n\n5. Digital Ethics: Credit creators for their work. Do not pirate content. Contribute positively to online communities. Remember that there is a real person behind every screen name.",
+    "tags": ["framework", "wellness", "security", "health", "ethics", "India"]
+  },
+  {
+    "id": "s09_s_framework_02",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Evaluating Online Sources: The CRAAP Test",
+    "body": "Developed by librarians at California State University, the CRAAP test helps you evaluate whether online information is trustworthy:\n\nCurrency: When was it published or last updated? Is it current enough for your topic?\n\nRelevance: Does it actually address your question? Is it written for your level (academic, general public, children)?\n\nAuthority: Who wrote it? What are their credentials? Is it published by a reputable organization? In India, check if it comes from government (.gov.in), educational (.ac.in), or established news sources.\n\nAccuracy: Is the information supported by evidence? Can you verify claims through other sources? Are there spelling or grammar errors (a red flag for unreliable sources)?\n\nPurpose: Why does this information exist? Is it to inform, teach, sell, entertain, or persuade? Is there a political or commercial bias?\n\nApply this test especially to: health advice, political claims, financial tips, and anything shared on WhatsApp or social media without a source.",
+    "tags": ["framework", "critical thinking", "sources", "fact-checking", "research"]
+  },
+  {
+    "id": "s09_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "Estonia: The World's Most Digital Nation",
+    "body": "Estonia, a tiny country of just 1.3 million people in Northern Europe, has built the world's most advanced digital society. Since 2002, every citizen has a digital ID that lets them vote online, sign documents digitally, access medical records, pay taxes (which takes an average of 3 minutes), and even start a company in 18 minutes — all from their phone.\n\nEstonia's e-Residency program allows anyone in the world to become a digital resident and start a business in Estonia without physically being there. Over 100,000 people from 176 countries have signed up.\n\nBut what makes Estonia truly remarkable is how they handle digital citizenship rights. Every citizen can see exactly who has accessed their data and when. If a police officer looks at your records without a valid reason, you can see it and file a complaint. Government data is stored on a blockchain, making it tamper-proof.\n\nEstonia learned the hard way about digital security. In 2007, Russia launched a massive cyberattack that took down Estonian banks, government websites, and media outlets for weeks. Instead of retreating from digitalization, Estonia doubled down and built the NATO Cooperative Cyber Defence Centre of Excellence in Tallinn.\n\nEstonia shows what India's Digital India initiative could eventually achieve: a society where digital citizenship is not just about using technology but about having transparent, secure, and accountable digital governance. India's Aadhaar, UPI, and DigiLocker are steps on this path.",
+    "tags": ["Estonia", "e-governance", "digital ID", "cybersecurity", "India comparison"]
+  }
+]

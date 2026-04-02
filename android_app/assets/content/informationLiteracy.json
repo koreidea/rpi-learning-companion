@@ -1,0 +1,186 @@
+[
+  {
+    "id": "s16_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Library Adventure",
+    "body": "Dia wanted to know everything about dinosaurs. She asked her Nana, \"Were dinosaurs bigger than elephants?\" Nana said, \"Let us find out!\"\n\nThey went to the library. The librarian aunty showed Dia how the books were organized — animals here, space over there, stories in the back. She found a big book about dinosaurs with beautiful pictures!\n\nDia learned that some dinosaurs were as tall as a five-story building! She also learned something new: not all dinosaurs were big. Some were as small as chickens! \"I thought all dinosaurs were huge,\" Dia said. \"That is why we look things up,\" Nana smiled. \"What we think we know and what is true can be very different!\"",
+    "lesson": "When you want to know something, books and libraries can give you real answers instead of just guesses!",
+    "tags": ["library", "learning", "curiosity", "dinosaurs"]
+  },
+  {
+    "id": "s16_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "True or Not True?",
+    "body": "Arun's friend told him that eating watermelon seeds would make a watermelon grow inside his tummy! Arun was scared and stopped eating watermelon.\n\nHis Amma laughed gently. \"Let us think about this. When you plant a seed, what does it need to grow?\" \"Sunlight and water and soil!\" said Arun. \"Is there sunlight and soil inside your tummy?\" Amma asked. \"Nooo!\" Arun giggled.\n\n\"So can a watermelon grow in there?\" \"No! It was just a silly story!\" Arun was so relieved. He learned an important lesson: just because someone says something does not make it true. You can think about it and figure out if it makes sense!",
+    "lesson": "Not everything people say is true. You can use what you already know to figure out if something makes sense!",
+    "tags": ["critical thinking", "myths", "questioning", "Indian context"]
+  },
+  {
+    "id": "s16_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Ask Three Before You Believe",
+    "body": "Meera heard that their school was closing forever! She was so upset she almost started crying. But her Appa had taught her a special rule: \"Ask three before you believe.\"\n\nSo Meera asked her teacher. \"No, school is not closing!\" the teacher said. She asked the principal. \"School will be closed for ONE day for repairs, not forever!\" Then she asked her best friend who had started the rumor. \"Well, my cousin said... I think...\" her friend admitted she was not sure.\n\nThe story had changed each time someone told it — like the game of Chinese Whispers! One day of repairs became 'closing forever' after passing through many people. Meera was glad she checked before panicking.",
+    "lesson": "Before believing something that upsets or excites you, check with at least three different sources!",
+    "tags": ["verification", "rumors", "checking sources", "Indian context"]
+  },
+  {
+    "id": "s16_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "The First Library Was 5,000 Years Old!",
+    "body": "The oldest known library was in ancient Mesopotamia (modern-day Iraq), about 5,000 years ago! But the books were not made of paper — they were clay tablets with writing pressed into them. Imagine carrying those in your school bag!",
+    "tags": ["library", "history", "ancient", "books"]
+  },
+  {
+    "id": "s16_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Your Brain Remembers Pictures Better!",
+    "body": "Your brain remembers pictures much better than words! Scientists call this the Picture Superiority Effect. After three days, people remember only 10% of what they heard but 65% of what they saw in pictures. That is why picture books are so effective!",
+    "tags": ["brain", "memory", "learning", "science"]
+  },
+  {
+    "id": "s16_n_fact_03",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Google Answers 8.5 Billion Questions a Day!",
+    "body": "Every single day, people ask Google about 8.5 billion questions! That is almost 100,000 questions every second. The most-asked question in the world is \"What is my IP address?\" followed by \"What time is it?\"",
+    "tags": ["Google", "internet", "questions", "technology"]
+  },
+  {
+    "id": "s16_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Great Wikipedia Edit War",
+    "body": "In 2014, a student named Ravi in Hyderabad was writing a school report about the history of Hyderabad. He found a Wikipedia article that said the city was founded in 1692. But his history textbook said 1591. Which was right?\n\nRavi's teacher showed him something eye-opening: the 'View History' tab on Wikipedia. Every edit ever made to the article was recorded. Someone had changed the founding date just three days earlier, and it was wrong!\n\nThis led to a whole class lesson about information literacy. Wikipedia is a great starting point, but it is written by volunteers and can contain errors. The teacher showed them how to:\n\n1. Check Wikipedia's sources by clicking the numbered references at the bottom of each article\n2. Look for the 'citation needed' tags that flag unsourced claims\n3. Cross-reference with at least two other sources (textbooks, encyclopedia, government websites)\n4. Prefer primary sources (original documents, research papers) over secondary sources (articles about research)\n\nRavi edited the Wikipedia article back to the correct date of 1591 and added a proper reference from the Telangana State Archives. He became his class's first Wikipedia editor!\n\nThe teacher summed it up: \"Wikipedia is not a source. It is a starting point. Real research begins where Wikipedia's references lead you.\"",
+    "lesson": "No single source is perfectly reliable. Good researchers always cross-reference and trace information back to its original source.",
+    "tags": ["Wikipedia", "research", "sources", "Hyderabad", "Indian context", "verification"]
+  },
+  {
+    "id": "s16_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "How a Photo Fooled Millions",
+    "body": "In 2012, during Hurricane Sandy in the United States, a dramatic photo went viral on social media. It showed the Statue of Liberty with an enormous wall of storm clouds behind it. Millions of people shared it as proof of how terrifying the hurricane was.\n\nThe photo was fake. It was actually from the movie \"The Day After Tomorrow,\" digitally altered and reposted. But by the time fact-checkers debunked it, the image had been seen by tens of millions of people.\n\nDuring the same hurricane, another viral photo showed sharks swimming in the flooded streets of New Jersey. Also fake — it was a shark photo from South Africa photoshopped onto flood images.\n\nA third viral image showed a soldier standing guard at the Tomb of the Unknown Soldier during the storm. This one turned out to be real, and it was genuinely moving.\n\nThe problem is that our brains process images as \"real\" almost instantly, before our critical thinking kicks in. A powerful image triggers an emotional response that makes us want to share it immediately.\n\nHow to spot fake images:\n- Reverse image search: Upload the image to Google Images or TinEye to see where it appeared before\n- Check the metadata: Image editing software often leaves digital traces\n- Look for inconsistencies: Shadows going in different directions, blurry edges where objects were pasted, lighting that does not match\n- Check the source: Was it posted by a verified news organization or a random account?",
+    "lesson": "Images are powerful because we trust our eyes, but photos can be faked easily. Always verify viral images before sharing.",
+    "tags": ["fake images", "misinformation", "verification", "social media", "critical thinking"]
+  },
+  {
+    "id": "s16_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Correlation Trap",
+    "body": "Here is a true statistic: countries that consume more chocolate per capita win more Nobel Prizes. Switzerland, the country that eats the most chocolate, also has the most Nobel laureates per capita. Does this mean eating chocolate makes you smarter?\n\nOf course not! This is a classic example of the correlation-does-not-equal-causation trap. Both chocolate consumption and Nobel Prizes are associated with wealthy, well-educated countries. Wealth is the underlying factor driving both, not chocolate.\n\nHere are more examples of misleading correlations:\n- Ice cream sales and drowning deaths both rise in summer (because more people swim, not because ice cream causes drowning)\n- There is a strong correlation between the number of Nicolas Cage movies released in a year and the number of people who drowned in swimming pools (pure coincidence!)\n- Students who eat breakfast perform better in school (but breakfast might just be a marker for more stable home environments, not the direct cause)\n\nMisunderstanding correlation is one of the most common information literacy failures. It is used to sell pseudoscience, push political narratives, and market useless health products.\n\nWhen you see a claim that X causes Y, ask:\n1. Is there a plausible mechanism? (How would X actually cause Y?)\n2. Could there be a hidden third factor driving both?\n3. Does the relationship hold in controlled experiments, not just observational data?\n4. Have the results been replicated by independent researchers?",
+    "lesson": "Just because two things happen together does not mean one causes the other. Always look for hidden factors and demand evidence of causation.",
+    "tags": ["correlation", "causation", "statistics", "critical thinking", "science"]
+  },
+  {
+    "id": "s16_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "There Are 4.5 Billion Web Pages!",
+    "body": "The indexed internet has over 4.5 billion web pages. But Google only indexes about 5% of the total internet! The rest is the 'deep web' — private databases, academic repositories, and company intranets that search engines cannot access.",
+    "tags": ["internet", "data", "web", "Google", "technology"]
+  },
+  {
+    "id": "s16_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Confirmation Bias Is Your Brain's Worst Habit!",
+    "body": "Your brain has a built-in flaw called confirmation bias: it naturally seeks out information that agrees with what you already believe and ignores information that contradicts it. Social media algorithms make this worse by showing you more of what you already like. That is why actively seeking opposing viewpoints is so important!",
+    "tags": ["bias", "brain", "social media", "critical thinking"]
+  },
+  {
+    "id": "s16_j_fact_03",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "India's National Digital Library Has 73 Million Items!",
+    "body": "India's National Digital Library (NDL), developed by IIT Kharagpur, provides free access to over 73 million academic resources — books, journals, videos, and research papers. It is one of the largest digital libraries in the world and available to every Indian citizen for free!",
+    "tags": ["India", "library", "digital", "education", "IIT"]
+  },
+  {
+    "id": "s16_j_framework_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The SIFT Method for Evaluating Information",
+    "body": "Developed by digital literacy expert Mike Caulfield, SIFT is a quick method to evaluate any piece of information:\n\nS — STOP: Do not immediately react or share. Pause your emotional response.\n\nI — INVESTIGATE the source: Who created this? What is their expertise? Do they have an agenda? A health claim from a vitamin company is very different from one published in a medical journal.\n\nF — FIND better coverage: Search for the same claim on established news sites or fact-checking organizations. If a dramatic claim is only found on one obscure website, be very suspicious.\n\nT — TRACE claims to the original: News articles often reference studies. Find the actual study. Often the headline exaggerates or misrepresents what the research actually found.\n\nSIFT takes about 60 seconds and prevents most misinformation from taking hold. The key discipline is the first step: STOP. Our instinct to immediately react and share is exactly what misinformation exploits.",
+    "tags": ["framework", "fact-checking", "SIFT", "misinformation", "digital literacy"]
+  },
+  {
+    "id": "s16_j_framework_02",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "Primary vs Secondary vs Tertiary Sources",
+    "body": "Understanding source types helps you evaluate information quality:\n\nPRIMARY sources are original, first-hand evidence:\n- Scientific research papers (the actual experiment)\n- Government census data and statistical reports\n- Historical documents, letters, diaries\n- Interviews with eyewitnesses\n- Court records and legal documents\n\nSECONDARY sources analyze or interpret primary sources:\n- News articles reporting on research\n- Textbooks summarizing multiple studies\n- Biographies\n- Review articles in academic journals\n\nTERTIARY sources summarize secondary sources:\n- Encyclopedias (including Wikipedia)\n- Almanacs and fact books\n- Library databases and directories\n\nFor school projects: Start with tertiary sources (Wikipedia, encyclopedias) to get an overview. Then read secondary sources (textbooks, quality articles) for depth. For serious claims, trace back to primary sources.\n\nThe further you are from the primary source, the more likely the information has been distorted, simplified, or taken out of context.",
+    "tags": ["framework", "sources", "research", "primary", "secondary", "academic"]
+  },
+  {
+    "id": "s16_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "How Finland Teaches Information Literacy to Children",
+    "body": "Finland consistently ranks among the most literate and least misinformation-susceptible countries in the world. Their secret? They teach critical information literacy starting in primary school.\n\nFinnish children learn to analyze news articles, identify advertising disguised as information, and spot manipulated images — all before age 12. By high school, students can identify logical fallacies, evaluate statistical claims, and produce their own media.\n\nThe curriculum is not a separate 'media literacy' class. It is woven into every subject. In history, students analyze propaganda from different eras. In science, they learn to read research papers and understand statistical significance. In art, they study how visual composition influences perception.\n\nFinnish libraries play a crucial role. They are community hubs where librarians teach digital literacy workshops for all ages. Library membership is free, and 80% of Finns use their local library.\n\nThe results are measurable. In a 2022 study, Finland ranked #1 among European countries in media literacy and resistance to misinformation. When the Russian government attempted to spread disinformation in Finland (a neighbor of Russia), Finnish citizens were remarkably resistant.\n\nIndia can learn from Finland's approach. Instead of banning or censoring misinformation (which is difficult and raises free speech concerns), educating citizens to critically evaluate information is a more sustainable and democratic solution.",
+    "tags": ["Finland", "education", "media literacy", "misinformation", "India comparison"]
+  },
+  {
+    "id": "s16_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Replication Crisis in Science",
+    "body": "In 2015, a team of 270 researchers attempted to replicate 100 prominent psychology studies. The result was devastating: only 36% of the studies produced the same results when repeated. This became known as the Replication Crisis, and it shook the foundations of scientific credibility.\n\nThe problems were systemic. Publication bias meant that journals preferred publishing exciting positive results over boring negative ones. Researchers, under pressure to publish or perish, engaged in p-hacking — running multiple statistical tests until they found one that produced a significant result, then reporting only that test. Sample sizes were often too small to detect real effects.\n\nFamous findings that failed replication included: the idea that power posing (standing in a confident pose) increases testosterone, that ego depletion (willpower is a limited resource), and that unconscious priming (showing words related to elderly people makes you walk slower).\n\nThe crisis extended beyond psychology. A 2012 Amgen study found that only 6 of 53 landmark cancer biology papers could be replicated. An estimated $28 billion is spent annually in the US alone on irreproducible biomedical research.\n\nThe response has been positive. Pre-registration of studies (declaring your hypothesis and methods before collecting data) is becoming standard. Open data requirements let others verify results. Journals are creating 'registered reports' that accept studies for publication based on methodology before results are known.\n\nFor information literacy, the replication crisis teaches a crucial lesson: even published, peer-reviewed science can be wrong. No single study should be treated as truth. Look for meta-analyses (studies of studies), replication results, and scientific consensus built over decades of evidence.",
+    "lesson": "Even peer-reviewed science can be wrong. True information literacy means understanding the limitations of evidence and looking for replicated, consensus findings.",
+    "tags": ["science", "replication crisis", "research", "statistics", "psychology"]
+  },
+  {
+    "id": "s16_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "How Algorithms Create Filter Bubbles",
+    "body": "In 2011, internet activist Eli Pariser noticed something disturbing. He asked two friends to Google the same term: 'Egypt' (during the Arab Spring protests). One friend got news about the protests. The other got travel information about Egypt. Google was showing different realities to different people based on their search history.\n\nPariser called this the filter bubble: a personalized information universe created by algorithms that show you content you are likely to engage with. Social media platforms amplify this effect dramatically.\n\nThe mechanism is simple. Algorithms optimize for engagement (time spent, likes, shares). Content that triggers strong emotions — outrage, fear, tribal belonging — generates the most engagement. So algorithms gradually feed you more extreme, more emotional, more one-sided content.\n\nA 2021 Facebook internal study (leaked by whistleblower Frances Haugen) found that the platform's algorithm actively promoted divisive content because it generated more engagement. One internal document stated: \"Our algorithms exploit the human brain's attraction to divisiveness.\"\n\nThe consequences are measurable. A study found that YouTube's recommendation algorithm could take a user from a mainstream political video to extremist content in just seven clicks. Research in India showed that WhatsApp groups, where misinformation spreads unchecked, significantly influenced communal tensions in multiple incidents.\n\nBreaking out of filter bubbles requires deliberate effort:\n1. Actively seek sources that challenge your views\n2. Follow people you disagree with (not trolls, but thoughtful people with different perspectives)\n3. Use ad-free, non-algorithmic news sources (public broadcasters, print newspapers)\n4. Periodically clear your search history and cookies\n5. Be aware that your social media feed is NOT a representative sample of reality\n\nThe most dangerous aspect of filter bubbles is invisibility. You do not know what you are not seeing.",
+    "lesson": "Algorithms create personalized information bubbles that feel like the whole world but are actually a narrow, distorted slice. Active effort is required to see beyond them.",
+    "tags": ["algorithms", "filter bubbles", "social media", "misinformation", "India", "awareness"]
+  },
+  {
+    "id": "s16_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Misinformation Spreads 6x Faster Than Truth!",
+    "body": "An MIT study of 126,000 stories shared on Twitter found that false stories spread 6 times faster than true ones. False stories were 70% more likely to be retweeted. The researchers concluded it was not bots driving this — it was humans. We are naturally drawn to novel, surprising, and emotionally charged information, which false stories exploit.",
+    "tags": ["misinformation", "social media", "research", "MIT", "human behavior"]
+  },
+  {
+    "id": "s16_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Academic Journals Cost Universities Crores!",
+    "body": "India's top universities spend between 50-200 crore rupees annually on academic journal subscriptions. Elsevier, the world's largest academic publisher, has a profit margin of 37% — higher than Apple, Google, or Amazon. This is why open access movements and platforms like arXiv and SciHub are so important for democratizing knowledge.",
+    "tags": ["academia", "journals", "India", "open access", "knowledge"]
+  },
+  {
+    "id": "s16_s_fact_03",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "India Has 79 Fact-Checking Organizations!",
+    "body": "India has the most fact-checking organizations of any country in the world — over 79, including Alt News, BOOM, The Quint's WebQoof, and FactChecker.in. This is partly because India also has one of the world's highest rates of misinformation circulation, especially on WhatsApp groups.",
+    "tags": ["India", "fact-checking", "misinformation", "media"]
+  },
+  {
+    "id": "s16_s_framework_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Bloom's Taxonomy of Information Processing",
+    "body": "Benjamin Bloom's framework shows six levels of information processing, from basic to advanced:\n\n1. REMEMBER: Recall facts. (Who? What? When? Where?) — This is just retrieval, not understanding.\n\n2. UNDERSTAND: Explain concepts in your own words. Summarize. Paraphrase. — You grasp meaning.\n\n3. APPLY: Use information in new situations. Solve problems using what you learned. — Knowledge becomes practical.\n\n4. ANALYZE: Break information into parts. Compare. Contrast. Find patterns. Identify assumptions. — You see deeper structure.\n\n5. EVALUATE: Judge the quality of information. Critique arguments. Assess credibility. Weigh evidence. — You exercise judgment.\n\n6. CREATE: Combine information to produce something new. Formulate hypotheses. Design solutions. — You generate original ideas.\n\nMost school education stays at levels 1-2 (memorize and regurgitate). True information literacy requires levels 4-6.\n\nWhen you read a news article, ask:\n- Level 1: What does it say?\n- Level 3: How does this apply to my life?\n- Level 4: What assumptions underlie this argument?\n- Level 5: How credible is the evidence?\n- Level 6: What would a better approach look like?\n\nClimbing Bloom's taxonomy is how you go from passive consumer of information to active, critical thinker.",
+    "tags": ["framework", "Bloom", "taxonomy", "thinking", "education", "critical thinking"]
+  },
+  {
+    "id": "s16_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "The WhatsApp Misinformation Crisis in India",
+    "body": "Between 2017 and 2019, India experienced a wave of mob violence triggered by false messages on WhatsApp. At least 33 people were killed in 69 mob attacks across 12 states, all sparked by viral misinformation — typically false claims about child kidnappers operating in the area.\n\nThe dynamics were terrifying. A message claiming that 'child lifters' had been spotted in a village would spread through WhatsApp groups within minutes. By the time the message reached a few hundred people, mobs would form and attack strangers, migrant workers, or anyone who looked 'suspicious.' In Assam, two young men were beaten to death because a WhatsApp forward falsely identified them as kidnappers.\n\nWhy was WhatsApp especially vulnerable? End-to-end encryption meant that the platform itself could not monitor content. The forwarding feature allowed a single message to reach millions within hours. Group dynamics amplified fear and outrage. And in many rural areas, WhatsApp was people's primary and only source of information.\n\nWhatsApp responded by limiting message forwarding to 5 recipients at a time in India (previously unlimited), labeling forwarded messages, and running newspaper and radio campaigns about misinformation. The Indian government pressed WhatsApp for traceability of messages, while privacy advocates argued this would undermine encryption.\n\nThe crisis revealed a fundamental challenge: India had brought 500 million people online in just a few years (largely through Jio's affordable data), but media literacy education had not kept pace. People who had never used the internet before were suddenly bombarded with sophisticated misinformation without the tools to evaluate it.\n\nThe solution requires a multi-pronged approach: platform design changes, media literacy education at scale, community fact-checking networks, and rapid official communication to counter false narratives before they spread.",
+    "tags": ["India", "WhatsApp", "misinformation", "mob violence", "media literacy", "technology"]
+  }
+]

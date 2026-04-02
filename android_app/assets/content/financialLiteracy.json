@@ -1,0 +1,203 @@
+[
+  {
+    "id": "s08_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Anu's Piggy Bank",
+    "body": "Anu got a pink piggy bank on her birthday. Every time she got a coin, she would drop it in through the slot on top. Clink! Clink! She loved that sound.\n\nOne day, Anu saw a toy car she really wanted. It cost 50 rupees. She shook her piggy bank and counted her coins: only 30 rupees! She felt sad.\n\nBut Amu said, \"Keep saving, Anu! Every little coin helps.\" Two weeks later, Anu had 55 rupees! She bought her toy car and still had 5 rupees left. She put those back in the piggy bank with a big smile.",
+    "lesson": "Saving a little bit at a time adds up to big things!",
+    "tags": ["saving", "patience", "Indian context", "money"]
+  },
+  {
+    "id": "s08_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Three Jars",
+    "body": "Ravi's Thatha gave him three empty jars and a marker. \"Write SAVE on one, SPEND on one, and SHARE on the last one,\" said Thatha.\n\nEvery Sunday, Ravi got 30 rupees as pocket money. He put 10 rupees in each jar. The SPEND jar was for treats and small toys. The SAVE jar was for bigger things he wanted later. And the SHARE jar was for giving to people who needed help.\n\nWhen Ravi's friend could not afford a notebook for school, Ravi used his SHARE jar money to buy one. It made him feel warm and happy inside — even happier than spending on himself!",
+    "lesson": "Money is most useful when you save some, spend some wisely, and share some with others!",
+    "tags": ["saving", "sharing", "Indian context", "kindness"]
+  },
+  {
+    "id": "s08_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Magic of Waiting",
+    "body": "Priya and Deepa both wanted a new coloring set. They each had 20 rupees. The small set cost 20 rupees. The big set with 48 colors cost 40 rupees.\n\nPriya could not wait. She bought the small set with 12 colors right away. Deepa decided to wait and save.\n\nTwo weeks later, Deepa had saved 40 rupees. She bought the big set with 48 beautiful colors! When Priya saw all those colors, she thought, \"Next time, I will wait and save too!\"",
+    "lesson": "Waiting and saving can get you something even better than what you wanted right away!",
+    "tags": ["patience", "saving", "delayed gratification", "Indian context"]
+  },
+  {
+    "id": "s08_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Money Comes in Many Shapes!",
+    "body": "Long ago, people did not use paper money or coins. They used seashells, beads, salt, and even tea leaves as money! In some parts of Africa, people used large stone discs bigger than a person!",
+    "tags": ["history", "money", "culture", "world"]
+  },
+  {
+    "id": "s08_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "India Invented the Rupee!",
+    "body": "The word 'rupee' comes from the Sanskrit word 'rupya' which means shaped silver. Emperor Sher Shah Suri created the first rupee coin almost 500 years ago in 1540!",
+    "tags": ["India", "history", "money", "language"]
+  },
+  {
+    "id": "s08_n_fact_03",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Dogs Cannot Use Money!",
+    "body": "Humans are the only animals that use money! But scientists once taught capuchin monkeys to use small silver discs as money to buy treats. The monkeys quickly learned to save their coins for their favorite grapes instead of spending them right away!",
+    "tags": ["animals", "money", "science", "funny"]
+  },
+  {
+    "id": "s08_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "How a 10-Year-Old Started a Bank",
+    "body": "In 2014, a boy named Jose Adolfo Quisocala from Peru noticed that many of his classmates threw away recyclable bottles and paper. At the same time, many kids wanted to save money but had no way to do it because real banks would not open accounts for children.\n\nJose had a brilliant idea: he started the Bartselana Student Bank. Kids could deposit recyclable materials instead of money. The bank would sell the recyclables and credit the value to each student's account. To open an account, a student had to bring at least 5 kilograms of recyclable waste.\n\nBy age 13, Jose's bank had over 2,000 student accounts and had collected more than 10 tons of recyclable material. He won the Children's Climate Prize in 2018.\n\nJose understood something powerful: money is not just coins and notes. It is anything of value. And by connecting saving money with saving the environment, he made both ideas exciting for kids.",
+    "lesson": "You are never too young to understand money, and creative thinking can solve more than one problem at once.",
+    "tags": ["entrepreneurship", "environment", "banking", "Peru", "children"]
+  },
+  {
+    "id": "s08_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Story of Compound Interest",
+    "body": "There is a famous legend about the invention of chess in ancient India. When the game's inventor presented it to the king, the king was so delighted that he offered any reward.\n\nThe inventor made a seemingly modest request: place one grain of rice on the first square of the chessboard, two on the second, four on the third, doubling each time for all 64 squares.\n\nThe king laughed at such a small request. But as his servants started counting, the numbers grew terrifyingly fast. By the 20th square, they needed over a million grains. By the 40th, over a trillion. The total for all 64 squares would be about 18 quintillion grains — more rice than exists on the entire planet!\n\nThis is exactly how compound interest works with money. If you save 1,000 rupees at 10% interest, after one year you have 1,100. But the next year, you earn interest on 1,100, not just 1,000. After 25 years, your 1,000 becomes 10,835! Albert Einstein reportedly called compound interest the eighth wonder of the world.",
+    "lesson": "Starting to save early gives your money more time to grow through the magic of compound interest.",
+    "tags": ["India", "chess", "compound interest", "mathematics", "saving"]
+  },
+  {
+    "id": "s08_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Needs vs Wants: The Shopping List Challenge",
+    "body": "Twelve-year-old Kavitha was given an exciting responsibility: her parents asked her to plan the family's weekly grocery shopping with a budget of 2,000 rupees.\n\nKavitha made a long list: rice, dal, vegetables, milk, bread, eggs, cooking oil, soap. Then she added: chocolate cookies, ice cream, fancy juice boxes, and chips.\n\nAt the store, she calculated everything and the total came to 2,800 rupees — way over budget! Her mother said, \"Sort the list into NEEDS and WANTS.\"\n\nNeeds were things the family could not do without: rice, dal, vegetables, milk, oil, soap. Wants were nice-to-have extras: cookies, ice cream, chips. Kavitha realized the needs came to 1,700 rupees, leaving 300 for some treats.\n\nShe chose one pack of cookies and some juice, totaling 250 rupees, and saved the remaining 50. \"I just learned more about money in one shopping trip than in a whole year of math class!\" she said.",
+    "lesson": "The first rule of smart spending is knowing the difference between what you need and what you want.",
+    "tags": ["budgeting", "needs vs wants", "Indian context", "shopping", "practical"]
+  },
+  {
+    "id": "s08_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "The World's Youngest Billionaire Was 3!",
+    "body": "Norway's sovereign wealth fund gives every Norwegian citizen a share. When a baby is born in Norway, they instantly have a share worth about $200,000. But the youngest self-made millionaire was probably Mikaila Ulmer, who started her lemonade company 'Me & the Bees' at age 4 and got a $60,000 deal on the TV show Shark Tank at age 9!",
+    "tags": ["money", "entrepreneurship", "children", "world"]
+  },
+  {
+    "id": "s08_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "There Are Over 180 Currencies!",
+    "body": "The world has over 180 different currencies. The most traded is the US Dollar, but India's Rupee is one of the oldest currency concepts in the world. Today, some people even use digital currencies like Bitcoin that exist only on computers with no physical coins or notes at all!",
+    "tags": ["money", "world", "India", "digital", "currency"]
+  },
+  {
+    "id": "s08_j_fact_03",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Inflation: Shrinking Money!",
+    "body": "In 1947 when India gained independence, you could buy a kilo of rice for about 0.5 rupees. Today the same rice costs around 50 rupees — 100 times more! This is inflation: the same money buys less over time. That is why just keeping money under your mattress actually makes you poorer!",
+    "tags": ["inflation", "India", "history", "economics"]
+  },
+  {
+    "id": "s08_j_framework_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The 50-30-20 Rule",
+    "body": "A simple way to manage any amount of money:\n\n50% for NEEDS: Things you must have — food, school supplies, transport.\n\n30% for WANTS: Things you enjoy but can live without — games, treats, outings.\n\n20% for SAVINGS: Money for the future — emergencies, big purchases, investments.\n\nEven with pocket money of 100 rupees a week, this works: 50 for lunch at school, 30 for a treat, and 20 into your savings jar. The key is to pay your savings FIRST, not last. Treat your savings like a bill you must pay to your future self.",
+    "tags": ["framework", "budgeting", "saving", "practical"]
+  },
+  {
+    "id": "s08_j_framework_02",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The Opportunity Cost Question",
+    "body": "Every time you spend money on one thing, you are choosing NOT to spend it on something else. This is called opportunity cost.\n\nBefore buying anything, ask yourself: \"What else could I do with this money?\"\n\nIf you spend 500 rupees on a toy, the opportunity cost might be 5 books, 10 ice creams, or adding to your savings for a bicycle. None of these choices are wrong! The point is to make your choice consciously.\n\nHere is a trick: when you want to buy something, wait 24 hours before purchasing. If you still want it the next day, go ahead. You will be surprised how often the urge passes!",
+    "tags": ["framework", "opportunity cost", "decision-making", "spending"]
+  },
+  {
+    "id": "s08_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "How Jan Dhan Yojana Changed India",
+    "body": "Before 2014, nearly half of Indian families had no bank account. They kept cash at home where it could be stolen or lost in floods. They could not save safely, earn interest, or receive government benefits directly.\n\nOn August 28, 2014, the Pradhan Mantri Jan Dhan Yojana was launched — the world's largest financial inclusion program. The goal: a bank account for every Indian household. Accounts could be opened with zero balance and zero fees.\n\nThe results were staggering. Over 500 million accounts were opened, making it a Guinness World Record. More importantly, the government could now send money directly to people's accounts instead of through middlemen who often took a cut. Farmers received crop insurance payments directly. Women received cooking gas subsidies directly.\n\nThe program saved the government an estimated 1.7 lakh crore rupees that used to leak through corruption. It also gave millions of women their first-ever independent bank account, increasing their financial freedom.\n\nJan Dhan Yojana showed that financial literacy starts with access. You cannot learn to swim without a pool, and you cannot learn money management without a bank account.",
+    "tags": ["India", "banking", "government", "inclusion", "Jan Dhan"]
+  },
+  {
+    "id": "s08_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Warren Buffett's First Business at Age 6",
+    "body": "Warren Buffett, now one of the wealthiest people in the world, bought his first stock at age 11. But his money journey started even earlier. At age 6, he bought a six-pack of Coca-Cola from his grandfather's grocery store for 25 cents and sold individual bottles to neighbors for 5 cents each, making a 5-cent profit per pack.\n\nAt age 13, he had two paper routes and was earning $175 a month — more than most of his teachers. Instead of spending it, he invested in a pinball machine business with a friend, placing machines in barbershops and splitting the profits.\n\nBy the time he graduated high school at 17, Buffett had saved $5,000 — equivalent to about $60,000 today. He invested it and just kept reinvesting the profits. His two most famous rules of investing are deceptively simple: Rule 1: Never lose money. Rule 2: Never forget Rule 1.\n\nWhat made Buffett extraordinary was not genius or luck. It was starting young, being patient, and understanding that wealth is built slowly through consistent saving, smart investing, and the incredible power of compounding over decades. At 93, he still lives in the same modest house he bought in 1958 for $31,500.\n\nBuffett's story is not about becoming a billionaire. It is about understanding that your relationship with money — the habits you build now — determines your financial life far more than how much you earn.",
+    "lesson": "Financial success comes from early habits, patience, and letting compound interest work over long periods.",
+    "tags": ["investing", "biography", "patience", "compound interest", "America"]
+  },
+  {
+    "id": "s08_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Grameen Bank Revolution",
+    "body": "In 1976, economics professor Muhammad Yunus was walking through a village in Bangladesh when he met a woman named Sufiya Begum. She made beautiful bamboo stools but was trapped in poverty because she had to borrow money from a moneylender at 10% interest per week to buy bamboo. After repaying the loan, she was left with a profit of just 2 cents per day.\n\nYunus discovered that 42 women in the village were trapped in the same cycle. The total amount they needed to break free? Just 856 taka — about $27. Yunus lent the money from his own pocket.\n\nThis small act led to the creation of Grameen Bank in 1983, which pioneered microfinance — tiny loans to poor people who had no collateral and could never get a traditional bank loan. The bank lent to groups of five women, who guaranteed each other's loans through social pressure and mutual support.\n\nBy 2006, when Yunus won the Nobel Peace Prize, Grameen Bank had lent over $6 billion to 7 million borrowers, 97% of them women. The repayment rate was 98.6% — higher than most commercial banks! The model spread to over 100 countries.\n\nYunus proved that the poor are not poor because they are lazy or incapable. They are poor because the financial system excludes them. Given access to even tiny amounts of capital, they are remarkably entrepreneurial and trustworthy.",
+    "lesson": "Access to financial tools, even in tiny amounts, can unlock human potential and break cycles of poverty.",
+    "tags": ["microfinance", "Bangladesh", "Nobel Prize", "poverty", "banking", "women"]
+  },
+  {
+    "id": "s08_s_story_03",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Latte Factor: Small Leaks Sink Big Ships",
+    "body": "Financial author David Bach noticed something about his clients. They all said they had \"nothing left to save\" at the end of each month. But when he asked them to track every single purchase for a week, they were shocked.\n\nOne client spent 150 rupees on fancy coffee every morning, 80 rupees on snacks, and 100 rupees on impulse app purchases. That is 330 rupees a day — about 10,000 rupees a month! Over a year, that is 1.2 lakh rupees quietly leaking away on things she barely remembered buying.\n\nBach called this the Latte Factor: small daily expenses that seem insignificant but add up to massive amounts over time. If that 10,000 per month were invested at 12% returns (the historical average of Indian stock markets), it would grow to over 1 crore rupees in 20 years.\n\nThe solution is not to stop enjoying life. It is to be conscious about spending. Keep the coffee you love, but maybe make it at home three days a week. Track your spending for just one week and you will find your own Latte Factor — money you are spending without even enjoying it.\n\nAs Bach says, \"The problem is not how much you earn. It is how much you keep.\"",
+    "lesson": "Small daily expenses you barely notice can cost you crores over a lifetime. Track, be conscious, and redirect.",
+    "tags": ["spending", "saving", "awareness", "practical", "investing"]
+  },
+  {
+    "id": "s08_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "India's UPI Processes More Than Visa!",
+    "body": "India's Unified Payments Interface processed over 10 billion transactions in a single month in 2023, making it the world's largest real-time payment system. UPI processes more digital transactions than Visa and Mastercard combined in India! It was built in just 18 months by NPCI and is now being adopted by other countries.",
+    "tags": ["India", "technology", "UPI", "digital payments", "fintech"]
+  },
+  {
+    "id": "s08_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "The Rule of 72",
+    "body": "Want to know how long it takes to double your money? Divide 72 by the interest rate. At 8% returns, your money doubles in 72/8 = 9 years. At 12%, it doubles in just 6 years. At 15%, in less than 5 years. This simple trick lets you calculate growth in your head!",
+    "tags": ["mathematics", "investing", "compound interest", "practical"]
+  },
+  {
+    "id": "s08_s_fact_03",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Stock Markets Are 400 Years Old!",
+    "body": "The world's first stock exchange opened in Amsterdam in 1602 to trade shares of the Dutch East India Company. India's Bombay Stock Exchange, founded in 1875, is Asia's oldest. Today, global stock markets are worth over $100 trillion — more than the entire world's GDP!",
+    "tags": ["history", "stock market", "India", "Netherlands", "economics"]
+  },
+  {
+    "id": "s08_s_framework_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "The Wealth Pyramid",
+    "body": "Build your financial life like a pyramid, from the bottom up:\n\nLevel 1 — Emergency Fund (Foundation): Save 3-6 months of expenses in a savings account. This protects you from unexpected events. Do this BEFORE anything else.\n\nLevel 2 — Insurance (Protection): Health insurance, term life insurance. These prevent a single bad event from destroying your finances.\n\nLevel 3 — Debt Elimination: Pay off high-interest debt (credit cards, personal loans). No investment consistently beats 18-36% credit card interest.\n\nLevel 4 — Long-term Investing: SIPs in index funds, PPF, NPS. This is where compound interest builds wealth over decades.\n\nLevel 5 — Aspirational Goals: Home purchase, children's education, early retirement. Plan these with specific timelines and amounts.\n\nMost people try to start at Level 4 or 5 without building the foundation. That is like building a house starting from the roof. When a storm comes (job loss, medical emergency), the whole structure collapses.",
+    "tags": ["framework", "investing", "planning", "India", "practical"]
+  },
+  {
+    "id": "s08_s_framework_02",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Assets vs Liabilities",
+    "body": "Robert Kiyosaki's Rich Dad Poor Dad introduced a powerful distinction:\n\nAssets: Things that put money INTO your pocket. Examples: savings accounts (interest), stocks (dividends), rental property (rent), skills that earn income, a business.\n\nLiabilities: Things that take money OUT of your pocket. Examples: car loans (EMIs), credit card debt (interest), subscriptions you do not use.\n\nThe tricky part: some things look like assets but are actually liabilities. A fancy car loses value every year and costs fuel, insurance, and maintenance. A house you live in costs EMI, maintenance, and taxes — it is only an asset if it appreciates faster than these costs.\n\nThe rule of the wealthy: Buy assets first. Let the income from assets pay for your lifestyle. Most people do the opposite — they buy liabilities first and wonder why they never build wealth.\n\nAs a student, your most valuable asset is your education and skills. Invest time in learning things that will generate income for decades.",
+    "tags": ["framework", "assets", "liabilities", "wealth", "Kiyosaki"]
+  },
+  {
+    "id": "s08_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "How Zerodha Democratized Investing in India",
+    "body": "Before 2010, investing in the Indian stock market was expensive and complicated. Brokers charged 0.5-1% per trade, account opening required piles of paperwork, and the platforms were designed for professionals. Only about 2% of Indians invested in stocks.\n\nNithin Kamath, a 30-year-old trader from Bangalore, saw that technology could change this. In 2010, he started Zerodha (zero + rodha, meaning \"zero barriers\" in Sanskrit) with his brother Nikhil. Their innovation was simple but revolutionary: charge zero brokerage on stock delivery trades.\n\nEveryone said it was impossible. How could a brokerage survive without brokerage? Zerodha made money on futures and options trades, and kept costs low by being entirely online with no physical branches. They built their own technology platform, Kite, which was clean, fast, and beginner-friendly.\n\nThey also invested heavily in financial education through Varsity, a free online learning platform that has taught millions of Indians about markets, trading, and personal finance.\n\nBy 2023, Zerodha had over 12 million active clients, making it India's largest broker. Nithin and Nikhil built a company valued at over $2 billion without raising a single rupee of external funding — entirely bootstrapped from profits.\n\nZerodha's story shows that making financial tools accessible and affordable is not just good ethics — it is good business.",
+    "tags": ["India", "fintech", "entrepreneurship", "Bangalore", "investing", "startup"]
+  }
+]

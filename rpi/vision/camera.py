@@ -59,18 +59,8 @@ class Camera:
             return None
 
         try:
-            import time
-
-            # Trigger autofocus and wait for it to lock
-            try:
-                from libcamera import controls
-                self._camera.set_controls({"AfTrigger": controls.AfTriggerEnum.Start})
-                time.sleep(0.5)  # Give AF time to lock
-            except Exception:
-                pass  # AF not available, continue anyway
-
+            # Continuous AF is already set in _ensure_camera — no per-frame trigger needed
             frame = self._camera.capture_array()
-            logger.debug("Captured frame: shape={}", frame.shape)
             return frame
         except Exception as e:
             logger.error("Camera capture error: {}", e)

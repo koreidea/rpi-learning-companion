@@ -11,6 +11,7 @@ class BotState(str, Enum):
     LISTENING = "listening"    # Wake word detected, capturing speech
     PROCESSING = "processing"  # STT + LLM generating response
     SPEAKING = "speaking"      # TTS playing response
+    DANCING = "dancing"        # Dance mode — synced car + display
     ERROR = "error"            # Something went wrong
 
 
@@ -35,6 +36,9 @@ class SharedState:
     stop_event: asyncio.Event = field(default_factory=asyncio.Event)
     interrupt_event: asyncio.Event = field(default_factory=asyncio.Event)
 
+    # Remote text input (from phone/web dashboard)
+    remote_text: Optional[str] = None
+
     # Current interaction info (ephemeral, not persisted)
     current_transcript: Optional[str] = None
     current_response: Optional[str] = None
@@ -49,6 +53,28 @@ class SharedState:
     # Conversation history for the live dashboard display.
     # Each item: {"role": "user"/"assistant", "content": "...", "image": optional_b64}
     conversation_messages: list = field(default_factory=list)
+
+    # Volume (0-100)
+    volume: int = 80
+
+    # Touch
+    touch_enabled: bool = False         # True when touch sensor is initialized
+    last_touch_event: Optional[str] = None  # Last touch event name for display reaction
+
+    # TFT Menu (activated by extra_long press on touch sensor)
+    menu_open: bool = False
+    menu_index: int = 0                 # Currently highlighted menu item
+
+    # Projector
+    projector_connected: bool = False   # True when HDMI projector detected
+    projector_mode: str = "off"         # off, flashcard, alphabet, numbers, imagine
+    projector_imagine_prompt: Optional[str] = None  # Current imagination prompt
+
+    # Car chassis
+    car_connected: bool = False       # True when Pi is connected to HC-05
+    car_connecting: bool = False      # True while scanning/connecting
+    car_mac: Optional[str] = None     # Saved HC-05 MAC address
+    follow_mode: bool = False         # True when follow mode is active
 
     # Latency tracking
     interaction_start_time: Optional[float] = None

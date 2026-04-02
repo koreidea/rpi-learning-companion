@@ -77,7 +77,14 @@ class VADDetector:
         vad_buffer = np.array([], dtype=np.int16)
 
         while total_time < self.max_duration:
-            chunk = await loop.run_in_executor(None, audio_capture.read_chunk)
+            try:
+                chunk = await asyncio.wait_for(
+                    loop.run_in_executor(None, audio_capture.read_chunk),
+                    timeout=3.0,
+                )
+            except asyncio.TimeoutError:
+                logger.warning("read_chunk timed out after 3s — mic may be stuck")
+                break
             frames.append(chunk)
             total_time += len(chunk) / self.sample_rate
 

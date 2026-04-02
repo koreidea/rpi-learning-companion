@@ -1,0 +1,194 @@
+[
+  {
+    "id": "s10_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Tree Who Gave Us Everything",
+    "body": "In a park near Diya's house stood a big old banyan tree. Diya visited it every day. In summer, the tree gave her cool shade. Birds made nests in its branches and sang sweet songs.\n\nSquirrels ran up and down its trunk playing hide and seek. The tree's roots held the soil so the rain would not wash it away. Its leaves made the air fresh and clean.\n\nOne day, some people came to cut it down. But Diya and all the children hugged the tree tight. \"This tree gives us so much!\" they said. The grown-ups listened and planted more trees instead!",
+    "lesson": "Trees give us shade, clean air, and homes for animals. We should protect them!",
+    "tags": ["trees", "nature", "Indian context", "conservation"]
+  },
+  {
+    "id": "s10_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Where Does Garbage Go?",
+    "body": "Kiran noticed something strange. Every morning, he put garbage in the bin. Every evening, the bin was empty. Where did it all go? Did it just disappear?\n\nHis Appa took him on a field trip to find out. First, the garbage truck collected the bin. Then it drove to a big, smelly mountain of garbage called a landfill. Kiran's eyes went wide. The mountain was taller than his school!\n\n\"All this garbage stays here for hundreds of years,\" Appa said. \"But we can help make this mountain smaller!\" They started separating wet garbage from dry garbage at home. Wet garbage became compost for Amma's garden. Dry things like paper and bottles went to the recycling center.",
+    "lesson": "Garbage does not disappear — it piles up! We can help by recycling and composting.",
+    "tags": ["waste", "recycling", "Indian context", "composting"]
+  },
+  {
+    "id": "s10_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Dolphin and the Plastic Bag",
+    "body": "In the beautiful blue ocean, a baby dolphin was swimming with its mother. The baby dolphin saw something floating in the water. It looked like a yummy jellyfish!\n\nBut it was not a jellyfish. It was a plastic bag that someone had thrown into the sea. The mother dolphin quickly pushed the baby away. \"That is not food! That is plastic and it can make you very sick.\"\n\nThe baby dolphin was scared. \"How did plastic get into our ocean?\" Mother dolphin said, \"Humans throw it away and the wind and rivers carry it to the sea.\" From that day on, whenever Kiran heard this story, he always made sure his plastic went into the recycle bin, never on the ground.",
+    "lesson": "Plastic thrown on the ground can end up in the ocean and hurt sea animals. Always put plastic in the bin!",
+    "tags": ["ocean", "plastic", "animals", "pollution"]
+  },
+  {
+    "id": "s10_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "One Tree Cleans Our Air!",
+    "body": "One big tree makes enough oxygen for four people to breathe for a whole year! Trees are like nature's air purifiers — they breathe in dirty air and breathe out fresh, clean air for us.",
+    "tags": ["trees", "oxygen", "air", "science"]
+  },
+  {
+    "id": "s10_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Elephants Plant Trees!",
+    "body": "Elephants eat fruits and walk for many kilometers. When they poop, the seeds in their poop grow into new trees! One elephant can plant thousands of trees in its lifetime without even trying. They are nature's gardeners!",
+    "tags": ["elephants", "trees", "animals", "nature"]
+  },
+  {
+    "id": "s10_n_fact_03",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Plastic Lasts FOREVER!",
+    "body": "A plastic bottle takes 450 years to break down. That means a bottle thrown away today will still be around when your great-great-great-great-great-great-great grandchildren are alive!",
+    "tags": ["plastic", "pollution", "time", "waste"]
+  },
+  {
+    "id": "s10_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Chipko Movement: Hugging Trees to Save Them",
+    "body": "In 1973, in the Garhwal Himalayas of Uttarakhand, a company came to cut down a forest of ash trees to make tennis rackets. The villagers depended on these trees for firewood, fodder, and protection from floods.\n\nA remarkable woman named Gaura Devi led the village women to the forest. When the loggers arrived with axes, the women wrapped their arms around the trees and refused to move. \"You will have to cut us before you cut these trees!\" they declared.\n\nThe word 'chipko' means 'to hug' or 'to cling to' in Hindi. The movement spread across the Himalayas. Village after village, ordinary women stood between loggers and forests. They sang folk songs about the forest being their mother.\n\nThe Chipko Movement eventually led to a 15-year ban on tree felling in the Himalayan forests. It inspired environmental movements around the world and showed that ordinary people, especially women with deep connections to the land, can protect nature when governments and companies fail to do so.\n\nGaura Devi and the women of Chipko remind us that the best environmentalists are often the people who live closest to nature.",
+    "lesson": "Ordinary people standing together can protect nature from powerful forces. Environmental action starts with local communities.",
+    "tags": ["India", "Chipko", "forest", "women", "activism", "Himalayas"]
+  },
+  {
+    "id": "s10_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Great Barrier Reef Is Calling for Help",
+    "body": "Off the coast of Australia lies the Great Barrier Reef, the largest living structure on Earth. It is so big you can see it from space! Made up of billions of tiny coral animals, it is home to 1,500 species of fish, 400 types of coral, and 4,000 types of shellfish.\n\nBut the reef is in trouble. As humans burn fossil fuels, the extra carbon dioxide makes the ocean warmer and more acidic. When water gets too warm, coral expels the colorful algae living inside it and turns white — this is called coral bleaching. Without the algae, the coral slowly starves and dies.\n\nIn 2016 and 2017, back-to-back bleaching events killed about half the coral in the northern Great Barrier Reef. Scientists were devastated. Some cried underwater while documenting the damage.\n\nBut there is hope. Marine biologists are breeding heat-resistant coral that can survive warmer waters. Local communities are reducing fertilizer runoff that feeds crown-of-thorns starfish, a coral predator. And young climate activists worldwide are pushing for faster action on reducing carbon emissions.\n\nThe Great Barrier Reef took 500,000 years to grow. Whether it survives depends on the choices our generation makes right now.",
+    "lesson": "Climate change threatens ecosystems that took hundreds of thousands of years to develop. Our choices today determine whether they survive.",
+    "tags": ["coral reef", "climate change", "ocean", "Australia", "conservation"]
+  },
+  {
+    "id": "s10_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Jadav Payeng: The Forest Man of India",
+    "body": "In 1979, a terrible flood washed a huge number of snakes onto a sandy island in the Brahmaputra River in Assam. Sixteen-year-old Jadav Payeng found the snakes dead on the hot sand — there were no trees for shade or shelter.\n\nHeartbroken, Jadav decided to plant trees on the barren sandbar. Every single day, he planted at least one seedling. He carried ants to the island in bamboo because ants help create fertile soil. He brought earthworms. He let cows graze to fertilize the ground.\n\nPeople called him crazy. \"Trees cannot grow on sand!\" they said. But Jadav kept planting. One tree a day, every day, for over 40 years.\n\nToday, Jadav's forest is larger than Central Park in New York — over 1,360 acres of dense forest that he planted entirely by himself. It is now home to elephants, rhinos, tigers, deer, rabbits, and hundreds of bird species. The island that was once barren sand is now called Molai Forest, named after Jadav.\n\nWhen journalists discovered his forest in 2008, the world was amazed. India's former President APJ Abdul Kalam called him the \"Forest Man of India.\" Jadav's response was humble: \"I just kept planting. One tree at a time.\"",
+    "lesson": "One person's consistent small actions over time can create something as vast and vital as an entire forest.",
+    "tags": ["India", "Assam", "trees", "persistence", "conservation", "wildlife"]
+  },
+  {
+    "id": "s10_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "India Has 18,000 Plant Species!",
+    "body": "India is one of the world's 17 mega-biodiverse countries. It has over 18,000 species of flowering plants, 500 species of reptiles, 1,200 species of birds, and 400 species of mammals. The Western Ghats alone have more unique species than all of Europe!",
+    "tags": ["India", "biodiversity", "Western Ghats", "nature"]
+  },
+  {
+    "id": "s10_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "The Ozone Layer Healed Itself!",
+    "body": "In the 1980s, scientists discovered a hole in the ozone layer caused by chemicals called CFCs in refrigerators and spray cans. The world banned CFCs through the Montreal Protocol in 1987. By 2023, the ozone hole is slowly healing and is expected to fully recover by 2066! It is proof that when the world acts together, environmental damage can be reversed.",
+    "tags": ["ozone", "atmosphere", "success story", "cooperation"]
+  },
+  {
+    "id": "s10_j_fact_03",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Cows Produce More Greenhouse Gas Than Cars!",
+    "body": "The world's 1.5 billion cows produce methane, a greenhouse gas 80 times more potent than carbon dioxide. Livestock farming produces about 14.5% of all greenhouse gas emissions — more than all the cars, trucks, ships, and planes in the world combined!",
+    "tags": ["climate change", "agriculture", "methane", "surprising"]
+  },
+  {
+    "id": "s10_j_framework_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The 5 Rs of Sustainability",
+    "body": "Go beyond just \"Reduce, Reuse, Recycle\" with the full 5 Rs:\n\n1. REFUSE: Say no to things you do not need. Refuse plastic bags, straws, and excess packaging. This is the most powerful R because it stops waste before it starts.\n\n2. REDUCE: Use less of everything. Shorter showers, less food waste, fewer clothes. Ask: \"Do I really need this?\"\n\n3. REUSE: Use things multiple times. Carry a water bottle, use cloth bags, hand down clothes to younger siblings.\n\n4. RECYCLE: When you cannot refuse, reduce, or reuse, recycle properly. Separate wet and dry waste. Clean containers before recycling.\n\n5. ROT: Compost food scraps and garden waste. It becomes rich soil for plants instead of methane-producing garbage in landfills.\n\nThe Rs are in order of impact. Refusing is 10 times more effective than recycling!",
+    "tags": ["framework", "sustainability", "waste", "practical", "recycling"]
+  },
+  {
+    "id": "s10_j_framework_02",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "Your Carbon Footprint",
+    "body": "Your carbon footprint is the total amount of greenhouse gases produced by your daily activities. Here is how to measure and reduce yours:\n\nBiggest contributors for Indian families:\n1. Electricity (especially AC and heating) — about 30%\n2. Transport (cars, flights) — about 25%\n3. Food (especially meat and dairy) — about 20%\n4. Buying stuff (clothes, gadgets) — about 15%\n5. Waste — about 10%\n\nEasy reductions:\n- Switch off lights and fans when leaving a room\n- Use public transport, cycle, or walk for short distances\n- Eat more local, seasonal vegetables and less imported food\n- Buy fewer things but better quality things that last longer\n- Plant one tree (it absorbs about 22 kg of CO2 per year)\n\nThe average Indian produces about 1.9 tons of CO2 per year. The global target to prevent dangerous climate change is about 2 tons per person. India is close, but rising consumption is pushing it higher.",
+    "tags": ["framework", "carbon footprint", "climate", "India", "practical"]
+  },
+  {
+    "id": "s10_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "How Sikkim Became India's First Organic State",
+    "body": "In 2003, Sikkim's Chief Minister Pawan Kumar Chamling made a bold announcement: the entire state would go 100% organic, banning all chemical fertilizers and pesticides. Many people laughed. Organic farming was considered a backwards step that would reduce crop yields and make food expensive.\n\nThe transition took 12 years of patient work. The government trained 66,000 farmers in organic methods. They provided free organic manure and compost. They built vermicompost centers in every village. Chemical fertilizers were gradually phased out over a decade, giving farmers time to adapt.\n\nIn 2016, Sikkim officially became India's first fully organic state. The results surprised everyone. While some crop yields initially dipped, soil health improved dramatically within a few years and yields recovered. Farmers' costs dropped because they no longer bought expensive chemicals. Tourism increased because visitors wanted to experience an organic paradise.\n\nSikkim won the UN's Future Policy Gold Award in 2018, beating 51 nominated policies from around the world. The state showed that environmental sustainability and economic prosperity are not opposites — they can reinforce each other.\n\nThe key lesson: Sikkim succeeded because the transition was gradual, supported by government, and designed with farmers at the center.",
+    "tags": ["India", "Sikkim", "organic farming", "sustainability", "agriculture"]
+  },
+  {
+    "id": "s10_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Tragedy of the Aral Sea",
+    "body": "In 1960, the Aral Sea between Kazakhstan and Uzbekistan was the fourth-largest lake in the world — 68,000 square kilometers of shimmering water teeming with fish. Twenty-four species of fish supported a fishing industry that employed 60,000 people. Port cities thrived on its shores.\n\nThen the Soviet Union diverted the rivers feeding the Aral Sea to irrigate cotton fields in the desert. They knew the sea would shrink, but they considered cotton production more important. Soviet planners called the Aral Sea \"nature's mistake\" — a waste of water that could be used for agriculture.\n\nBy 2007, the Aral Sea had shrunk to 10% of its original size. What was left was too salty for any fish to survive. The exposed seabed, contaminated with pesticides from decades of cotton farming, turned into a toxic dust bowl. Wind carried the poisoned dust to villages, causing skyrocketing rates of cancer, respiratory disease, and infant mortality.\n\nThe fishing industry collapsed. Ships sat rusting in the middle of a desert, kilometers from any water. Temperatures became more extreme because the sea no longer moderated the climate. It was one of the greatest environmental disasters in human history.\n\nPartial recovery has begun in the northern section, where Kazakhstan built a dam and restored water flow. Fish have returned to the North Aral Sea. But the southern section is likely gone forever — a permanent monument to the arrogance of believing we can reshape nature without consequences.",
+    "lesson": "Ecosystems are interconnected in ways we often do not understand. Disrupting one part can trigger catastrophic cascading failures.",
+    "tags": ["environment", "water", "Soviet Union", "disaster", "ecosystem", "history"]
+  },
+  {
+    "id": "s10_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Wangari Maathai: The Woman Who Planted 51 Million Trees",
+    "body": "In 1977, Wangari Maathai, a Kenyan biologist, noticed that the streams she played in as a child had dried up, the food crops her family grew had been replaced by commercial plantations, and women were walking farther and farther to collect firewood because the forests were disappearing.\n\nShe founded the Green Belt Movement with a simple idea: pay rural women a small amount to plant trees. Not exotic species, but indigenous trees that belonged in the Kenyan landscape. Each woman who planted and kept alive 100 seedlings earned enough to feed her family.\n\nThe establishment fought her viciously. She was beaten by police, thrown in jail, and called a \"crazy woman\" by Kenya's president. Large landowners and corrupt politicians who profited from deforestation saw her as a threat. She was divorced by her husband, who said she was \"too strong-minded for a woman.\"\n\nBut Maathai persisted. She connected environmental destruction to poverty, women's rights, and corrupt governance — understanding that these were not separate problems but symptoms of the same disease. \"You cannot protect the environment unless you empower people,\" she said.\n\nBy 2004, when she won the Nobel Peace Prize — the first African woman to do so — the Green Belt Movement had planted over 51 million trees and supported 900,000 women. Maathai showed the world that environmental action and social justice are inseparable.\n\nShe died in 2011, but her movement continues. Her legacy proves that one determined person with a simple, replicable idea can literally transform landscapes and societies.",
+    "lesson": "Environmental protection, poverty alleviation, and social justice are interconnected. Solving one often helps solve the others.",
+    "tags": ["Kenya", "Africa", "trees", "Nobel Prize", "women", "activism", "social justice"]
+  },
+  {
+    "id": "s10_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Earth Overshoot Day Gets Earlier Every Year",
+    "body": "Earth Overshoot Day marks the date when humanity has used more natural resources than the Earth can regenerate in a year. In 1970, it fell on December 29. In 2023, it fell on August 2. We are currently using resources equivalent to 1.7 Earths. If everyone lived like Americans, we would need 5.1 Earths!",
+    "tags": ["sustainability", "resources", "climate", "statistics"]
+  },
+  {
+    "id": "s10_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "India's Solar Revolution",
+    "body": "India's solar power capacity grew from just 2.6 GW in 2014 to over 70 GW by 2023, a 27-fold increase in under a decade. The cost of solar electricity in India dropped below coal for the first time in 2020. The International Solar Alliance, headquartered in India, now has 110 member countries.",
+    "tags": ["India", "solar", "energy", "climate", "technology"]
+  },
+  {
+    "id": "s10_s_fact_03",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Fungi May Save the Planet",
+    "body": "Scientists have discovered fungi that can eat plastic, turning polyurethane into organic matter in weeks instead of centuries. Mycorrhizal fungal networks underground connect 90% of plant species, sharing nutrients and warning signals. Some researchers believe engineering these fungal networks could be more effective at capturing carbon than planting trees!",
+    "tags": ["fungi", "science", "plastic", "carbon", "innovation"]
+  },
+  {
+    "id": "s10_s_framework_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Planetary Boundaries Framework",
+    "body": "In 2009, Johan Rockstrom identified 9 planetary boundaries — thresholds that, if crossed, could trigger irreversible environmental collapse:\n\n1. Climate Change — CO2 above 350 ppm (currently 420 ppm — CROSSED)\n2. Biodiversity Loss — species extinction rate (CROSSED, by 10-100x)\n3. Nitrogen/Phosphorus Cycles — fertilizer overuse (CROSSED)\n4. Ocean Acidification — approaching limit\n5. Land Use Change — deforestation (CROSSED)\n6. Freshwater Use — approaching limit\n7. Ozone Depletion — recovering (success story!)\n8. Atmospheric Aerosols — uncertain\n9. Novel Entities — chemicals and plastics (CROSSED in 2022)\n\nSix of nine boundaries have been crossed. But this framework is not about doom — it is about understanding WHERE we need to focus. The ozone recovery proves that boundaries can be un-crossed when humanity acts decisively.\n\nFor India specifically, the key boundaries are water (India has 18% of the world's population but only 4% of its fresh water), land use (deforestation in the Western Ghats and Northeast), and nitrogen (overuse of urea fertilizer in Punjab and Haryana).",
+    "tags": ["framework", "planetary boundaries", "climate", "science", "India"]
+  },
+  {
+    "id": "s10_s_framework_02",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Circular Economy vs Linear Economy",
+    "body": "Our current economy is LINEAR: Take resources from Earth, Make products, Use them briefly, Throw them away. This take-make-use-dispose model treats Earth as if it has infinite resources and infinite space for waste.\n\nA CIRCULAR economy redesigns this entire system:\n\n1. Design Out Waste: Products are designed from the start to be disassembled and reused. No waste exists because everything becomes input for something else.\n\n2. Keep Products in Use: Through repair, refurbishment, remanufacturing, and sharing. A drill is used for an average of 13 minutes in its entire life — why should everyone own one?\n\n3. Regenerate Natural Systems: Return biological materials safely to the earth (composting), and keep technical materials cycling in the economy.\n\nIndian examples of circular thinking:\n- Kabadiwallas: India's informal recycling sector recovers more material than most formal systems worldwide\n- Arvind Mills: Converts denim factory wastewater into usable water\n- ITC's Wellbeing Out of Waste: Sources recyclables from 3.6 million households\n\nThe Ellen MacArthur Foundation estimates that a circular economy could generate $4.5 trillion in economic benefits by 2030.",
+    "tags": ["framework", "circular economy", "sustainability", "India", "design"]
+  },
+  {
+    "id": "s10_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "Bhutan: The World's Only Carbon-Negative Country",
+    "body": "Bhutan, a tiny Himalayan kingdom of just 780,000 people, is the only country in the world that absorbs more carbon dioxide than it produces. Its forests cover 72% of the country and absorb over 6 million tonnes of CO2 annually, while the country emits only about 1.5 million tonnes.\n\nThis is not accidental. Bhutan's constitution requires that at least 60% of the country remain forested forever. The country measures progress not by GDP but by Gross National Happiness, which includes environmental conservation as a core pillar.\n\nBhutan generates almost all its electricity from hydropower — the rivers fed by Himalayan glaciers. It exports surplus clean electricity to India, its largest trading partner. The government provides free electricity to rural farmers to reduce firewood use.\n\nBut Bhutan faces a bitter irony. Despite being carbon-negative, it is one of the countries most threatened by climate change. Himalayan glaciers are melting at an alarming rate, forming dangerous glacial lakes that could burst and flood valleys. Rising temperatures are pushing mosquitoes to higher altitudes, bringing malaria to regions that never experienced it.\n\nBhutan's situation crystallizes the central injustice of climate change: the countries that contributed least to the problem suffer the most from its consequences. When Bhutan's Prime Minister addressed the UN, he asked: \"We are doing everything we can. But what about you?\"\n\nBhutan proves that carbon neutrality is achievable for a nation. The challenge is whether larger, industrialized nations have the political will to follow.",
+    "tags": ["Bhutan", "carbon negative", "climate", "forest", "Himalayas", "happiness"]
+  }
+]

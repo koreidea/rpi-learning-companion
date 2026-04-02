@@ -1,0 +1,178 @@
+[
+  {
+    "id": "s13_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Lemonade Stand",
+    "body": "It was a very hot summer day. Little Zoya was thirsty and made herself a glass of lemonade with sugar, water, and lemon. It was SO good!\n\nThen she had an idea. \"Everyone outside must be thirsty too!\" She made a big jug of lemonade and set up a table outside her house with a sign: \"Zoya's Lemonade — 5 Rupees.\"\n\nPeople walking by were hot and tired. They loved her lemonade! By evening, Zoya had sold 20 glasses and earned 100 rupees. She spent 30 rupees on lemons and sugar, so she made 70 rupees profit. \"I saw a problem — people were thirsty. And I solved it!\" Zoya said proudly.",
+    "lesson": "An entrepreneur is someone who sees a problem and creates a solution that people are happy to pay for!",
+    "tags": ["entrepreneurship", "problem-solving", "Indian context", "business"]
+  },
+  {
+    "id": "s13_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Rohan's Recycled Robot Toys",
+    "body": "Rohan loved making things. One day he made a robot from old cardboard boxes, bottle caps for eyes, and paper towel rolls for arms. His friends thought it was the coolest thing ever!\n\n\"Can you make one for me?\" asked Anita. \"Me too!\" said Vikram. Soon five friends wanted robots. Rohan's Amma helped him collect more boxes from the neighborhood recycling bins.\n\nHe made each robot different and special. Some had spinning arms. Some had opening mouths. He traded them for stickers, crayons, and even a toy car! Rohan learned that things other people throw away can become treasures when you use your imagination.",
+    "lesson": "You do not need expensive materials to create something valuable. Creativity and imagination are your best tools!",
+    "tags": ["creativity", "recycling", "making", "Indian context"]
+  },
+  {
+    "id": "s13_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Girl Who Sold Drawings",
+    "body": "Kavya drew pictures everywhere — on paper, on notebooks, even on the back of grocery lists! Her drawings of animals were so cheerful that people always smiled when they saw them.\n\nAt her school's annual fair, Kavya had an idea. She drew ten colorful animal pictures and put them up for sale at 10 rupees each. She also offered to draw someone's pet for 20 rupees if they showed her a photo.\n\nBy the end of the fair, she had sold all ten pictures and drawn five pet portraits! She earned 200 rupees by doing something she already loved. \"Work does not feel like work when you love doing it!\" she told her Nana.",
+    "lesson": "When you do what you love and other people enjoy it too, that can become a business!",
+    "tags": ["passion", "art", "earning", "Indian context"]
+  },
+  {
+    "id": "s13_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "The World's Youngest CEO Was 15!",
+    "body": "Suhas Gopinath from Bangalore, India, became the world's youngest CEO at age 14 when he founded Globals Inc., a software company, in 2000. He taught himself programming from a cyber cafe because his family could not afford a computer at home!",
+    "tags": ["India", "Bangalore", "young entrepreneur", "technology"]
+  },
+  {
+    "id": "s13_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Crayons Were an Accident!",
+    "body": "Crayola crayons were invented by accident! In 1903, a company making pigments for industrial use realized that their colorful wax sticks could be perfect for children. They sold a box of 8 crayons for 5 cents. Today Crayola makes 3 billion crayons every year!",
+    "tags": ["inventions", "accidents", "business", "creativity"]
+  },
+  {
+    "id": "s13_n_fact_03",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Cookie Monster Was a Businessman!",
+    "body": "The chocolate chip cookie was invented by accident in 1938 when Ruth Wakefield added broken chocolate pieces to her cookie dough expecting them to melt completely. They did not, and customers loved the result! She traded her recipe to Nestle for a lifetime supply of chocolate!",
+    "tags": ["food", "accidents", "business", "invention"]
+  },
+  {
+    "id": "s13_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "How Kiran Mazumdar-Shaw Built Biocon",
+    "body": "In 1978, a 25-year-old woman from Bangalore named Kiran Mazumdar-Shaw wanted to start a biotechnology company in India. The challenges were enormous. Banks refused to lend her money because she was young and female. Landlords would not rent her space. Scientists would not work for a startup run by a woman.\n\nShe started Biocon in the garage of her rented house in Bangalore with a seed capital of just 10,000 rupees. Her first product? Enzymes extracted from papaya for use in brewing beer and making cheese.\n\nWhen banks turned her down, she bootstrapped — reinvesting every rupee of profit back into the company. When male employees refused to report to a woman boss, she hired women scientists. When the government bureaucracy created obstacles, she navigated them with patience and persistence.\n\nOver four decades, she transformed Biocon from a garage enzyme company into Asia's largest biopharmaceutical company, valued at over $4 billion. Biocon now makes affordable insulin for millions of diabetics and develops cancer drugs.\n\nKiran became India's first woman to be worth over $1 billion. But what she is most proud of is making life-saving medicines affordable. Her insulin costs a fraction of what Western companies charge.\n\n\"An entrepreneur is not someone who has money,\" she says. \"It is someone who has an idea and the determination to make it happen.\"",
+    "lesson": "True entrepreneurship is about solving real problems with determination, even when everyone says it cannot be done.",
+    "tags": ["India", "Bangalore", "biotech", "women", "entrepreneurship", "determination"]
+  },
+  {
+    "id": "s13_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Story of Amul: India's White Revolution",
+    "body": "In the 1940s, dairy farmers in Kaira district, Gujarat, were being exploited. A British company called Polson had a monopoly and paid farmers very low prices for milk. Farmers had no choice because Polson was the only buyer.\n\nIn 1946, inspired by Sardar Vallabhbhai Patel, the farmers went on a milk strike. Then, under the leadership of Tribhuvandas Patel and a young engineer named Verghese Kurien, they formed their own cooperative: Amul (Anand Milk Union Limited).\n\nKurien, a mechanical engineer with no dairy background, innovated constantly. He developed technology to make milk powder from buffalo milk (something experts said was impossible), created long-life milk, and built a supply chain that collected milk from thousands of villages every day.\n\nThe genius of the Amul model was its structure. Farmers owned the cooperative. They elected the management. Profits went back to farmers. This eliminated the middlemen who had been taking most of the value.\n\nThe model was replicated across India through Operation Flood, making India the world's largest milk producer — surpassing the United States. Today, 190 million farmers are part of dairy cooperatives.\n\nAmul's famous butter girl mascot, designed in 1966, is now India's longest-running advertising campaign. But the real story is not about butter — it is about how collective entrepreneurship lifted millions of farmers out of poverty.",
+    "lesson": "Entrepreneurship is not always about one hero. Sometimes the most powerful businesses are built by communities working together.",
+    "tags": ["India", "Gujarat", "Amul", "cooperative", "dairy", "community"]
+  },
+  {
+    "id": "s13_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Failure Is Fertilizer: The Story of Dyson",
+    "body": "James Dyson was frustrated with his vacuum cleaner. It kept losing suction as the bag filled up. So he decided to build a better one. How hard could it be?\n\nVery hard, it turned out. Dyson built prototype after prototype. The first one did not work. Neither did the hundredth. Or the thousandth. He kept going. Five years and 5,127 prototypes later, he finally had a bagless vacuum cleaner that worked.\n\nBut the struggle was not over. He took his invention to every major vacuum company in the world. They all rejected it. Why? Because they made huge profits selling replacement bags. A bagless vacuum would destroy that business.\n\nDyson was nearly bankrupt. He had mortgaged his house and spent all his savings. But he believed in his product. He manufactured it himself and sold it directly.\n\nThe Dyson vacuum became the best-selling vacuum in the UK within 18 months. Today, Dyson is worth over $5 billion, and his company makes not just vacuums but hair dryers, air purifiers, and bladeless fans — all built on the same principle of questioning why things are done the way they are.\n\n\"I made 5,126 failures,\" Dyson says. \"And I made 5,126 discoveries. There is no such thing as failure. There is only learning.\"",
+    "lesson": "Every 'failure' is actually a discovery. Persistence through thousands of attempts is what separates successful entrepreneurs from everyone else.",
+    "tags": ["invention", "persistence", "failure", "UK", "engineering"]
+  },
+  {
+    "id": "s13_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "India Has the Third-Largest Startup Ecosystem!",
+    "body": "India has over 100,000 startups and more than 100 unicorns (startups valued over $1 billion). Bangalore alone has more startups than most countries. Indian founders also lead many Silicon Valley companies — the CEOs of Google, Microsoft, and Adobe are all of Indian origin!",
+    "tags": ["India", "startups", "Bangalore", "Silicon Valley"]
+  },
+  {
+    "id": "s13_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Most Millionaires Failed First!",
+    "body": "Walt Disney was fired from a newspaper for 'lacking imagination.' Steve Jobs was kicked out of the company he founded. JK Rowling was rejected by 12 publishers before Harry Potter was accepted. Oprah Winfrey was told she was 'unfit for TV.' The pattern is clear: rejection is not the end — it is just the beginning.",
+    "tags": ["failure", "success", "persistence", "inspiration"]
+  },
+  {
+    "id": "s13_j_fact_03",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "The MVP Approach",
+    "body": "The most successful startups do not build the perfect product first. They build a Minimum Viable Product (MVP) — the simplest version that works. Facebook started as a website just for Harvard students. Amazon started by only selling books. Airbnb started with three air mattresses in a living room. Start small, learn fast, improve constantly!",
+    "tags": ["MVP", "startups", "lean", "strategy"]
+  },
+  {
+    "id": "s13_j_framework_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The Problem-Solution Canvas",
+    "body": "Every great business starts with a problem worth solving. Use this canvas:\n\n1. PROBLEM: What specific problem do people face? Talk to at least 10 people who have this problem.\n\n2. WHO: Who exactly has this problem? Not \"everyone\" — be specific. \"Working mothers in Bangalore who cannot find healthy tiffin for their children.\"\n\n3. CURRENT SOLUTION: How do people solve this problem today? What is wrong with existing solutions?\n\n4. YOUR SOLUTION: How will you solve it better? What makes your approach unique?\n\n5. VALUE: Why would someone pay for your solution? How much time, money, or frustration does it save them?\n\n6. TEST: How can you test your idea with real people before building the full product? Can you make a simple version in one weekend?\n\nRemember: fall in love with the PROBLEM, not your solution. If your first solution does not work, try a different approach to the same problem.",
+    "tags": ["framework", "entrepreneurship", "problem-solving", "canvas"]
+  },
+  {
+    "id": "s13_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "How Flipkart Changed Indian E-Commerce",
+    "body": "In 2007, two IIT Delhi graduates, Sachin and Binny Bansal (not related despite sharing a surname), quit their comfortable jobs at Amazon in the US to start an online bookstore in India. Everyone thought they were crazy. India had low internet penetration, people did not trust online payments, and there was no reliable delivery infrastructure.\n\nThey started Flipkart from a two-bedroom apartment in Bangalore with 400,000 rupees. In the early days, they personally delivered books on a scooter. When customers did not trust online payments, they invented Cash on Delivery (COD) — pay the delivery person when your package arrives. This single innovation unlocked Indian e-commerce.\n\nThey built their own logistics network, Ekart, because existing courier services could not reliably deliver to India's vast geography. They created a mobile-first shopping experience because most Indians accessed the internet through phones, not computers.\n\nFlipkart's Big Billion Day sale in 2014 crashed their servers — they received so many orders that the technology could not handle it. Instead of hiding, they publicly apologized and used the failure to massively upgrade their infrastructure.\n\nIn 2018, Walmart acquired Flipkart for $16 billion — the largest e-commerce acquisition in history at that time. The Bansals had turned a 400,000 rupee investment into a $16 billion company in 11 years.\n\nFlipkart succeeded not by copying Amazon but by solving uniquely Indian problems: trust deficit (COD), last-mile delivery in chaotic cities (Ekart), and mobile-first consumers.",
+    "tags": ["India", "Flipkart", "e-commerce", "startup", "Bangalore", "innovation"]
+  },
+  {
+    "id": "s13_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Lean Startup: Build, Measure, Learn",
+    "body": "In 2008, Eric Ries was watching startups burn through millions of dollars building products that nobody wanted. Companies would spend two years in stealth mode, building the \"perfect\" product, only to launch and discover that customers did not care.\n\nRies proposed a radical alternative: the Lean Startup methodology. Instead of building the complete product first, start with a hypothesis about what customers want. Build the simplest possible version to test that hypothesis (the MVP). Put it in front of real customers. Measure their actual behavior (not what they say they will do, but what they actually do). Learn from the data. Then either persevere (if the hypothesis was right) or pivot (change direction based on what you learned).\n\nThe classic example is Zappos, the shoe company. Founder Nick Swinmurn did not build a website and stock thousands of shoes. He went to local shoe stores, photographed their inventory, posted the photos online, and when someone ordered, he ran to the store, bought the shoes at full price, and shipped them. He lost money on every sale — but he proved that people would buy shoes online without trying them on first. That validated the hypothesis.\n\nDropbox's MVP was even simpler: just a 3-minute video showing how the product would work. Sign-ups went from 5,000 to 75,000 overnight. They had not written a single line of code for the actual product yet.\n\nIn India, companies like Ola started by simply calling existing taxi drivers and connecting them with passengers via phone calls before building any app. Swiggy tested food delivery with a team of four people taking orders on the phone before building technology.\n\nThe Lean Startup principle applies beyond business. It is a way of thinking: do not assume you know the answer. Test your assumptions as cheaply and quickly as possible. Let reality guide your decisions.",
+    "lesson": "The fastest path to success is rapid experimentation: build small, test with real users, learn from data, and iterate relentlessly.",
+    "tags": ["lean startup", "MVP", "entrepreneurship", "methodology", "India"]
+  },
+  {
+    "id": "s13_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Narayana Murthy and the Infosys Model",
+    "body": "In 1981, seven engineers pooled together 10,000 rupees — borrowed from their wives — to start a software company in Pune. Their leader was N.R. Narayana Murthy, a man who had spent his youth flirting with socialism before a life-changing experience being detained and beaten in Bulgaria convinced him that entrepreneurial capitalism was a better path to reducing poverty.\n\nInfosys started with no capital, no computers, and no office. Their first project earned them $1,000. For the first decade, growth was slow and painful. India in the 1980s was the License Raj era — starting a business required navigating a maze of government permissions. Getting a telephone line took years. Importing a computer required special approval.\n\nMurthy nearly gave up multiple times. His co-founder Nandan Nilekani later recalled that Murthy once asked each founder if they wanted to quit or continue. Six wanted to sell the company. Murthy offered to buy them out, and they changed their minds.\n\nWhat made Infosys different was its culture. Murthy instituted radical transparency: all financial information was shared with employees. He created one of India's first ESOPs (Employee Stock Option Plans), making hundreds of employees millionaires when Infosys went public. He paid himself a modest salary while sharing wealth broadly.\n\nInfosys helped create India's IT revolution, which now employs over 5 million people and generates $250 billion in revenue. Murthy proved that Indian companies could compete with the best in the world while maintaining ethical standards.\n\nAt 75, Murthy's net worth exceeded $4 billion, but he lived in the same modest Bangalore house and flew economy class. \"Compassionate capitalism,\" he called it — building wealth but distributing it fairly and living simply.",
+    "lesson": "Building a great company is about creating a culture of transparency, ethics, and shared prosperity — not just maximizing profits.",
+    "tags": ["India", "Infosys", "IT", "ethics", "entrepreneurship", "Bangalore"]
+  },
+  {
+    "id": "s13_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "90% of Startups Fail — And That Is OK!",
+    "body": "About 90% of startups fail. The top reasons: building something nobody wants (42%), running out of cash (29%), wrong team (23%). But serial entrepreneurs (who start multiple companies) have a higher success rate with each attempt. Failure is not the opposite of success — it is the tuition fee.",
+    "tags": ["startups", "failure", "statistics", "learning"]
+  },
+  {
+    "id": "s13_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "The Average Successful Founder Is 45!",
+    "body": "Despite the myth of the young genius founder, a study of 2.7 million US startups found that the average age of a successful startup founder is 45. Founders in their 50s are twice as likely to build a high-growth company as founders in their 20s. Experience, networks, and domain knowledge matter more than youthful energy.",
+    "tags": ["age", "startups", "research", "myth-busting"]
+  },
+  {
+    "id": "s13_s_fact_03",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "India's Street Vendors Are Entrepreneurs!",
+    "body": "India has over 10 million street vendors — one of the world's largest populations of micro-entrepreneurs. They collectively generate an estimated $10 billion annually. A chaiwalla typically earns 500-1500 rupees daily with almost zero startup capital. The entrepreneurial spirit is not limited to IIT graduates and Silicon Valley — it is alive in every Indian bazaar.",
+    "tags": ["India", "street vendors", "micro-entrepreneurship", "economics"]
+  },
+  {
+    "id": "s13_s_framework_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "The Business Model Canvas",
+    "body": "Alexander Osterwalder's Business Model Canvas maps any business on one page with nine building blocks:\n\n1. Customer Segments: Who are you creating value for? Be specific.\n2. Value Proposition: What problem do you solve? Why choose you over alternatives?\n3. Channels: How do customers discover and buy your product?\n4. Customer Relationships: How do you acquire, retain, and grow customers?\n5. Revenue Streams: How does the business make money? Pricing model?\n6. Key Resources: What do you need? (People, technology, capital, intellectual property)\n7. Key Activities: What must you do exceptionally well?\n8. Key Partners: Who helps you that you could not do alone?\n9. Cost Structure: What are your biggest costs?\n\nThe power is in how these blocks connect. For example, Jio's business model:\n- Value Prop: Cheapest 4G data in the world\n- Revenue: Low per-user revenue but massive volume (400 million users)\n- Key Resource: $25 billion infrastructure investment\n- Partners: Content creators (JioCinema, JioSaavn)\n- Strategy: Make money on digital services, not connectivity\n\nEvery student should be able to canvas any business they admire in 10 minutes. It is the single most useful business thinking tool.",
+    "tags": ["framework", "business model", "canvas", "strategy", "Jio", "India"]
+  },
+  {
+    "id": "s13_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "Nykaa: Building a Beauty Empire Online",
+    "body": "In 2012, Falguni Nayar was 49 years old, a former investment banker at Kotak Mahindra Bank with no experience in beauty or e-commerce. She quit her comfortable job to start Nykaa, an online beauty and cosmetics platform.\n\nHer insight was specific: Indian women wanted premium beauty products but could not easily access them. International brands had limited distribution in India. Department stores had poorly trained staff. And most importantly, Indian women wanted education about beauty products — not just a store, but a guide.\n\nNykaa's differentiator was content. Every product page had detailed reviews, tutorials, and how-to videos. They hired beauty advisors who could guide customers through chat and video calls. They created a YouTube channel with beauty tips that accumulated millions of views.\n\nCritically, Nayar chose a capital-efficient model initially. Instead of buying and stocking inventory, Nykaa operated on a marketplace model, reducing risk. As the brand grew, they launched their own private-label products with higher margins.\n\nThe transition to physical retail was strategic too. Nykaa opened stores in malls where customers could try products in person, then reorder online at their convenience — bridging online and offline seamlessly.\n\nIn 2021, Nykaa went public with a valuation of $13 billion, making Falguni Nayar India's wealthiest self-made woman. At 58, she proved that entrepreneurship has no age limit, and that deep understanding of your customer's unmet needs matters more than technical expertise.\n\nNykaa's success also highlights an important trend: India's female consumers are a massively underserved market. Companies that genuinely understand and serve women's needs have an enormous growth opportunity.",
+    "tags": ["India", "Nykaa", "beauty", "women", "e-commerce", "entrepreneurship"]
+  }
+]

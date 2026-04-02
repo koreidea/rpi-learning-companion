@@ -1,0 +1,214 @@
+[
+  {
+    "id": "s02_n_story_01",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Tiny Bricks That Built a Dream",
+    "body": "Long ago in Denmark, a man named Ole Kirk made wooden toys in his little carpentry shop. He loved making children smile. One day, he started making small plastic bricks that could snap together. He called them LEGO, which means \"play well\" in Danish.\n\nAt first, not many people bought them. But children who played with LEGO bricks found something magical: with the same bricks, you could build a house, a car, a castle, or a spaceship! There was no right or wrong way to play.\n\nToday, LEGO is one of the biggest toy companies in the world. All because one carpenter believed that the best toy is one that lets YOU decide what to make.",
+    "lesson": "The best creations come when you are free to imagine anything!",
+    "tags": ["LEGO", "toys", "imagination", "Denmark"]
+  },
+  {
+    "id": "s02_n_story_02",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "The Mistake That Became Play-Doh",
+    "body": "Did you know that Play-Doh was never meant to be a toy? It was made to clean dirty wallpaper! A company made this soft, squishy stuff so people could roll it on their walls to pick up soot and dust.\n\nBut then a teacher noticed that her students loved squishing and shaping the wallpaper cleaner. They made animals, flowers, and funny faces with it. She told the company, and they had a brilliant idea: take out the cleaning chemicals, add fun colors, and sell it as a toy!\n\nSometimes the best inventions happen by accident. What matters is noticing when something can be used in a new way.",
+    "lesson": "A mistake can become something wonderful if you look at it with creative eyes!",
+    "tags": ["accidents", "invention", "Play-Doh", "creativity"]
+  },
+  {
+    "id": "s02_n_story_03",
+    "type": "story",
+    "ageBand": "nursery",
+    "title": "Sticky Notes Were an Oops!",
+    "body": "A scientist named Spencer Silver was trying to make super strong glue. But his glue was terrible! It was so weak that things stuck on could be peeled right off. He thought he had failed.\n\nYears later, his friend Art Fry had a problem. The little paper bookmarks in his songbook at church kept falling out. He remembered Spencer's weak glue and put some on his bookmarks. They stuck to the page but peeled off without tearing anything!\n\nAnd that is how Post-it Notes were born! They are now used by millions of people every single day. One person's failed experiment became another person's perfect solution.",
+    "lesson": "There is no such thing as a useless idea. It might just be waiting for the right problem!",
+    "tags": ["Post-it", "invention", "accident", "glue"]
+  },
+  {
+    "id": "s02_n_fact_01",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Crayons Are Older Than You Think!",
+    "body": "The first crayons were made from a mix of charcoal and oil over 40,000 years ago! Cave painters used them to draw animals on cave walls. Your crayons are related to the very first art tools ever made.",
+    "tags": ["art", "history", "crayons"]
+  },
+  {
+    "id": "s02_n_fact_02",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Mozart Started at Age 5",
+    "body": "Wolfgang Amadeus Mozart started composing music when he was just five years old! He wrote his first piece for the piano before most kids learn to read chapter books.",
+    "tags": ["music", "Mozart", "prodigy"]
+  },
+  {
+    "id": "s02_n_fact_03",
+    "type": "fun_fact",
+    "ageBand": "nursery",
+    "title": "Velcro Came From a Dog Walk",
+    "body": "A Swiss man was walking his dog when he noticed burrs sticking to the dog's fur. He looked at them under a microscope and saw tiny hooks! He copied that design to invent Velcro. Nature is the world's best inventor!",
+    "tags": ["invention", "nature", "Velcro"]
+  },
+  {
+    "id": "s02_j_story_01",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Gutenberg's Big Mash-Up",
+    "body": "In the 1440s, books were copied by hand, one at a time. It took a monk about a year to copy a single book. Only the very rich could afford them. A German goldsmith named Johannes Gutenberg wanted to change that, but how do you copy books faster?\n\nGutenberg did something brilliantly creative: he combined two ideas that already existed. He knew about wine presses that could push down with great force. He knew about coin punches that stamped letters into metal. What if he made individual metal letter stamps and used a wine press to push them onto paper?\n\nHis printing press could produce pages hundreds of times faster than hand copying. Within fifty years, there were millions of books in Europe. Ideas could spread. Education became possible for ordinary people. Many historians say Gutenberg's printing press was the most important invention of the last thousand years.\n\nThe key insight is that Gutenberg did not invent anything truly new. Wine presses existed. Metal stamps existed. Ink existed. Paper existed. His creativity lay in combining existing things in a new way.",
+    "lesson": "Creativity is often not about inventing something brand new, but about combining existing ideas in ways nobody thought of before.",
+    "tags": ["Gutenberg", "printing", "invention", "combination", "history"]
+  },
+  {
+    "id": "s02_j_story_02",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "Sudha Murty and the Unexpected Solution",
+    "body": "Sudha Murty, the chairperson of Infosys Foundation and a beloved Indian author, is known for solving problems in ways nobody expects. When she wanted to provide clean drinking water to thousands of villages in Karnataka, the conventional approach was to build big water treatment plants. It was expensive and slow.\n\nInstead, she found a simpler approach: she funded small, community-managed water purification units that villagers themselves could maintain. Rather than one big solution, she created thousands of small ones. Each village felt ownership of their water system and took care of it.\n\nSudha Murty also noticed that rural hospitals had equipment but no trained people to use it. Instead of hiring expensive city doctors, she set up training programs for local youth. The creative leap was seeing that the problem was not equipment but people.\n\nHer approach to philanthropy shows a different kind of creativity: the creativity of simplicity. Instead of grand, complex solutions, she finds the simplest path that actually works.",
+    "lesson": "Sometimes the most creative solution is the simplest one that nobody else considered because they were too busy thinking big.",
+    "tags": ["Sudha Murty", "India", "simplicity", "philanthropy", "water"]
+  },
+  {
+    "id": "s02_j_story_03",
+    "type": "story",
+    "ageBand": "junior",
+    "title": "The Bicycle That Flies",
+    "body": "When Orville and Wilbur Wright decided to build a flying machine in the 1890s, they had no engineering degrees, no funding, and no laboratory. They ran a bicycle repair shop in Ohio, USA. The well-funded Smithsonian Institution was also trying to build an airplane and had spent over 50,000 dollars (a fortune at the time) on their attempt.\n\nThe Wright Brothers spent less than 1,000 dollars. Their advantage? Creative problem-solving. Instead of building a powerful engine first (like everyone else), they focused on control. They watched birds tilt their wings to turn and invented \"wing warping\" to steer their plane. They built a small wind tunnel from a wooden box to test wing shapes.\n\nOn December 17, 1903, their Flyer I lifted off the ground at Kitty Hawk. The first flight lasted just 12 seconds and covered 36 meters, shorter than the wingspan of a modern Boeing 747. But it changed the world forever.\n\nThe Smithsonian's aircraft, despite ten times the budget, crashed into the Potomac River. Money cannot buy creative thinking.",
+    "lesson": "Creative breakthroughs come from asking the right question, not from having the biggest budget.",
+    "tags": ["Wright Brothers", "flight", "innovation", "resourcefulness"]
+  },
+  {
+    "id": "s02_j_fact_01",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "The Microwave Was an Accident",
+    "body": "Percy Spencer was testing a military radar device called a magnetron when he noticed the chocolate bar in his pocket had melted! He experimented by putting popcorn kernels near the device and they popped. The microwave oven was born from a melted candy bar.",
+    "tags": ["invention", "accident", "microwave", "food"]
+  },
+  {
+    "id": "s02_j_fact_02",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "India Invented Shampoo",
+    "body": "The word \"shampoo\" comes from the Hindi word \"champo\" meaning to press or massage. Indians were using herbal hair cleansers made from gooseberry, sapindus, and hibiscus hundreds of years before the rest of the world adopted the practice.",
+    "tags": ["India", "invention", "shampoo", "history"]
+  },
+  {
+    "id": "s02_j_fact_03",
+    "type": "fun_fact",
+    "ageBand": "junior",
+    "title": "Pixar's First Movie Almost Failed",
+    "body": "Toy Story, the world's first fully computer-animated feature film, was nearly cancelled because Disney thought the characters were too mean. Pixar rewrote the entire script in two weeks. That pressure led to the beloved version we know today.",
+    "tags": ["Pixar", "movies", "animation", "persistence"]
+  },
+  {
+    "id": "s02_j_fw_01",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "SCAMPER: The Idea Machine",
+    "body": "SCAMPER is a checklist that helps you generate creative ideas by modifying something that already exists. Each letter stands for a different way to change things:\n\nS - Substitute: What if you replaced one part with something else? (What if a chair was made of cardboard?)\nC - Combine: What if you merged two things? (Phone + Camera = Smartphone)\nA - Adapt: What if you adjusted it for a new use? (Skateboard wheels on a suitcase = rolling luggage)\nM - Modify: What if you made it bigger, smaller, or changed its shape?\nP - Put to another use: What if you used it for something completely different?\nE - Eliminate: What if you removed a part? (Wireless headphones removed the cable)\nR - Reverse: What if you flipped it or did the opposite?\n\nTry it right now: pick any object near you and run through all seven SCAMPER questions. You will be surprised how many ideas pop up!",
+    "tags": ["SCAMPER", "framework", "brainstorming", "creativity"]
+  },
+  {
+    "id": "s02_j_fw_02",
+    "type": "framework",
+    "ageBand": "junior",
+    "title": "The \"Yes, And\" Rule of Brainstorming",
+    "body": "In brainstorming, there is one golden rule borrowed from improvisational comedy: never say \"No, but.\" Always say \"Yes, and.\"\n\nWhen someone suggests an idea, instead of saying why it will not work, you build on it. \"What if our school project was about underwater cities?\" Instead of \"That is impossible,\" you say \"Yes, and the buildings could be shaped like bubbles to handle water pressure!\"\n\nThis rule works because creativity needs safety. If people fear their ideas will be shot down, they stop sharing them. The wilder the idea, the more likely it leads somewhere unexpected and brilliant. You can always evaluate ideas later. The brainstorming phase is for generating as many ideas as possible.\n\nStudies show that groups using \"Yes, and\" produce three times more ideas than groups that critique ideas during brainstorming.",
+    "tags": ["brainstorming", "improv", "teamwork", "framework"]
+  },
+  {
+    "id": "s02_j_case_01",
+    "type": "case_study",
+    "ageBand": "junior",
+    "title": "How a 15-Year-Old Invented a Cancer Test",
+    "body": "Jack Andraka was 15 years old when a close family friend died of pancreatic cancer. He learned that the existing test for this cancer was 60 years old, expensive, and often detected the cancer too late. Jack decided to find a better way.\n\nHe spent months reading free scientific papers online, learning about carbon nanotubes and antibodies. He came up with an idea for a simple paper test strip, similar to a diabetic test strip, that could detect pancreatic cancer early. He emailed 200 professors asking if he could use their lab to develop his idea. 199 said no. One said yes.\n\nWorking after school and on weekends, Jack developed a test that was 168 times faster, 26,000 times cheaper, and 400 times more sensitive than the existing test. He won the grand prize at the Intel International Science and Engineering Fair.\n\nJack did not have special training or expensive equipment. He had curiosity, internet access, and the creative courage to imagine that a teenager could solve a problem that had stumped experts for decades.",
+    "lesson": "You do not need permission or credentials to be creative. You need curiosity and the willingness to hear 199 rejections to find one yes.",
+    "tags": ["teenager", "science", "cancer", "persistence", "innovation"]
+  },
+  {
+    "id": "s02_s_story_01",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "How Jugaad Became a Global Innovation Philosophy",
+    "body": "In India, there is a word that has no direct English translation: jugaad. It roughly means finding a clever, low-cost solution to a problem using whatever resources are available. A farmer who converts a motorcycle engine to power an irrigation pump is doing jugaad. A street vendor who uses a car battery and an inverter to run a blender is doing jugaad.\n\nFor years, Western business schools dismissed jugaad as a crude, temporary fix. But something shifted in the 2000s. As global companies faced tightening budgets and emerging market competition, they realized that jugaad was not just a survival strategy. It was a fundamentally different approach to innovation.\n\nProfessors at Cambridge and INSEAD wrote books about \"frugal innovation\" inspired by Indian jugaad. General Electric developed a portable electrocardiogram machine in India for 500 dollars instead of the usual 10,000 dollars and then sold it globally. Tata Motors created the Nano car by questioning every assumption about what a car \"needs.\"\n\nThe distinction between jugaad and sloppy work is important. Good jugaad is creative, resourceful, and functional. It is not about cutting corners on safety or quality. It is about questioning whether the expensive, complex approach is truly necessary or just habitual.\n\nToday, \"frugal innovation\" is taught at business schools worldwide, and its roots trace directly back to the creative resourcefulness of everyday Indians solving real problems with limited means.",
+    "lesson": "True creativity is not about having unlimited resources. It is about seeing possibilities where others see only constraints.",
+    "tags": ["India", "jugaad", "frugal innovation", "resourcefulness", "business"]
+  },
+  {
+    "id": "s02_s_story_02",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "Leonardo da Vinci: The Original Cross-Pollinator",
+    "body": "Leonardo da Vinci painted the Mona Lisa and The Last Supper, two of the most famous paintings in history. But calling him just a painter would be like calling the ocean just water. He was simultaneously an anatomist, engineer, botanist, geologist, musician, architect, and inventor.\n\nWhat made Leonardo extraordinary was not that he was talented in many fields, but that he actively connected ideas across them. His anatomical studies of how muscles attach to bones directly improved how he painted the human figure. His observations of water flowing around obstacles inspired his designs for military fortifications. His studies of bird flight led to helicopter designs centuries ahead of their time.\n\nLeonardo kept detailed notebooks, over 7,000 pages of which survive today, filled with drawings, observations, and ideas. He wrote in mirror script, right to left, possibly because he was left-handed and it prevented smudging. His notebooks show a mind that never stopped asking \"What if?\" and \"Why?\"\n\nModern creativity research has validated what Leonardo instinctively knew: the most creative people are those who connect ideas from different domains. Steve Jobs, who studied calligraphy, brought typography to personal computers. Biomimicry takes solutions from nature and applies them to engineering. The most innovative companies actively hire people with diverse backgrounds.\n\nLeonardo's lesson for us is clear: do not silo your interests. The more different things you learn about, the more raw material your brain has for making creative connections.",
+    "lesson": "Creativity thrives at the intersection of different fields. The wider your curiosity, the more original your ideas.",
+    "tags": ["Leonardo", "Renaissance", "interdisciplinary", "creativity", "notebooks"]
+  },
+  {
+    "id": "s02_s_story_03",
+    "type": "story",
+    "ageBand": "senior",
+    "title": "The Chennai Floods and Citizen Innovation",
+    "body": "In December 2015, Chennai experienced its worst flooding in over a century. Roads became rivers. Thousands were stranded on rooftops. Government rescue operations were overwhelmed. In this crisis, ordinary citizens became extraordinary innovators.\n\nWithin hours, volunteers created a Google Doc listing people who needed rescue, complete with addresses and number of people stranded. Others built an open-source web application that matched rescue requests with volunteer boats. Fishermen from nearby villages brought their boats to the city, navigating flooded streets. A group of college students created a crowdsourced map showing which roads were passable.\n\nWhat made Chennai's citizen response remarkable was its speed and its decentralized creativity. Nobody waited for permission or a master plan. Individuals identified specific problems and created specific solutions. A restaurant owner with a large kitchen started cooking free meals. Tech workers set up charging stations for phones. Auto-rickshaw drivers ferried people for free.\n\nThis kind of distributed creativity, where thousands of people independently innovate in response to a shared challenge, is increasingly recognized as more powerful than top-down planned responses. It is the same principle behind open-source software and Wikipedia.\n\nThe Chennai floods showed that creativity is not just an individual trait. It is a collective capacity that emerges when people feel empowered to act on their ideas without waiting for instructions.",
+    "lesson": "The most powerful form of creativity is not a single genius having a breakthrough. It is thousands of ordinary people each solving one small piece of a big problem.",
+    "tags": ["Chennai", "India", "disaster", "collective creativity", "citizen innovation"]
+  },
+  {
+    "id": "s02_s_fact_01",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Creativity Peaks During Boredom",
+    "body": "Research from the University of Central Lancashire found that people who were bored before a creative task generated significantly more creative ideas. Your brain uses idle time to make unexpected connections. Constant stimulation from phones may actually reduce your creative capacity.",
+    "tags": ["boredom", "research", "neuroscience"]
+  },
+  {
+    "id": "s02_s_fact_02",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Walking Boosts Creativity by 60%",
+    "body": "A Stanford study found that walking increases creative output by an average of 60%. Steve Jobs, Charles Darwin, and Beethoven were all famous walkers who used strolling to generate ideas. The effect works whether you walk outdoors or on a treadmill facing a blank wall.",
+    "tags": ["walking", "research", "creativity", "Stanford"]
+  },
+  {
+    "id": "s02_s_fact_03",
+    "type": "fun_fact",
+    "ageBand": "senior",
+    "title": "Children Are More Creative Than Adults",
+    "body": "NASA gave a creativity test to 1,600 five-year-olds and found that 98% scored at the \"genius\" level. When the same children were tested at age 10, only 30% scored at that level. By adulthood, just 2%. Education systems that emphasize one right answer may systematically reduce creative thinking.",
+    "tags": ["children", "creativity", "NASA", "education"]
+  },
+  {
+    "id": "s02_s_fw_01",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "Design Thinking for Creative Problem Solving",
+    "body": "Design Thinking is a five-stage process used by companies like Apple, Google, and IDEO to create innovative solutions:\n\n1. Empathize: Deeply understand the people you are solving for. Do not assume you know what they need. Observe them. Talk to them. Feel what they feel.\n\n2. Define: Clearly articulate the problem. \"Students are bored\" is not a good problem statement. \"Students lose engagement after 15 minutes because lectures are passive\" is better.\n\n3. Ideate: Generate as many solutions as possible. No judging. Quantity over quality. Wild ideas welcome. Use SCAMPER, brainstorming, mind maps.\n\n4. Prototype: Build a quick, rough version of your best idea. It does not need to be perfect. A prototype can be a cardboard model, a sketch, or a role-play.\n\n5. Test: Put your prototype in front of real users. Watch what happens. Listen to feedback. Then go back to any earlier stage and iterate.\n\nThe power of Design Thinking is that it is human-centered. It starts with people, not technology. And it embraces failure as learning. In India, the National Innovation Foundation uses similar approaches to scale grassroots innovations from rural inventors.",
+    "tags": ["design thinking", "framework", "IDEO", "innovation", "process"]
+  },
+  {
+    "id": "s02_s_fw_02",
+    "type": "framework",
+    "ageBand": "senior",
+    "title": "The Six Thinking Hats",
+    "body": "Edward de Bono's Six Thinking Hats method helps groups think creatively by separating different types of thinking. Instead of everyone arguing from their fixed position, everyone puts on the same \"hat\" at the same time:\n\nWhite Hat: Facts only. What data do we have? What data do we need?\nRed Hat: Emotions and intuition. How do we feel about this? No justification needed.\nBlack Hat: Caution. What could go wrong? What are the risks?\nYellow Hat: Optimism. What are the benefits? Best-case scenario?\nGreen Hat: Creativity. New ideas, alternatives, possibilities. No criticism allowed.\nBlue Hat: Process. What hat should we wear next? Are we making progress?\n\nThe brilliance is that it separates the critic from the creator. When everyone wears the Green Hat, even the most cautious person is free to suggest wild ideas because that is what the hat demands. When everyone wears the Black Hat, even the most enthusiastic person must look for flaws.\n\nThis method is used in boardrooms of Fortune 500 companies, in classrooms, and even in conflict resolution. It works because it acknowledges that creative and critical thinking are both necessary but should not happen simultaneously.",
+    "tags": ["de Bono", "thinking hats", "framework", "group creativity"]
+  },
+  {
+    "id": "s02_s_case_01",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "How Aravind Eye Care Serves Millions at Almost No Cost",
+    "body": "Dr. Govindappa Venkataswamy, known as Dr. V, retired from government service at age 58 and was told his productive years were over. Instead, he founded Aravind Eye Care in Madurai in 1976 with just 11 beds.\n\nDr. V's creative insight came from an unexpected source: McDonald's. He studied how McDonald's standardized processes to serve millions of customers efficiently and cheaply. He applied the same principle to cataract surgery. By standardizing surgical procedures, training specialized teams, and having surgeons move between multiple operating tables while nurses prepared the next patient, Aravind's surgeons could perform 2,000 surgeries per year compared to the Indian average of 400.\n\nThe business model was equally creative. Patients who could pay were charged fair prices. That revenue subsidized free surgeries for patients who could not. About 60% of Aravind's patients pay nothing or almost nothing. Yet Aravind is financially self-sustaining with margins higher than most for-profit hospitals.\n\nAravind also tackled the supply chain. Imported intraocular lenses cost 200 dollars each. Aravind created its own manufacturing facility, Aurolab, which now produces lenses for 2 dollars each and supplies them to 130 countries.\n\nToday, Aravind is the largest eye care provider in the world, having performed over 7 million surgeries. It is a masterclass in creative thinking: applying fast-food assembly line principles to surgery, using cross-subsidization to serve the poor, and vertically integrating to cut costs. All of this from a retired doctor in a small South Indian city.",
+    "lesson": "The most transformative creativity often comes from applying proven ideas from one industry to a completely different one.",
+    "tags": ["India", "healthcare", "Aravind", "innovation", "social enterprise"]
+  },
+  {
+    "id": "s02_s_case_02",
+    "type": "case_study",
+    "ageBand": "senior",
+    "title": "Wikipedia: Creativity Through Radical Trust",
+    "body": "In 2001, Jimmy Wales launched an experiment based on a radical creative idea: what if anyone in the world could write and edit an encyclopedia? Experts predicted disaster. Surely people would vandalize it, fill it with nonsense, and it would be worthless within months.\n\nTwo decades later, Wikipedia has over 60 million articles in more than 300 languages, written and maintained by volunteers. It is the seventh most visited website in the world. It has essentially replaced traditional encyclopedias, including Encyclopaedia Britannica, which stopped printing in 2012 after 244 years.\n\nThe creative breakthrough was not technological. It was philosophical. Wales trusted that most people, given the opportunity to contribute knowledge, would do so honestly. The wiki technology that allowed anyone to edit any page already existed. What was new was the belief that collective human goodness and curiosity would outweigh vandalism and misinformation.\n\nWikipedia is not perfect. It has biases, particularly underrepresenting women and non-Western topics. Its coverage in Indian languages is far less comprehensive than in English. But the model has proven that distributed, volunteer-driven creation can produce something of enormous value.\n\nThe Hindi Wikipedia has over 160,000 articles, and efforts are growing in Tamil, Telugu, Bengali, and other Indian languages. Every article written in an Indian language makes knowledge more accessible to millions who do not read English.",
+    "lesson": "Sometimes the most creative act is trusting people to do the right thing and building a system that makes it easy for them.",
+    "tags": ["Wikipedia", "open source", "trust", "collective intelligence"]
+  }
+]

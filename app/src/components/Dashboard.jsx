@@ -4,7 +4,11 @@ export default function Dashboard({ pin }) {
   const [dashboard, setDashboard] = useState(null)
   const [live, setLive] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isListening, setIsListening] = useState(false)
+  const [textInput, setTextInput] = useState('')
+  const [sendStatus, setSendStatus] = useState(null)
   const liveRef = useRef(null)
+  const recognitionRef = useRef(null)
 
   useEffect(() => {
     fetchDashboard()
@@ -67,6 +71,7 @@ export default function Dashboard({ pin }) {
     listening:  { color: 'bg-blue-100 text-blue-800', dot: 'bg-blue-500', label: 'Listening...' },
     processing: { color: 'bg-yellow-100 text-yellow-800', dot: 'bg-yellow-500', label: 'Thinking...' },
     speaking:   { color: 'bg-purple-100 text-purple-800', dot: 'bg-purple-500', label: 'Speaking...' },
+    dancing:    { color: 'bg-pink-100 text-pink-800', dot: 'bg-pink-500', label: 'Dancing!' },
     setup:      { color: 'bg-gray-100 text-gray-800', dot: 'bg-gray-400', label: 'Setup required' },
     loading:    { color: 'bg-orange-100 text-orange-800', dot: 'bg-orange-500', label: 'Loading models...' },
     error:      { color: 'bg-red-100 text-red-800', dot: 'bg-red-500', label: 'Error' },
@@ -78,6 +83,19 @@ export default function Dashboard({ pin }) {
   const canStop = ['processing', 'speaking'].includes(currentState)
 
   const botEnabled = live?.bot_enabled ?? true
+  const volume = live?.volume ?? 80
+
+  async function setVolume(level) {
+    try {
+      await fetch('/api/control/volume', {
+        method: 'PUT',
+        headers: { 'X-Parent-PIN': pin, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ level }),
+      })
+    } catch (err) {
+      console.error('Volume set error:', err)
+    }
+  }
 
   async function toggleBot() {
     try {
@@ -100,6 +118,89 @@ export default function Dashboard({ pin }) {
     } catch (err) {
       console.error('Stop response error:', err)
     }
+  }
+
+  async function sendTextToBot(text) {
+    if (!text.trim()) return
+    setSendStatus('sending')
+    try {
+      const res = await fetch('/api/control/send-text', {
+        method: 'POST',
+        headers: { 'X-Parent-PIN': pin, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text.trim() }),
+      })
+      const data = await res.json()
+      if (data.status === 'sent') {
+        setSendStatus('sent')
+        setTextInput('')
+        setTimeout(() => setSendStatus(null), 2000)
+      } else {
+        setSendStatus('error')
+      }
+    } catch (err) {
+      console.error('Send text error:', err)
+      setSendStatus('error')
+    }
+  }
+
+  async function triggerWake() {
+    try {
+      await fetch('/api/control/wake', {
+        method: 'POST',
+        headers: { 'X-Parent-PIN': pin },
+      })
+    } catch (err) {
+      console.error('Wake trigger error:', err)
+    }
+  }
+
+  function toggleSpeechRecognition() {
+    if (isListening) {
+      // Stop listening
+      if (recognitionRef.current) {
+        recognitionRef.current.abort()
+        recognitionRef.current = null
+      }
+      setIsListening(false)
+      return
+    }
+
+    // Start speech recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      alert('Speech recognition is not supported in this browser. Use the text input instead.')
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'en-IN'
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+    recognition.continuous = false
+
+    recognition.onresult = (event) => {
+      const text = event.results[0][0].transcript
+      recognition.stop()
+      recognitionRef.current = null
+      setIsListening(false)
+      sendTextToBot(text)
+    }
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error)
+      recognition.abort()
+      recognitionRef.current = null
+      setIsListening(false)
+    }
+
+    recognition.onend = () => {
+      recognitionRef.current = null
+      setIsListening(false)
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+    setIsListening(true)
   }
 
   return (
@@ -275,6 +376,113 @@ export default function Dashboard({ pin }) {
             }`}
           />
         </button>
+      </div>
+
+      {/* Remote Mic — Speak from phone */}
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">📱</span>
+          <span className="font-semibold text-sm">Remote Voice</span>
+          <span className="text-xs text-gray-400">Speak from your phone to the bot</span>
+        </div>
+        <div className="flex gap-2">
+          {/* Big mic button */}
+          <button
+            onClick={toggleSpeechRecognition}
+            className={`flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl shadow-lg transition-all ${
+              isListening
+                ? 'bg-red-500 animate-pulse scale-110'
+                : 'bg-blue-500 hover:bg-blue-600 active:scale-95'
+            }`}
+          >
+            {isListening ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
+                <rect x="5" y="5" width="10" height="10" rx="1" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+              </svg>
+            )}
+          </button>
+          {/* Text input fallback */}
+          <div className="flex-1 flex gap-2">
+            <input
+              type="text"
+              value={textInput}
+              onChange={(e) => setTextInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') sendTextToBot(textInput) }}
+              placeholder="Or type a message..."
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+            <button
+              onClick={() => sendTextToBot(textInput)}
+              disabled={!textInput.trim() || sendStatus === 'sending'}
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-xl text-sm font-medium transition-colors"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+        {isListening && (
+          <div className="mt-2 text-center text-sm text-red-500 animate-pulse">
+            Listening... speak now
+          </div>
+        )}
+        {sendStatus === 'sent' && (
+          <div className="mt-2 text-center text-sm text-green-600">
+            Sent to bot!
+          </div>
+        )}
+        {sendStatus === 'error' && (
+          <div className="mt-2 text-center text-sm text-red-600">
+            Failed to send. Try again.
+          </div>
+        )}
+        {/* Wake word button */}
+        <div className="mt-3 flex justify-center">
+          <button
+            onClick={triggerWake}
+            className="px-4 py-1.5 bg-green-100 hover:bg-green-200 text-green-700 rounded-full text-xs font-medium transition-colors"
+          >
+            Wake Bot
+          </button>
+        </div>
+      </div>
+
+      {/* Volume Control */}
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{volume === 0 ? '🔇' : volume < 40 ? '🔈' : volume < 70 ? '🔉' : '🔊'}</span>
+            <span className="font-semibold text-sm">Volume</span>
+          </div>
+          <span className="text-sm font-medium text-gray-600">{volume}%</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setVolume(Math.max(0, volume - 10))}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold transition-colors"
+          >
+            −
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            value={volume}
+            onChange={(e) => setVolume(Number(e.target.value))}
+            className="flex-1 h-2 rounded-full appearance-none bg-gray-200 accent-blue-500 cursor-pointer"
+          />
+          <button
+            onClick={() => setVolume(Math.min(100, volume + 10))}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold transition-colors"
+          >
+            +
+          </button>
+        </div>
       </div>
 
       {/* Device Status */}
