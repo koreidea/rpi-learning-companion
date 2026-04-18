@@ -112,10 +112,10 @@ class CarChassis:
                 pass
             self._rfcomm_proc = None
 
-        # Release rfcomm binding
+        # Release rfcomm binding (needs sudo like bind)
         try:
             proc = await asyncio.create_subprocess_exec(
-                "rfcomm", "release", "0",
+                "sudo", "rfcomm", "release", "0",
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.DEVNULL,
             )
@@ -254,13 +254,17 @@ class CarChassis:
             logger.debug("Pairing script: {} (may already be paired)", e)
 
     async def _open_rfcomm(self, mac: str) -> bool:
-        """Bind rfcomm0 to the HC-05 and open serial port."""
+        """Bind rfcomm0 to the HC-05 and open serial port.
+
+        Uses sudo for rfcomm commands since binding requires root
+        privileges to create /dev/rfcomm0 device node.
+        """
         import serial  # pyserial
 
         # Release any existing rfcomm binding
         try:
             proc = await asyncio.create_subprocess_exec(
-                "rfcomm", "release", "0",
+                "sudo", "rfcomm", "release", "0",
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.DEVNULL,
             )
@@ -269,19 +273,30 @@ class CarChassis:
             pass
 
         # Bind rfcomm0 to the HC-05 MAC (channel 1 is default SPP)
+        # Must use sudo — rfcomm bind needs root to create device nodes
         proc = await asyncio.create_subprocess_exec(
-            "rfcomm", "bind", "0", mac, "1",
+            "sudo", "rfcomm", "bind", "0", mac, "1",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await proc.communicate()
+        err_text = (stderr or b"").decode().strip()
         if proc.returncode != 0:
-            err = (stderr or b"").decode().strip()
-            logger.error("rfcomm bind failed: {}", err)
+            logger.error("rfcomm bind failed (rc={}): {}", proc.returncode, err_text)
+            return False
+        # rfcomm bind can return 0 but print errors to stderr
+        if "Can't create device" in err_text or "Operation not permitted" in err_text:
+            logger.error("rfcomm bind permission error: {}", err_text)
             return False
 
         # Wait for device to appear
-        await asyncio.sleep(1)
+        for _ in range(5):
+            await asyncio.sleep(0.5)
+            if Path("/dev/rfcomm0").exists():
+                break
+        else:
+            logger.error("rfcomm0 device did not appear after bind")
+            return False
 
         # Open serial connection
         rfcomm_dev = "/dev/rfcomm0"
@@ -289,14 +304,24 @@ class CarChassis:
             self._serial = serial.Serial(
                 rfcomm_dev,
                 baudrate=9600,
-                timeout=1,
-                write_timeout=1,
+                timeout=2,
+                write_timeout=2,
             )
             self._connected = True
             logger.info("Car chassis connected via {} (MAC: {})", rfcomm_dev, mac)
             return True
         except Exception as e:
             logger.error("Failed to open {}: {}", rfcomm_dev, e)
+            # Clean up the binding
+            try:
+                release = await asyncio.create_subprocess_exec(
+                    "sudo", "rfcomm", "release", "0",
+                    stdout=asyncio.subprocess.DEVNULL,
+                    stderr=asyncio.subprocess.DEVNULL,
+                )
+                await release.wait()
+            except Exception:
+                pass
             return False
 
     # ── Command Sending ───────────────────────────────────────────

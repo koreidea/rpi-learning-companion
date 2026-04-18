@@ -1,0 +1,16 @@
+[Unit]
+Description=HairoBot WiFi AP Fallback & Captive Portal
+Before=rpi-bot.service
+After=NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 /home/hairobo/rpi-bot/rpi/scripts/wifi_manager.py
+Restart=no
+TimeoutStartSec=120
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

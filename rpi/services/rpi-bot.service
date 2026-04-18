@@ -1,7 +1,7 @@
 [Unit]
 Description=RPi Learning Companion
-After=network.target bluetooth.target sound.target pipewire.service
-Wants=bluetooth.target
+After=network.target bluetooth.target sound.target pipewire.service wifi-setup.service
+Wants=bluetooth.target wifi-setup.service
 
 [Service]
 Type=simple

@@ -39,6 +39,11 @@ class SharedState:
     # Remote text input (from phone/web dashboard)
     remote_text: Optional[str] = None
 
+    # Image-to-sketch tracing data (from phone upload)
+    sketch_from_image: Optional[dict] = None
+    # Line art trace image (PIL Image from phone upload)
+    trace_image: Optional[dict] = None
+
     # Current interaction info (ephemeral, not persisted)
     current_transcript: Optional[str] = None
     current_response: Optional[str] = None
@@ -65,6 +70,16 @@ class SharedState:
     menu_open: bool = False
     menu_index: int = 0                 # Currently highlighted menu item
 
+    # Card UI (replaces old settings panel on long press)
+    card_mode: str = "off"              # off, cards, arts, encyclopedia, settings
+    card_index: int = 0                 # Selected card in horizontal scroll
+    card_sub_index: int = 0             # Selected item within a card's sub-screen
+    card_scroll_offset: int = 0         # Scroll offset for sub-screens
+    card_action: Optional[str] = None   # Pending action from card selection
+
+    # AI-generated story (from Imagine Story)
+    generated_story: Optional[dict] = None  # {"title":..., "pages":[{"text":..., "image": PIL},...]}
+
     # Projector
     projector_connected: bool = False   # True when HDMI projector detected
     projector_mode: str = "off"         # off, flashcard, alphabet, numbers, imagine
@@ -75,6 +90,14 @@ class SharedState:
     car_connecting: bool = False      # True while scanning/connecting
     car_mac: Optional[str] = None     # Saved HC-05 MAC address
     follow_mode: bool = False         # True when follow mode is active
+
+    # WiFi info (refreshed periodically)
+    wifi_ssid: Optional[str] = None
+    wifi_ip: Optional[str] = None
+    wifi_signal: int = 0              # Signal strength 0-100
+
+    # Language
+    language: str = "en"              # en, hi, te
 
     # Latency tracking
     interaction_start_time: Optional[float] = None

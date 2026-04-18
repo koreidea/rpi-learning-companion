@@ -154,10 +154,20 @@ class AudioCapture:
         loop = asyncio.get_event_loop()
 
         while True:
-            raw = await loop.run_in_executor(
-                None, self._stream.read, self._capture_chunk, False
-            )
-            yield self._convert_chunk(raw)
+            try:
+                raw = await loop.run_in_executor(
+                    None, self._stream.read, self._capture_chunk, False
+                )
+                yield self._convert_chunk(raw)
+            except OSError as e:
+                err_msg = str(e).lower()
+                if "stream closed" in err_msg or "not open" in err_msg or "-9988" in str(e):
+                    logger.warning("Audio stream died mid-read, recovering...")
+                    self.close()
+                    await asyncio.sleep(0.5)
+                    self._ensure_stream()
+                    continue
+                raise
 
     def read_chunk(self) -> np.ndarray:
         """Synchronous read of one chunk at 16kHz (for wake word thread)."""
@@ -179,7 +189,25 @@ class AudioCapture:
             logger.debug("Mic re-opened after close")
             return
 
-        if self._stream.is_stopped():
+        # Check if stream is alive — if not, close and re-create
+        try:
+            is_active = self._stream.is_active()
+            is_stopped = self._stream.is_stopped()
+        except Exception:
+            # Stream object is broken
+            logger.warning("Mic stream object broken, re-opening...")
+            self.close()
+            self._ensure_stream()
+            return
+
+        if not is_active and not is_stopped:
+            # Stream is in a dead state (not active, not stopped = closed/errored)
+            logger.warning("Mic stream dead (not active, not stopped), re-opening...")
+            self.close()
+            self._ensure_stream()
+            return
+
+        if is_stopped:
             try:
                 self._stream.start_stream()
             except Exception as e:

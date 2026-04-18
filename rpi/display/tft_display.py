@@ -1184,13 +1184,16 @@ class TFTDisplay:
                     or not params_converged(self._cur_params, self._tgt_params)
                 )
 
-                # Check if menu is open
+                # Check if menu or card UI is open
                 menu_open = getattr(self._state_ref, 'menu_open', False)
-                if menu_open:
-                    needs_draw = True  # always redraw when menu is open
+                card_mode = getattr(self._state_ref, 'card_mode', 'off')
+                if menu_open or card_mode != 'off':
+                    needs_draw = True  # always redraw for UI overlays
 
                 if needs_draw:
-                    if menu_open:
+                    if card_mode != 'off':
+                        self._render_cards(card_mode)
+                    elif menu_open:
                         self._render_menu()
                     else:
                         self._render_frame(state_color)
@@ -1208,6 +1211,10 @@ class TFTDisplay:
     # ── FPS Logic ──────────────────────────────────────────────────────────
 
     def _get_target_fps(self) -> float:
+        # Card UI needs responsive redraw
+        card_mode = getattr(self._state_ref, 'card_mode', 'off')
+        if card_mode != 'off':
+            return FPS_ACTIVE
         if self._anim.game_active:
             return FPS_ACTIVE
         if self._anim.blink_phase >= 0:
@@ -1373,6 +1380,717 @@ class TFTDisplay:
             ("Car",        car_str),
             ("Sleep",      ""),
         ]
+
+    # ── Card UI Rendering ──────────────────────────────────────────────
+
+    def _render_cards(self, card_mode: str):
+        """Render the card-based UI overlay."""
+        if card_mode == "cards":
+            self._render_card_selector()
+        elif card_mode == "arts":
+            self._render_arts_screen()
+        elif card_mode == "encyclopedia":
+            self._render_encyclopedia_screen()
+        elif card_mode == "settings":
+            self._render_settings_screen()
+        elif card_mode == "settings_lang":
+            self._render_language_screen()
+        elif card_mode == "settings_wifi":
+            self._render_wifi_screen()
+        elif card_mode == "stories":
+            self._render_stories_screen()
+        elif card_mode == "story_reader":
+            self._render_story_page()
+        elif card_mode == "skill_detail":
+            self._render_skill_detail()
+
+    def _render_card_selector(self):
+        """Render horizontally scrollable main cards (4 visible, swipe for more)."""
+        from display.card_ui import MAIN_CARDS, draw_icon
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 10, 20))
+
+        scroll = getattr(self._state_ref, 'card_scroll_offset', 0)
+        card_w = 105
+        card_h = 140
+        gap = 8
+        visible = 4
+        total_w = visible * (card_w + gap) - gap
+        start_x = (WIDTH - total_w) // 2
+        card_y = (HEIGHT - card_h) // 2 - 10
+
+        # Title
+        self._draw.text(
+            (WIDTH // 2 - 24, 12), "MENU",
+            fill=(150, 150, 180), font=self._font_large,
+        )
+
+        # Left scroll arrow
+        if scroll > 0:
+            self._draw.text((4, HEIGHT // 2 - 10), "<", fill=(120, 120, 160), font=self._font_large)
+
+        # Right scroll arrow
+        if scroll + visible < len(MAIN_CARDS):
+            self._draw.text((WIDTH - 18, HEIGHT // 2 - 10), ">", fill=(120, 120, 160), font=self._font_large)
+
+        for vi in range(visible):
+            ci = vi + scroll
+            if ci >= len(MAIN_CARDS):
+                break
+            card = MAIN_CARDS[ci]
+            x = start_x + vi * (card_w + gap)
+
+            # Card background
+            bg = card["bg"]
+            border_color = card["color"]
+            border_w = 2
+
+            self._draw.rounded_rectangle(
+                [x, card_y, x + card_w, card_y + card_h],
+                radius=12, fill=bg, outline=border_color, width=border_w,
+            )
+
+            # Icon area
+            icon_cx = x + card_w // 2
+            icon_cy = card_y + 35
+            draw_icon(self._draw, card["icon"], icon_cx, icon_cy, 28, card["color"])
+
+            # Title text
+            title_color = card["color"]
+            tw = len(card["title"]) * 8
+            self._draw.text(
+                (icon_cx - tw // 2, card_y + 60), card["title"],
+                fill=title_color, font=self._font_small,
+            )
+            if card["subtitle"]:
+                sw = len(card["subtitle"]) * 8
+                self._draw.text(
+                    (icon_cx - sw // 2, card_y + 78), card["subtitle"],
+                    fill=title_color, font=self._font_small,
+                )
+
+        # Page dots
+        dot_y = card_y + card_h + 12
+        total = len(MAIN_CARDS)
+        dot_total_w = total * 12
+        dot_start_x = (WIDTH - dot_total_w) // 2
+        for i in range(total):
+            dx = dot_start_x + i * 12
+            in_view = scroll <= i < scroll + visible
+            c = (150, 150, 180) if in_view else (50, 50, 70)
+            self._draw.ellipse([dx, dot_y, dx + 6, dot_y + 6], fill=c)
+
+        # Bottom hint
+        self._draw.text(
+            (WIDTH // 2 - 80, HEIGHT - 18), "Touch a card to select",
+            fill=(80, 80, 100), font=self._font_small,
+        )
+
+    def _render_arts_screen(self):
+        """Render Arts & Crafts sub-screen with drawing list."""
+        from display.card_ui import ARTS_ITEMS
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(15, 10, 20))
+
+        sub_idx = getattr(self._state_ref, 'card_sub_index', 0)
+        scroll = getattr(self._state_ref, 'card_scroll_offset', 0)
+
+        # Header
+        self._draw.rounded_rectangle([0, 0, WIDTH, 36], radius=0, fill=(50, 25, 10))
+        self._draw.text(
+            (12, 8), "< Arts & Crafts",
+            fill=(255, 160, 80), font=self._font_large,
+        )
+
+        # Grid layout — 2 columns, scrollable rows
+        col_w = 228
+        row_h = 58
+        gap = 6
+        cols = 2
+        start_y = 42
+        visible_rows = 4  # fits in 320 - 42 - 20 = 258px → 4 rows of 58+6
+
+        items = ARTS_ITEMS
+        total_rows = (len(items) + cols - 1) // cols
+
+        for i, item in enumerate(items):
+            row = i // cols
+            col = i % cols
+            visual_row = row - scroll
+
+            if visual_row < 0 or visual_row >= visible_rows:
+                continue
+
+            x = 6 + col * (col_w + gap)
+            y = start_y + visual_row * (row_h + gap)
+            is_sel = (i == sub_idx)
+
+            # Item card
+            bg = (40, 30, 45) if not is_sel else (60, 40, 70)
+            border = item["color"] if is_sel else (50, 50, 60)
+            self._draw.rounded_rectangle(
+                [x, y, x + col_w, y + row_h],
+                radius=8, fill=bg, outline=border, width=2 if is_sel else 1,
+            )
+
+            # Color dot
+            dot_x = x + 14
+            dot_cy = y + row_h // 2
+            self._draw.ellipse(
+                [dot_x - 6, dot_cy - 6, dot_x + 6, dot_cy + 6],
+                fill=item["color"],
+            )
+
+            # Name and description
+            name_color = (255, 255, 255) if is_sel else (180, 180, 200)
+            desc_color = (180, 180, 200) if is_sel else (120, 120, 140)
+            self._draw.text((dot_x + 14, y + 8), item["name"], fill=name_color, font=self._font_small)
+            self._draw.text((dot_x + 14, y + 28), item["desc"], fill=desc_color, font=self._font_small)
+
+        # Scroll indicators
+        if scroll > 0:
+            self._draw.text((WIDTH // 2 - 5, 38), "^", fill=(100, 100, 120), font=self._font_small)
+        if scroll + visible_rows < total_rows:
+            self._draw.text((WIDTH // 2 - 5, HEIGHT - 18), "v", fill=(100, 100, 120), font=self._font_small)
+
+    def _render_encyclopedia_screen(self):
+        """Render Encyclopedia sub-screen with 21st century skills."""
+        from display.card_ui import SKILLS_DATA
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 12, 25))
+
+        sub_idx = getattr(self._state_ref, 'card_sub_index', 0)
+        scroll = getattr(self._state_ref, 'card_scroll_offset', 0)
+
+        # Header
+        self._draw.rounded_rectangle([0, 0, WIDTH, 36], radius=0, fill=(20, 30, 55))
+        self._draw.text(
+            (12, 8), "< Encyclopedia",
+            fill=(120, 170, 255), font=self._font_large,
+        )
+
+        # List layout — vertical scrollable list
+        row_h = 52
+        gap = 4
+        start_y = 42
+        visible = 5  # fits in 320 - 42 - 10 = 268px → 5 rows of 52+4
+
+        for i, skill in enumerate(SKILLS_DATA):
+            visual_i = i - scroll
+            if visual_i < 0 or visual_i >= visible:
+                continue
+
+            y = start_y + visual_i * (row_h + gap)
+            is_sel = (i == sub_idx)
+
+            # Row background
+            bg = (25, 28, 45) if not is_sel else (35, 40, 65)
+            border = skill["color"] if is_sel else (40, 45, 60)
+            self._draw.rounded_rectangle(
+                [6, y, WIDTH - 6, y + row_h],
+                radius=8, fill=bg, outline=border, width=2 if is_sel else 1,
+            )
+
+            # Color bar on left
+            self._draw.rounded_rectangle(
+                [6, y, 14, y + row_h],
+                radius=4, fill=skill["color"],
+            )
+
+            # Skill name and short description
+            name_color = (255, 255, 255) if is_sel else (180, 180, 200)
+            short_color = skill["color"] if is_sel else (120, 120, 140)
+            self._draw.text((22, y + 6), skill["name"], fill=name_color, font=self._font_small)
+            self._draw.text((22, y + 26), skill["short"], fill=short_color, font=self._font_small)
+
+            # Activity count
+            act_count = len(skill.get("activities", []))
+            act_text = f"{act_count}"
+            self._draw.text(
+                (WIDTH - 35, y + 16), act_text,
+                fill=(100, 100, 120), font=self._font_small,
+            )
+
+        # Scroll indicators
+        if scroll > 0:
+            self._draw.text((WIDTH // 2 - 5, 38), "^", fill=(100, 100, 120), font=self._font_small)
+        if scroll + visible < len(SKILLS_DATA):
+            self._draw.text((WIDTH // 2 - 5, HEIGHT - 16), "v", fill=(100, 100, 120), font=self._font_small)
+
+    def _render_skill_detail(self):
+        """Render a single skill's detail view with description and activities."""
+        from display.card_ui import SKILLS_DATA
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 12, 25))
+
+        sub_idx = getattr(self._state_ref, 'card_sub_index', 0)
+        if sub_idx >= len(SKILLS_DATA):
+            return
+        skill = SKILLS_DATA[sub_idx]
+
+        # Header with skill color
+        self._draw.rounded_rectangle([0, 0, WIDTH, 40], radius=0, fill=skill["color"])
+        self._draw.text((12, 10), f"< {skill['name']}", fill=(255, 255, 255), font=self._font_large)
+
+        # Description
+        desc = skill["desc"]
+        # Word wrap at ~45 chars per line
+        lines = []
+        words = desc.split()
+        line = ""
+        for w in words:
+            if len(line + " " + w) > 45:
+                lines.append(line)
+                line = w
+            else:
+                line = (line + " " + w).strip()
+        if line:
+            lines.append(line)
+
+        y = 50
+        for ln in lines:
+            self._draw.text((15, y), ln, fill=(200, 210, 230), font=self._font_small)
+            y += 20
+
+        # Activities section
+        y += 10
+        self._draw.text((15, y), "Activities:", fill=(180, 180, 200), font=self._font_small)
+        y += 24
+
+        act_idx = getattr(self._state_ref, 'card_scroll_offset', 0)
+        activities = skill.get("activities", [])
+        for i, act in enumerate(activities):
+            if y + 36 > HEIGHT - 10:
+                break
+            is_sel = (i == act_idx)
+            bg = (30, 35, 55) if not is_sel else (45, 50, 75)
+            border = skill["color"] if is_sel else (40, 45, 60)
+            self._draw.rounded_rectangle(
+                [12, y, WIDTH - 12, y + 32],
+                radius=6, fill=bg, outline=border, width=2 if is_sel else 1,
+            )
+            color = (255, 255, 255) if is_sel else (170, 170, 190)
+            self._draw.text((24, y + 7), act, fill=color, font=self._font_small)
+            y += 38
+
+        # Bottom hint
+        self._draw.text(
+            (WIDTH // 2 - 60, HEIGHT - 16), "Tap to start activity",
+            fill=(80, 80, 100), font=self._font_small,
+        )
+
+    def _render_settings_screen(self):
+        """Render settings with large, touch-friendly tiles in a 2x4 grid."""
+        from display.card_ui import SETTINGS_ITEMS, draw_icon
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 10, 20))
+
+        # Header
+        self._draw.rounded_rectangle([0, 0, WIDTH, 36], radius=0, fill=(35, 35, 50))
+        self._draw.text((12, 6), "< Settings", fill=(180, 180, 220), font=self._font_large)
+
+        # 2x4 grid of setting tiles
+        cols, rows = 2, 4
+        gap = 6
+        pad_x, pad_top, pad_bot = 6, 40, 4
+        tile_w = (WIDTH - pad_x * 2 - gap * (cols - 1)) // cols   # ~231
+        tile_h = (HEIGHT - pad_top - pad_bot - gap * (rows - 1)) // rows  # ~67
+
+        scroll = getattr(self._state_ref, 'card_scroll_offset', 0)
+
+        # Get live values for display
+        vol = getattr(self._state_ref, 'volume', 80)
+        mode = getattr(self._state_ref, 'llm_mode', 'offline')
+        mode_str = mode.value if hasattr(mode, 'value') else str(mode)
+        mic_on = getattr(self._state_ref, 'mic_enabled', True)
+        proj_on = getattr(self._state_ref, 'projector_connected', False)
+        car_conn = getattr(self._state_ref, 'car_connected', False)
+        car_ing = getattr(self._state_ref, 'car_connecting', False)
+        wifi_ssid = getattr(self._state_ref, 'wifi_ssid', None)
+        language = getattr(self._state_ref, 'language', 'en')
+
+        lang_names = {"en": "English", "hi": "Hindi", "te": "Telugu"}
+        values = {
+            "volume": f"{vol}%",
+            "language": lang_names.get(language, language),
+            "mode": mode_str.capitalize(),
+            "mic": "On" if mic_on else "Off",
+            "projector": "On" if proj_on else "Off",
+            "car": "Linking..." if car_ing else ("Linked" if car_conn else "Off"),
+            "wifi": wifi_ssid or "Not connected",
+            "sleep": "Zzz",
+        }
+        # Color for active/inactive values
+        active_ids = set()
+        if mic_on:
+            active_ids.add("mic")
+        if proj_on:
+            active_ids.add("projector")
+        if car_conn:
+            active_ids.add("car")
+        if wifi_ssid:
+            active_ids.add("wifi")
+
+        for idx, item in enumerate(SETTINGS_ITEMS):
+            col = idx % cols
+            row = idx // cols
+            x = pad_x + col * (tile_w + gap)
+            y = pad_top + row * (tile_h + gap)
+
+            item_id = item["id"]
+            color = item["color"]
+            val = values.get(item_id, "")
+            is_active = item_id in active_ids
+
+            # Tile background
+            bg = (25, 28, 40)
+            self._draw.rounded_rectangle(
+                [x, y, x + tile_w, y + tile_h],
+                radius=10, fill=bg, outline=(50, 50, 65), width=1,
+            )
+
+            # Icon on the left
+            icon_cx = x + 28
+            icon_cy = y + tile_h // 2
+            draw_icon(self._draw, item["icon"], icon_cx, icon_cy, 22, color)
+
+            # Label — bigger text
+            label_x = x + 52
+            self._draw.text(
+                (label_x, y + 10), item["label"],
+                fill=(220, 220, 240), font=self._font_large,
+            )
+
+            # Value — right side, color-coded
+            val_color = color if is_active else (120, 120, 140)
+            # Truncate long wifi names
+            display_val = val[:14] + ".." if len(val) > 16 else val
+            val_w = len(display_val) * 8
+            self._draw.text(
+                (x + tile_w - val_w - 10, y + 14), display_val,
+                fill=val_color, font=self._font_small,
+            )
+
+            # Active indicator dot
+            if is_active:
+                self._draw.ellipse(
+                    [x + tile_w - 14, y + tile_h - 14, x + tile_w - 6, y + tile_h - 6],
+                    fill=(80, 220, 100),
+                )
+
+    def _render_language_screen(self):
+        """Render language selection screen with big buttons."""
+        from display.card_ui import LANGUAGES
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 10, 20))
+
+        # Header
+        self._draw.rounded_rectangle([0, 0, WIDTH, 40], radius=0, fill=(60, 50, 15))
+        self._draw.text((12, 8), "< Language", fill=(255, 200, 80), font=self._font_large)
+
+        current_lang = getattr(self._state_ref, 'language', 'en')
+
+        # 3 large buttons vertically
+        btn_h = 72
+        gap = 12
+        start_y = 55
+        pad_x = 20
+
+        for i, lang in enumerate(LANGUAGES):
+            y = start_y + i * (btn_h + gap)
+            is_current = (lang["id"] == current_lang)
+
+            # Button background
+            bg = (35, 40, 55) if not is_current else (25, 50, 80)
+            border = lang["color"] if is_current else (50, 55, 70)
+            bw = 3 if is_current else 1
+            self._draw.rounded_rectangle(
+                [pad_x, y, WIDTH - pad_x, y + btn_h],
+                radius=12, fill=bg, outline=border, width=bw,
+            )
+
+            # Flag/code badge
+            badge_x = pad_x + 18
+            badge_cy = y + btn_h // 2
+            badge_color = lang["color"]
+            self._draw.rounded_rectangle(
+                [badge_x - 8, badge_cy - 16, badge_x + 28, badge_cy + 16],
+                radius=6, fill=badge_color,
+            )
+            self._draw.text(
+                (badge_x - 2, badge_cy - 10), lang["flag"],
+                fill=(255, 255, 255), font=self._font_small,
+            )
+
+            # Language name — big
+            self._draw.text(
+                (badge_x + 44, y + 12), lang["name"],
+                fill=(240, 240, 255) if is_current else (180, 180, 200),
+                font=self._font_large,
+            )
+
+            # Check mark if selected
+            if is_current:
+                cx = WIDTH - pad_x - 30
+                cy = y + btn_h // 2
+                self._draw.text(
+                    (cx, cy - 12), "OK",
+                    fill=badge_color, font=self._font_large,
+                )
+
+    def _render_wifi_screen(self):
+        """Render WiFi info screen with connection details."""
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 10, 20))
+
+        # Header
+        self._draw.rounded_rectangle([0, 0, WIDTH, 40], radius=0, fill=(15, 50, 45))
+        self._draw.text((12, 8), "< WiFi Info", fill=(60, 230, 190), font=self._font_large)
+
+        ssid = getattr(self._state_ref, 'wifi_ssid', None)
+        ip = getattr(self._state_ref, 'wifi_ip', None)
+        signal = getattr(self._state_ref, 'wifi_signal', 0)
+
+        pad = 20
+        y = 55
+
+        if ssid:
+            # Connected — show details in big cards
+            # SSID card
+            self._draw.rounded_rectangle(
+                [pad, y, WIDTH - pad, y + 60],
+                radius=10, fill=(25, 35, 50), outline=(50, 60, 80), width=1,
+            )
+            self._draw.text((pad + 15, y + 6), "Network", fill=(100, 120, 150), font=self._font_small)
+            self._draw.text((pad + 15, y + 26), ssid, fill=(220, 240, 255), font=self._font_large)
+            y += 72
+
+            # IP card
+            self._draw.rounded_rectangle(
+                [pad, y, WIDTH - pad, y + 60],
+                radius=10, fill=(25, 35, 50), outline=(50, 60, 80), width=1,
+            )
+            self._draw.text((pad + 15, y + 6), "IP Address", fill=(100, 120, 150), font=self._font_small)
+            ip_display = ip or "Unknown"
+            self._draw.text((pad + 15, y + 26), ip_display, fill=(220, 240, 255), font=self._font_large)
+            y += 72
+
+            # Signal strength card
+            self._draw.rounded_rectangle(
+                [pad, y, WIDTH - pad, y + 60],
+                radius=10, fill=(25, 35, 50), outline=(50, 60, 80), width=1,
+            )
+            self._draw.text((pad + 15, y + 6), "Signal Strength", fill=(100, 120, 150), font=self._font_small)
+            # Signal bar
+            bar_x = pad + 15
+            bar_y = y + 32
+            bar_w = WIDTH - pad * 2 - 80
+            bar_h = 14
+            self._draw.rounded_rectangle(
+                [bar_x, bar_y, bar_x + bar_w, bar_y + bar_h],
+                radius=4, fill=(40, 45, 55),
+            )
+            fill_w = int(bar_w * signal / 100)
+            if fill_w > 0:
+                sig_color = (80, 220, 100) if signal > 60 else (255, 200, 50) if signal > 30 else (255, 80, 80)
+                self._draw.rounded_rectangle(
+                    [bar_x, bar_y, bar_x + fill_w, bar_y + bar_h],
+                    radius=4, fill=sig_color,
+                )
+            self._draw.text(
+                (bar_x + bar_w + 10, bar_y - 2), f"{signal}%",
+                fill=(180, 180, 200), font=self._font_small,
+            )
+            y += 72
+
+            # Dashboard URL
+            self._draw.rounded_rectangle(
+                [pad, y, WIDTH - pad, y + 50],
+                radius=10, fill=(25, 30, 45), outline=(50, 60, 80), width=1,
+            )
+            self._draw.text((pad + 15, y + 6), "Parent Dashboard", fill=(100, 120, 150), font=self._font_small)
+            url = f"http://{ip}:8080" if ip else "http://hairobo.local:8080"
+            self._draw.text((pad + 15, y + 24), url, fill=(100, 200, 255), font=self._font_small)
+        else:
+            # Not connected
+            cy = HEIGHT // 2 - 20
+            self._draw.text(
+                (WIDTH // 2 - 80, cy), "Not Connected",
+                fill=(200, 100, 100), font=self._font_large,
+            )
+            self._draw.text(
+                (WIDTH // 2 - 120, cy + 35),
+                "Connect via hairobo.local",
+                fill=(120, 120, 150), font=self._font_small,
+            )
+
+    def _render_stories_screen(self):
+        """Render Bedtime Stories list — 2-column grid similar to arts."""
+        from display.card_ui import BEDTIME_STORIES
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(12, 8, 25))
+
+        sub_idx = getattr(self._state_ref, 'card_sub_index', 0)
+        scroll = getattr(self._state_ref, 'card_scroll_offset', 0)
+
+        # Header
+        self._draw.rounded_rectangle([0, 0, WIDTH, 36], radius=0, fill=(40, 20, 55))
+        self._draw.text((12, 6), "< Bedtime Stories", fill=(200, 170, 255), font=self._font_large)
+
+        # 2-column grid
+        col_w = 228
+        row_h = 58
+        gap = 6
+        cols = 2
+        start_y = 42
+        visible_rows = 4
+
+        for i, story in enumerate(BEDTIME_STORIES):
+            row = i // cols
+            col = i % cols
+            visual_row = row - scroll
+
+            if visual_row < 0 or visual_row >= visible_rows:
+                continue
+
+            x = 6 + col * (col_w + gap)
+            y = start_y + visual_row * (row_h + gap)
+            is_sel = (i == sub_idx)
+
+            bg = (30, 20, 40) if not is_sel else (50, 30, 65)
+            border = story["color"] if is_sel else (40, 35, 55)
+            self._draw.rounded_rectangle(
+                [x, y, x + col_w, y + row_h],
+                radius=8, fill=bg, outline=border, width=2 if is_sel else 1,
+            )
+
+            # Icon: sparkle for "imagine_story", crescent moon for others
+            dot_x = x + 14
+            dot_cy = y + row_h // 2
+            if story.get("id") == "imagine_story":
+                # Star/sparkle icon
+                from display.card_ui import draw_icon
+                draw_icon(self._draw, "star", dot_x, dot_cy, 14, story["color"])
+            else:
+                self._draw.ellipse(
+                    [dot_x - 6, dot_cy - 6, dot_x + 6, dot_cy + 6],
+                    fill=story["color"],
+                )
+                self._draw.ellipse(
+                    [dot_x - 2, dot_cy - 6, dot_x + 8, dot_cy + 6],
+                    fill=bg,  # crescent cutout
+                )
+
+            name_color = (240, 240, 255) if is_sel else (180, 170, 200)
+            desc_color = (180, 170, 210) if is_sel else (110, 100, 130)
+            self._draw.text((dot_x + 14, y + 8), story["title"], fill=name_color, font=self._font_small)
+            self._draw.text((dot_x + 14, y + 28), story["desc"], fill=desc_color, font=self._font_small)
+
+            # Page count
+            pages = len(story.get("pages", []))
+            self._draw.text(
+                (x + col_w - 28, y + 8), f"{pages}p",
+                fill=(80, 70, 100), font=self._font_small,
+            )
+
+        # Scroll indicators
+        total_rows = (len(BEDTIME_STORIES) + cols - 1) // cols
+        if scroll > 0:
+            self._draw.text((WIDTH // 2 - 5, 38), "^", fill=(100, 80, 130), font=self._font_small)
+        if scroll + visible_rows < total_rows:
+            self._draw.text((WIDTH // 2 - 5, HEIGHT - 18), "v", fill=(100, 80, 130), font=self._font_small)
+
+    def _render_story_page(self):
+        """Render a story page — text only on TFT (visuals go to projector)."""
+        from display.card_ui import BEDTIME_STORIES
+
+        self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=(10, 8, 25))
+
+        sub_idx = getattr(self._state_ref, 'card_sub_index', 0)
+        page_idx = getattr(self._state_ref, 'card_scroll_offset', 0)
+
+        # Check if this is an AI-generated story
+        gen_story = getattr(self._state_ref, 'generated_story', None)
+        if sub_idx == 0 and gen_story:
+            story = gen_story
+        elif sub_idx < len(BEDTIME_STORIES):
+            story = BEDTIME_STORIES[sub_idx]
+        else:
+            return
+
+        pages = story.get("pages", [])
+        if not pages:
+            # Still generating...
+            self._draw.text((WIDTH // 2 - 60, HEIGHT // 2 - 20), "Creating story...",
+                            fill=(200, 180, 255), font=self._font_large)
+            self._draw.text((WIDTH // 2 - 80, HEIGHT // 2 + 15),
+                            "Imagining your story & pictures",
+                            fill=(120, 110, 150), font=self._font_small)
+            return
+
+        if page_idx >= len(pages):
+            page_idx = len(pages) - 1
+        page = pages[page_idx]
+
+        accent = story.get("color", (255, 200, 80))
+
+        # Story title at top
+        self._draw.text((15, 8), story["title"], fill=accent, font=self._font_small)
+        self._draw.text((WIDTH - 90, 8), f"Page {page_idx + 1}/{len(pages)}", fill=(120, 110, 150), font=self._font_small)
+
+        # Divider
+        self._draw.line([10, 26, WIDTH - 10, 26], fill=(40, 35, 60), width=1)
+
+        # Text area: full height (no scene on TFT — scene is on projector)
+        text_y = 34
+        text = page["text"]
+
+        # Word wrap at ~46 chars (slightly wider text area now)
+        lines = []
+        words = text.split()
+        line = ""
+        for w in words:
+            if len(line + " " + w) > 46:
+                lines.append(line)
+                line = w
+            else:
+                line = (line + " " + w).strip()
+        if line:
+            lines.append(line)
+
+        # Center text vertically in available space
+        avail_h = HEIGHT - 34 - 30  # Between title and bottom bar
+        text_block_h = len(lines) * 22
+        if text_block_h < avail_h:
+            text_y += (avail_h - text_block_h) // 2
+
+        for ln in lines:
+            if text_y + 22 > HEIGHT - 30:
+                break
+            self._draw.text((20, text_y), ln, fill=(220, 220, 240), font=self._font_small)
+            text_y += 22
+
+        # Projector hint (subtle)
+        self._draw.text((WIDTH // 2 - 55, HEIGHT - 52), "Scene on projector", fill=(60, 55, 80), font=self._font_small)
+
+        # Bottom bar: page indicator + nav hints
+        bar_y = HEIGHT - 26
+        self._draw.rectangle([0, bar_y, WIDTH, HEIGHT], fill=(20, 15, 35))
+        total = len(pages)
+
+        # Page dots
+        dot_w = total * 16
+        dot_x = (WIDTH - dot_w) // 2
+        for i in range(total):
+            c = accent if i == page_idx else (50, 45, 65)
+            self._draw.ellipse([dot_x + i * 16, bar_y + 8, dot_x + i * 16 + 8, bar_y + 16], fill=c)
+
+        # Nav arrows
+        if page_idx > 0:
+            self._draw.text((8, bar_y + 4), "<", fill=(150, 140, 180), font=self._font_small)
+        if page_idx < total - 1:
+            self._draw.text((WIDTH - 16, bar_y + 4), ">", fill=(150, 140, 180), font=self._font_small)
+        else:
+            self._draw.text((WIDTH - 35, bar_y + 4), "End", fill=accent, font=self._font_small)
 
     def _render_sleeping(self):
         self._draw.rectangle([0, 0, WIDTH, HEIGHT], fill=COLOR_BG)

@@ -7,8 +7,11 @@ export default function Dashboard({ pin }) {
   const [isListening, setIsListening] = useState(false)
   const [textInput, setTextInput] = useState('')
   const [sendStatus, setSendStatus] = useState(null)
+  const [sketchStatus, setSketchStatus] = useState(null) // null, 'uploading', 'done', 'error'
+  const [sketchSteps, setSketchSteps] = useState(null)
   const liveRef = useRef(null)
   const recognitionRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     fetchDashboard()
@@ -152,6 +155,34 @@ export default function Dashboard({ pin }) {
     } catch (err) {
       console.error('Wake trigger error:', err)
     }
+  }
+
+  async function uploadSketchImage(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setSketchStatus('uploading')
+    setSketchSteps(null)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/control/sketch-from-image', {
+        method: 'POST',
+        headers: { 'X-Parent-PIN': pin },
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.status === 'ok') {
+        setSketchStatus('done')
+        setTimeout(() => setSketchStatus(null), 4000)
+      } else {
+        setSketchStatus('error')
+      }
+    } catch (err) {
+      console.error('Sketch upload error:', err)
+      setSketchStatus('error')
+    }
+    // Reset file input so same file can be re-uploaded
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   function toggleSpeechRecognition() {
@@ -449,6 +480,50 @@ export default function Dashboard({ pin }) {
             Wake Bot
           </button>
         </div>
+      </div>
+
+      {/* Sketch from Image — Upload and trace */}
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">✏️</span>
+          <span className="font-semibold text-sm">Sketch Tracer</span>
+          <span className="text-xs text-gray-400">Upload image to trace on paper</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={uploadSketchImage}
+            className="hidden"
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={sketchStatus === 'uploading'}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
+              sketchStatus === 'uploading'
+                ? 'bg-yellow-100 text-yellow-700'
+                : 'bg-purple-500 hover:bg-purple-600 text-white active:scale-95'
+            }`}
+          >
+            {sketchStatus === 'uploading' ? (
+              <span className="animate-pulse">Converting to tracing...</span>
+            ) : (
+              '📷 Take Photo or Upload Image'
+            )}
+          </button>
+        </div>
+        {sketchStatus === 'done' && (
+          <div className="mt-2 text-center text-sm text-green-600">
+            Line art projected! Place paper and start tracing.
+          </div>
+        )}
+        {sketchStatus === 'error' && (
+          <div className="mt-2 text-center text-sm text-red-600">
+            Could not convert image. Try a clearer picture with bold lines.
+          </div>
+        )}
       </div>
 
       {/* Volume Control */}

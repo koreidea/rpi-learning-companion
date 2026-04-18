@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, File, Request, UploadFile
 from pydantic import BaseModel
 
 from api.middleware.auth import require_parent_auth
@@ -178,3 +178,183 @@ async def stop_song(request: Request, _=Depends(require_parent_auth)):
     if audio_player:
         await audio_player.stop()
     return {"status": "stopped"}
+
+
+# ── Sketch Tracing from Image ───────────────────────────────────────────
+
+
+@router.post("/sketch-from-image")
+async def sketch_from_image(
+    request: Request,
+    file: UploadFile = File(...),
+    _=Depends(require_parent_auth),
+):
+    """Upload an image and convert it to clean line art for tracing.
+
+    Uses GrabCut foreground isolation + XDoG (Extended Difference of
+    Gaussians) to produce a clean, artistic line drawing projected
+    onto the table for the child to trace.
+    """
+    import asyncio
+
+    from loguru import logger
+
+    try:
+        contents = await file.read()
+        if len(contents) > 10 * 1024 * 1024:  # 10MB limit
+            return {"error": "Image too large (max 10MB)"}
+
+        # Process in thread to avoid blocking
+        loop = asyncio.get_event_loop()
+        pil_image = await loop.run_in_executor(None, _image_to_line_art, contents)
+
+        if pil_image is None:
+            return {"error": "Could not convert image to line art"}
+
+        # Send directly to projector
+        state = request.app.state.shared_state
+        state.trace_image = {
+            "name": file.filename or "uploaded image",
+            "image": pil_image,
+        }
+        state.wake_event.set()
+
+        logger.info("Line art generated from '{}'", file.filename)
+        return {"status": "ok"}
+
+    except Exception as e:
+        logger.error("sketch-from-image error: {}", e)
+        return {"error": str(e)}
+
+
+def _image_to_line_art(image_bytes: bytes):
+    """Convert image to clean edge-only line art for tracing.
+
+    Pipeline:
+      1. Decode → resize
+      2. GrabCut to isolate foreground (removes background)
+      3. Heavy smoothing to destroy shadows/textures/gradients
+      4. Color quantization (posterize) — flattens remaining gradients
+      5. Canny edge detection on the flat, posterized image
+      6. Keep only significant edges, remove noise
+      7. Return as PIL Image (white lines on black background)
+    """
+    import cv2
+    import numpy as np
+    from PIL import Image
+
+    # Decode
+    arr = np.frombuffer(image_bytes, dtype=np.uint8)
+    img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    if img is None:
+        return None
+
+    # Resize
+    h, w = img.shape[:2]
+    max_dim = 800
+    if max(h, w) > max_dim:
+        scale = max_dim / max(h, w)
+        img = cv2.resize(img, (int(w * scale), int(h * scale)),
+                         interpolation=cv2.INTER_AREA)
+        h, w = img.shape[:2]
+
+    # ── 1. Isolate foreground ──
+    fg_mask = _extract_foreground(img, h, w)
+
+    # ── 2. Aggressively smooth to kill shadows and textures ──
+    # Median blur destroys texture while keeping hard edges
+    smooth = cv2.medianBlur(img, 7)
+    # Multiple bilateral passes — smooths gradients, preserves only strong edges
+    for _ in range(5):
+        smooth = cv2.bilateralFilter(smooth, 9, 100, 100)
+
+    # ── 3. Color quantization (posterize to ~6 colors) ──
+    # This flattens any remaining shadows/gradients into flat regions
+    # so edges are only at real object boundaries
+    data = smooth.reshape((-1, 3)).astype(np.float32)
+    K = 6
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    _, labels, centers = cv2.kmeans(data, K, None, criteria, 3, cv2.KMEANS_PP_CENTERS)
+    centers = centers.astype(np.uint8)
+    quantized = centers[labels.flatten()].reshape(img.shape)
+
+    # ── 4. Edge detection on the clean, flat image ──
+    gray_q = cv2.cvtColor(quantized, cv2.COLOR_BGR2GRAY)
+
+    # Canny with higher thresholds — only strong structural edges
+    edges = cv2.Canny(gray_q, 80, 200)
+
+    # ── 5. Mask to foreground only ──
+    edges = cv2.bitwise_and(edges, edges, mask=fg_mask)
+
+    # ── 6. Clean up ──
+    # Close small gaps in edge lines
+    kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel_close)
+
+    # Thicken lines for projection visibility
+    kernel_thick = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    edges = cv2.dilate(edges, kernel_thick, iterations=1)
+
+    # Remove small noise blobs
+    contours, _ = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    min_peri = (h + w) * 0.03  # minimum 3% of image perimeter
+    for c in contours:
+        if cv2.arcLength(c, True) < min_peri:
+            cv2.drawContours(edges, [c], -1, 0, thickness=cv2.FILLED)
+
+    # Convert to PIL (white lines on black)
+    pil_img = Image.fromarray(edges).convert("RGB")
+    return pil_img
+
+
+def _extract_foreground(img, h, w):
+    """Extract foreground mask using GrabCut + fallback."""
+    import cv2
+    import numpy as np
+
+    mask = np.zeros((h, w), np.uint8)
+
+    try:
+        # GrabCut with a border-based rectangle
+        border = max(8, int(min(h, w) * 0.05))
+        rect = (border, border, w - 2 * border, h - 2 * border)
+
+        bgd_model = np.zeros((1, 65), np.float64)
+        fgd_model = np.zeros((1, 65), np.float64)
+
+        cv2.grabCut(img, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
+
+        fg_mask = np.where((mask == 1) | (mask == 3), 255, 0).astype(np.uint8)
+
+        # Check if enough foreground was found
+        fg_ratio = np.sum(fg_mask > 0) / (h * w)
+        if fg_ratio < 0.05:
+            raise ValueError("GrabCut foreground too small")
+
+        # Dilate to include edges at boundary
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+        fg_mask = cv2.dilate(fg_mask, kernel, iterations=2)
+
+        return fg_mask
+
+    except Exception:
+        # Fallback: Otsu threshold to find main subject
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        _, thresh = cv2.threshold(blurred, 0, 255,
+                                  cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL,
+                                       cv2.CHAIN_APPROX_SIMPLE)
+        if contours:
+            # Use largest contour as main object
+            largest = max(contours, key=cv2.contourArea)
+            fg_mask = np.zeros((h, w), np.uint8)
+            cv2.drawContours(fg_mask, [largest], -1, 255, thickness=cv2.FILLED)
+            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+            fg_mask = cv2.dilate(fg_mask, kernel, iterations=2)
+            return fg_mask
+
+        # Last resort: entire image
+        return np.ones((h, w), dtype=np.uint8) * 255

@@ -56,6 +56,23 @@ class TextToSpeech:
         except ImportError:
             logger.warning("piper-tts not installed. TTS will be unavailable.")
 
+    def set_voice(self, voice_name: str):
+        """Switch to a different Piper voice model at runtime."""
+        if voice_name == self.voice:
+            return  # Already loaded
+        model_path = self.model_dir / f"{voice_name}.onnx"
+        config_path = self.model_dir / f"{voice_name}.onnx.json"
+        if not model_path.exists():
+            logger.warning("Voice model not found: {}", model_path)
+            return
+        try:
+            from piper import PiperVoice
+            self._piper = PiperVoice.load(str(model_path), config_path=str(config_path))
+            self.voice = voice_name
+            logger.info("TTS voice switched to: {}", voice_name)
+        except Exception as e:
+            logger.error("Failed to load voice {}: {}", voice_name, e)
+
     async def synthesize(self, text: str) -> bytes:
         """Synthesize text to WAV audio bytes.
 

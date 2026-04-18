@@ -11,8 +11,9 @@ Goal: Keep the yellow wheel centered horizontally in the camera frame.
 - Wheel is BIG (too close) → stop, wait for movement
 - Wheel is centered + good size → stop, hold position
 
-NOTE: Bot is mounted FACING BACKWARD on the car. spin_left/spin_right
-are swapped in the steering code to compensate.
+NOTE: Bot is mounted FACING BACKWARD on the car. The Arduino sketch
+already handles direction reversal (motor pins swapped), so this
+module sends logical directions directly — no swap needed here.
 
 Usage:
     follower = FollowMode(car, camera, audio_capture)
@@ -128,11 +129,11 @@ class FollowMode:
                         logger.info("Follow: no yellow wheel, searching ({:.0f}s, dir={})",
                                     elapsed, "R" if search_direction_right else "L")
 
-                        # Short spin burst (swapped for backward-mounted bot)
+                        # Short spin burst to search for target
                         if search_direction_right:
-                            await self._car.spin_left(speed=SEARCH_SPIN_SPEED)
-                        else:
                             await self._car.spin_right(speed=SEARCH_SPIN_SPEED)
+                        else:
+                            await self._car.spin_left(speed=SEARCH_SPIN_SPEED)
                         await asyncio.sleep(SEARCH_SPIN_DURATION)
 
                         # Stop and let camera check
@@ -266,14 +267,14 @@ class FollowMode:
             return
 
         # ── 3. Off-center + close: spin to re-center ──
-        # Swapped for backward-mounted bot
+        # Arduino already handles backward-mount reversal, so send logical directions
         if not centered and size_ratio >= WHEEL_CLOSE_ENOUGH:
             if offset_x > 0:
                 logger.info("Follow: wheel right (+{}px), spin right", int(offset_x))
-                await self._car.spin_left(speed=SPEED_TURN)
+                await self._car.spin_right(speed=SPEED_TURN)
             else:
                 logger.info("Follow: wheel left ({}px), spin left", int(offset_x))
-                await self._car.spin_right(speed=SPEED_TURN)
+                await self._car.spin_left(speed=SPEED_TURN)
             return
 
         # ── 4. Far away: approach! ──
@@ -283,10 +284,10 @@ class FollowMode:
             logger.info("Follow: wheel centered, far ({:.0%}), forward!", size_ratio)
             await self._car.forward(speed=speed)
         else:
-            # Diagonal approach (swapped for backward-mounted bot)
+            # Diagonal approach — Arduino handles backward-mount reversal
             if offset_x > 0:
                 logger.info("Follow: wheel far+right ({:.0%}), fwd-right!", size_ratio)
-                await self._car.forward_left(speed=speed)
+                await self._car.forward_right(speed=speed)
             else:
                 logger.info("Follow: wheel far+left ({:.0%}), fwd-left!", size_ratio)
-                await self._car.forward_right(speed=speed)
+                await self._car.forward_left(speed=speed)

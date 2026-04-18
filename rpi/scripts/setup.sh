@@ -67,12 +67,14 @@ echo ""
 echo "[6/7] Creating data directories..."
 mkdir -p "$RPI_DIR/data/sessions"
 
-# ----- 7. Install systemd service -----
+# ----- 7. Install systemd services -----
 echo ""
-echo "[7/7] Installing systemd service..."
+echo "[7/7] Installing systemd services..."
 sudo cp "$RPI_DIR/services/rpi-bot.service" /etc/systemd/system/
+sudo cp "$RPI_DIR/services/wifi-setup.service" /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable rpi-bot
+sudo systemctl enable wifi-setup
 
 echo ""
 echo "========================================"

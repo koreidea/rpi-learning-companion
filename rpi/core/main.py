@@ -61,6 +61,7 @@ class Orchestrator:
 
         # Pending touch-triggered speech (handled by main loop, not concurrently)
         self._pending_speech: str | None = None
+        self._story_task: asyncio.Task | None = None  # Current auto-advance story task
 
     async def start(self):
         """Boot sequence: load config, check consent, load models, start listening."""
@@ -77,6 +78,10 @@ class Orchestrator:
         self.state.mic_enabled = config.hardware.mic_enabled
         self.state.camera_enabled = config.hardware.camera_enabled
         self.state.cloud_stt = config.hardware.cloud_stt
+        self.state.language = config.child.language
+
+        # Refresh WiFi info for display
+        self._refresh_wifi_info()
 
         # Always start the API server (needed for setup mode too)
         await self._start_api_server()
@@ -297,6 +302,26 @@ class Orchestrator:
                         self.state.set_state(BotState.READY)
                         continue
 
+                # Check for line art trace image from phone
+                if self.state.trace_image:
+                    trace_data = self.state.trace_image
+                    self.state.trace_image = None
+                    _from_remote = True
+                    logger.info("Trace image: '{}'", trace_data.get("name"))
+                    await self._handle_trace_image(trace_data)
+                    follow_up = False
+                    continue
+
+                # Check for image-to-sketch upload from phone (step-by-step)
+                if self.state.sketch_from_image:
+                    sketch_data = self.state.sketch_from_image
+                    self.state.sketch_from_image = None
+                    _from_remote = True
+                    logger.info("Sketch from image: '{}'", sketch_data.get("name"))
+                    await self._handle_sketch_from_image(sketch_data)
+                    follow_up = False
+                    continue
+
                 # Check for remote text from phone/web dashboard.
                 # This can arrive during wake word wait OR follow-up mode.
                 transcript = None
@@ -484,12 +509,16 @@ class Orchestrator:
 
                 # Attempt to recover audio stream if it was closed/broken
                 err_msg = str(e).lower()
-                if "stream" in err_msg and ("closed" in err_msg or "stopped" in err_msg):
+                if "stream" in err_msg and ("closed" in err_msg or "stopped" in err_msg or "not open" in err_msg):
                     try:
-                        self._audio_capture.resume()
+                        logger.info("Audio stream broken — closing and reopening...")
+                        self._audio_capture.close()
+                        await asyncio.sleep(1)
+                        self._audio_capture._ensure_stream()
                         logger.info("Audio stream recovered after error.")
-                    except Exception:
-                        logger.warning("Audio stream recovery failed, will retry.")
+                        self.state.set_state(BotState.READY)
+                    except Exception as re:
+                        logger.warning("Audio stream recovery failed: {}", re)
 
                 await asyncio.sleep(2)
 
@@ -1515,11 +1544,11 @@ class Orchestrator:
 
         Context-aware: same gesture does different things depending on bot state.
 
-        Tap:        Wake bot / stop speech / next menu item / next flashcard
-        Double tap: Volume up / select menu item / previous flashcard
+        Tap:        Wake bot / stop speech / card select / next flashcard
+        Double tap: Volume up / previous flashcard
         Triple tap: Volume down
-        Long press: Pet reaction (giggle)
-        Extra long: Toggle menu on TFT display
+        Long press: Open card menu (home screen) / back (in card mode)
+        Extra long: Toggle old settings menu
         """
         from display.touch import TouchEvent
 
@@ -1530,15 +1559,30 @@ class Orchestrator:
         if loop is None:
             return
 
-        # ── Extra long press: toggle menu ──
+        # ── Extra long press: toggle old settings menu ──
         if event == TouchEvent.EXTRA_LONG:
+            # Ignore if card UI was just opened by long press (same hold gesture)
+            card_opened = getattr(self, '_card_opened_time', 0)
+            if time.monotonic() - card_opened < 2.0:
+                logger.info("Extra long ignored (card just opened)")
+                return
+            # If card mode is open, close it first
+            if self.state.card_mode != "off":
+                self.state.card_mode = "off"
+                logger.info("Card UI closed (extra long)")
+                return
             self.state.menu_open = not self.state.menu_open
             if self.state.menu_open:
                 self.state.menu_index = 0
             logger.info("Menu {}", "opened" if self.state.menu_open else "closed")
             return
 
-        # ── If menu is open, route to menu navigation ──
+        # ── If card UI is open, route to card navigation ──
+        if self.state.card_mode != "off":
+            self._handle_card_touch(event)
+            return
+
+        # ── If old menu is open, route to menu navigation ──
         if self.state.menu_open:
             if event == TouchEvent.TAP:
                 # Move to next menu item
@@ -1592,22 +1636,871 @@ class Orchestrator:
             logger.info("Volume down: {}%", new_vol)
 
         elif event == TouchEvent.LONG_PRESS:
-            # Pet the bot — queue speech for main loop to handle safely
-            import random
-            reactions = [
-                "Hee hee, that tickles!",
-                "Haha, be gentle!",
-                "That's so nice!",
-                "I like when you pet me!",
-                "Ooh, you found me!",
-                "That feels great!",
-                "Hey! That's funny!",
-            ]
-            self._pending_speech = random.choice(reactions)
-            self.state.wake_event.set()  # break main loop out of wake word wait
-            # Trigger servo hand wave animation
-            if self._servos:
-                self._servos.tickle_wave()
+            # Open card UI menu
+            self.state.card_mode = "cards"
+            self.state.card_index = 0
+            self.state.card_sub_index = 0
+            self.state.card_scroll_offset = 0
+            self._card_opened_time = time.monotonic()
+            logger.info("Card UI opened (long press)")
+
+    # ── Card UI touch handling ─────────────────────────────────
+
+    def _handle_card_touch(self, event):
+        """Handle touch events when card UI is active.
+
+        Uses touch position for direct selection — tap where you see the item.
+        Long press always goes back one level.
+        """
+        from display.touch import TouchEvent
+
+        tx, ty = 0, 0
+        if self._touch:
+            tx, ty = self._touch.last_position
+        logger.info("Card touch: {} at ({}, {}), mode={}", event.value, tx, ty, self.state.card_mode)
+
+        # ── Long press: go back one level ──
+        if event == TouchEvent.LONG_PRESS:
+            self._card_go_back()
+            return
+
+        # ── Only handle TAP for card selection ──
+        if event != TouchEvent.TAP:
+            return
+
+        mode = self.state.card_mode
+
+        if mode == "cards":
+            self._handle_card_selector_tap(tx, ty)
+        elif mode == "arts":
+            self._handle_arts_tap(tx, ty)
+        elif mode == "encyclopedia":
+            self._handle_encyclopedia_tap(tx, ty)
+        elif mode == "skill_detail":
+            self._handle_skill_detail_tap(tx, ty)
+        elif mode == "stories":
+            self._handle_stories_tap(tx, ty)
+        elif mode == "story_reader":
+            self._handle_story_reader_tap(tx, ty)
+        elif mode == "settings":
+            self._handle_settings_tap(tx, ty)
+        elif mode == "settings_lang":
+            self._handle_language_tap(tx, ty)
+        elif mode == "settings_wifi":
+            # WiFi screen is info-only, header tap goes back
+            if ty < 40:
+                self._card_go_back()
+
+    def _cancel_story_task(self):
+        """Cancel any ongoing story auto-advance task."""
+        if self._story_task and not self._story_task.done():
+            self._story_task.cancel()
+            logger.debug("Story auto-advance cancelled")
+        self._story_task = None
+
+    def _start_story_task(self, story: dict, page_idx: int):
+        """Start a new story narration + auto-advance task."""
+        self._cancel_story_task()
+        loop = self._loop
+        if loop:
+            loop.call_soon_threadsafe(
+                self._create_story_task, story, page_idx
+            )
+
+    def _create_story_task(self, story: dict, page_idx: int):
+        """Create the async task (must be called from event loop thread)."""
+        self._story_task = asyncio.ensure_future(
+            self._handle_card_action("story", {"story": story, "page": page_idx})
+        )
+
+    def _card_go_back(self):
+        """Navigate back one level in the card UI hierarchy."""
+        mode = self.state.card_mode
+
+        # Cancel story narration if leaving story reader
+        if mode == "story_reader":
+            self._cancel_story_task()
+            # Turn off projector story mode
+            if self._projector:
+                from modules.projector import ProjectorMode
+                self._projector.set_mode(ProjectorMode.BLANK)
+
+        if mode in ("arts", "encyclopedia", "settings", "stories"):
+            # Back to main card selector
+            self.state.card_mode = "cards"
+            self.state.card_sub_index = 0
+            self.state.card_scroll_offset = 0
+            logger.info("Card: back to main selector")
+        elif mode == "skill_detail":
+            # Back to encyclopedia list
+            self.state.card_mode = "encyclopedia"
+            self.state.card_scroll_offset = 0
+            logger.info("Card: back to encyclopedia")
+        elif mode == "story_reader":
+            # Back to stories list
+            self.state.card_mode = "stories"
+            self.state.card_scroll_offset = 0
+            logger.info("Card: back to stories")
+        elif mode in ("settings_lang", "settings_wifi"):
+            # Back to settings
+            self.state.card_mode = "settings"
+            logger.info("Card: back to settings")
+        elif mode == "cards":
+            # Close card UI entirely
+            self.state.card_mode = "off"
+            logger.info("Card UI closed")
+
+    def _handle_card_selector_tap(self, tx: int, ty: int):
+        """Handle tap on scrollable main card selector.
+
+        4 visible cards, scrollable. Left/right edges scroll.
+        Layout: card_w=105, gap=8, 4 visible, centered.
+        """
+        from display.card_ui import MAIN_CARDS
+
+        card_w = 105
+        gap = 8
+        visible = 4
+        total_w = visible * (card_w + gap) - gap
+        start_x = (480 - total_w) // 2
+        card_h = 140
+        card_y = (320 - card_h) // 2 - 10
+        scroll = self.state.card_scroll_offset
+
+        # Scroll arrows: left edge tap
+        if tx < start_x - 5 and scroll > 0:
+            self.state.card_scroll_offset -= 1
+            logger.info("Card scroll left: {}", self.state.card_scroll_offset)
+            return
+
+        # Scroll arrows: right edge tap
+        if tx > start_x + total_w + 5 and scroll + visible < len(MAIN_CARDS):
+            self.state.card_scroll_offset += 1
+            logger.info("Card scroll right: {}", self.state.card_scroll_offset)
+            return
+
+        # Check if tap is in the card row area
+        if ty < card_y or ty > card_y + card_h + 20:
+            if ty < 36:
+                self.state.card_mode = "off"
+                logger.info("Card UI closed (header tap)")
+            return
+
+        # Find which visible card was tapped
+        for vi in range(visible):
+            ci = vi + scroll
+            if ci >= len(MAIN_CARDS):
+                break
+            cx_start = start_x + vi * (card_w + gap)
+            cx_end = cx_start + card_w
+            if cx_start <= tx <= cx_end:
+                card = MAIN_CARDS[ci]
+                card_id = card["id"]
+                logger.info("Card selected: {}", card_id)
+
+                if card_id == "voice":
+                    self.state.card_mode = "off"
+                elif card_id == "arts":
+                    self.state.card_mode = "arts"
+                    self.state.card_sub_index = 0
+                    self.state.card_scroll_offset = 0
+                elif card_id == "stories":
+                    self.state.card_mode = "stories"
+                    self.state.card_sub_index = 0
+                    self.state.card_scroll_offset = 0
+                elif card_id == "encyclopedia":
+                    self.state.card_mode = "encyclopedia"
+                    self.state.card_sub_index = 0
+                    self.state.card_scroll_offset = 0
+                elif card_id == "settings":
+                    self.state.card_mode = "settings"
+                    self.state.card_sub_index = 0
+                    self.state.card_scroll_offset = 0
+                return
+
+    def _handle_arts_tap(self, tx: int, ty: int):
+        """Handle tap on Arts & Crafts sub-screen.
+
+        Header tap (y < 36) → back.  Grid items: 2 columns, scrollable.
+        Layout matches _render_arts_screen: col_w=228, row_h=58, gap=6, start_y=42.
+        """
+        from display.card_ui import ARTS_ITEMS
+
+        # Header → back
+        if ty < 36:
+            self._card_go_back()
+            return
+
+        # Scroll up area (tap near top scroll indicator)
+        if 36 <= ty < 42 and self.state.card_scroll_offset > 0:
+            self.state.card_scroll_offset -= 1
+            return
+
+        # Grid hit detection
+        col_w = 228
+        row_h = 58
+        gap = 6
+        start_y = 42
+        visible_rows = 4
+        scroll = self.state.card_scroll_offset
+
+        # Determine column
+        if tx < 6 or tx > 6 + 2 * (col_w + gap):
+            return
+        col = 0 if tx < 6 + col_w + gap // 2 else 1
+
+        # Determine visual row from Y position
+        rel_y = ty - start_y
+        if rel_y < 0:
+            return
+        visual_row = int(rel_y / (row_h + gap))
+        if visual_row >= visible_rows:
+            # Check if tapping scroll area at bottom
+            if ty > 290:
+                # Scroll down
+                total_rows = (len(ARTS_ITEMS) + 1) // 2
+                max_scroll = max(0, total_rows - visible_rows)
+                if self.state.card_scroll_offset < max_scroll:
+                    self.state.card_scroll_offset += 1
+            return
+
+        # Calculate actual item index
+        actual_row = visual_row + scroll
+        item_idx = actual_row * 2 + col
+        if item_idx >= len(ARTS_ITEMS):
+            return
+
+        item = ARTS_ITEMS[item_idx]
+        self.state.card_sub_index = item_idx
+        logger.info("Arts item selected: {} ({})", item["name"], item["id"])
+
+        # Trigger the action
+        loop = self._loop
+        if loop:
+            loop.call_soon_threadsafe(
+                asyncio.ensure_future, self._handle_card_action("arts", item)
+            )
+
+    def _handle_encyclopedia_tap(self, tx: int, ty: int):
+        """Handle tap on Encyclopedia sub-screen.
+
+        Header tap (y < 36) → back. Skill rows: full width, scrollable.
+        Layout matches _render_encyclopedia_screen: row_h=52, gap=4, start_y=42, visible=5.
+        """
+        from display.card_ui import SKILLS_DATA
+
+        # Header → back
+        if ty < 36:
+            self._card_go_back()
+            return
+
+        # Scroll areas
+        if ty > 300:
+            # Scroll down
+            max_scroll = max(0, len(SKILLS_DATA) - 5)
+            if self.state.card_scroll_offset < max_scroll:
+                self.state.card_scroll_offset += 1
+            return
+        if 36 <= ty < 42 and self.state.card_scroll_offset > 0:
+            # Scroll up
+            self.state.card_scroll_offset -= 1
+            return
+        if ty < 42:
+            return
+
+        # Determine which skill was tapped
+        row_h = 52
+        gap = 4
+        start_y = 42
+        visible = 5
+        scroll = self.state.card_scroll_offset
+
+        rel_y = ty - start_y
+        visual_i = int(rel_y / (row_h + gap))
+        if visual_i >= visible:
+            return
+
+        skill_idx = visual_i + scroll
+        if skill_idx >= len(SKILLS_DATA):
+            return
+
+        skill = SKILLS_DATA[skill_idx]
+        logger.info("Skill selected: {}", skill["name"])
+
+        # Enter skill detail view
+        self.state.card_sub_index = skill_idx
+        self.state.card_scroll_offset = 0
+        self.state.card_mode = "skill_detail"
+
+    def _handle_skill_detail_tap(self, tx: int, ty: int):
+        """Handle tap on skill detail screen.
+
+        Header tap (y < 40) → back to encyclopedia.
+        Activity row taps → start the activity.
+        """
+        from display.card_ui import SKILLS_DATA
+
+        # Header → back
+        if ty < 40:
+            self._card_go_back()
+            return
+
+        # Activity detection — layout from _render_skill_detail
+        sub_idx = self.state.card_sub_index
+        if sub_idx >= len(SKILLS_DATA):
+            return
+        skill = SKILLS_DATA[sub_idx]
+        activities = skill.get("activities", [])
+
+        # Calculate activity area — starts after description
+        # Description takes ~50 + 20*lines + 10 + 24 pixels before activities
+        desc = skill["desc"]
+        words = desc.split()
+        line, lines = "", 0
+        for w in words:
+            if len(line + " " + w) > 45:
+                lines += 1
+                line = w
+            else:
+                line = (line + " " + w).strip()
+        if line:
+            lines += 1
+        act_start_y = 50 + lines * 20 + 10 + 24
+
+        # Each activity row is 32px tall + 6px gap = 38px per row
+        if ty < act_start_y:
+            return
+
+        rel_y = ty - act_start_y
+        act_i = int(rel_y / 38)
+        if act_i >= len(activities):
+            return
+
+        activity = activities[act_i]
+        logger.info("Activity selected: {} in skill {}", activity, skill["name"])
+
+        # Close card UI and announce the activity
+        self.state.card_mode = "off"
+        loop = self._loop
+        if loop:
+            loop.call_soon_threadsafe(
+                asyncio.ensure_future,
+                self._handle_card_action("activity", {"skill": skill, "activity": activity})
+            )
+
+    def _handle_stories_tap(self, tx: int, ty: int):
+        """Handle tap on stories list screen (2-column grid like arts).
+
+        Layout: col_w=228, row_h=58, gap=6, start_y=42, visible_rows=4.
+        """
+        from display.card_ui import BEDTIME_STORIES
+
+        if ty < 36:
+            self._card_go_back()
+            return
+
+        # Scroll up
+        if 36 <= ty < 42 and self.state.card_scroll_offset > 0:
+            self.state.card_scroll_offset -= 1
+            return
+
+        col_w = 228
+        row_h = 58
+        gap = 6
+        start_y = 42
+        visible_rows = 4
+        scroll = self.state.card_scroll_offset
+        cols = 2
+
+        if tx < 6 or tx > 6 + 2 * (col_w + gap):
+            return
+        col = 0 if tx < 6 + col_w + gap // 2 else 1
+
+        rel_y = ty - start_y
+        if rel_y < 0:
+            return
+        visual_row = int(rel_y / (row_h + gap))
+        if visual_row >= visible_rows:
+            if ty > 290:
+                total_rows = (len(BEDTIME_STORIES) + 1) // 2
+                max_scroll = max(0, total_rows - visible_rows)
+                if self.state.card_scroll_offset < max_scroll:
+                    self.state.card_scroll_offset += 1
+            return
+
+        actual_row = visual_row + scroll
+        item_idx = actual_row * 2 + col
+        if item_idx >= len(BEDTIME_STORIES):
+            return
+
+        story = BEDTIME_STORIES[item_idx]
+        self.state.card_sub_index = item_idx
+        self.state.card_scroll_offset = 0  # page index starts at 0
+        logger.info("Story selected: {}", story["title"])
+
+        if story.get("id") == "imagine_story":
+            # AI-generated story — close cards, ask child what story they want
+            self.state.card_mode = "off"
+            self.state.generated_story = None
+            self._pending_speech = (
+                "What story would you like me to tell? "
+                "Just say, tell me a story about, and then what you want!"
+            )
+            self.state.wake_event.set()
+        else:
+            # Static story — start narrating
+            self.state.card_mode = "story_reader"
+            self._start_story_task(story, 0)
+
+    def _get_active_story(self):
+        """Get the currently active story (generated or static)."""
+        from display.card_ui import BEDTIME_STORIES
+        sub_idx = self.state.card_sub_index
+        gen_story = self.state.generated_story
+        if sub_idx == 0 and gen_story and gen_story.get("pages"):
+            return gen_story
+        if sub_idx < len(BEDTIME_STORIES):
+            return BEDTIME_STORIES[sub_idx]
+        return None
+
+    def _handle_story_reader_tap(self, tx: int, ty: int):
+        """Handle tap on story reader — navigate pages.
+
+        Left half → previous page, right half → next page.
+        Top area → back to stories list.
+        Tapping cancels auto-advance and lets user manually navigate.
+        """
+        # Cancel any ongoing auto-advance story task
+        self._cancel_story_task()
+
+        story = self._get_active_story()
+        if not story:
+            return
+        pages = story.get("pages", [])
+        if not pages:
+            return
+        page_idx = self.state.card_scroll_offset
+
+        # Top-left corner: back
+        if ty < 20 and tx < 100:
+            self._card_go_back()
+            return
+
+        # Bottom bar or main area tap
+        if tx < 480 // 2:
+            # Left half → previous page
+            if page_idx > 0:
+                self.state.card_scroll_offset = page_idx - 1
+                logger.info("Story page: {}/{}", page_idx, len(pages))
+                self._start_story_task(story, page_idx - 1)
+            else:
+                # Already on first page, go back
+                self._card_go_back()
+        else:
+            # Right half → next page
+            if page_idx < len(pages) - 1:
+                self.state.card_scroll_offset = page_idx + 1
+                logger.info("Story page: {}/{}", page_idx + 2, len(pages))
+                self._start_story_task(story, page_idx + 1)
+            else:
+                # Last page → close and say goodnight
+                self.state.card_mode = "off"
+                self._pending_speech = "The end. Sweet dreams, little one. Goodnight!"
+                self.state.wake_event.set()
+
+    def _handle_settings_tap(self, tx: int, ty: int):
+        """Handle tap on the new settings grid (2x4 tiles).
+
+        Layout matches _render_settings_screen: 2 cols, 4 rows.
+        """
+        from display.card_ui import SETTINGS_ITEMS
+
+        # Header → back to cards
+        if ty < 36:
+            self._card_go_back()
+            return
+
+        # Grid geometry (must match renderer)
+        cols, rows = 2, 4
+        gap = 6
+        pad_x, pad_top = 6, 40
+        tile_w = (480 - pad_x * 2 - gap * (cols - 1)) // cols
+        tile_h = (320 - pad_top - 4 - gap * (rows - 1)) // rows
+
+        # Determine which tile was tapped
+        rel_x = tx - pad_x
+        rel_y = ty - pad_top
+        if rel_x < 0 or rel_y < 0:
+            return
+
+        col = int(rel_x / (tile_w + gap))
+        row = int(rel_y / (tile_h + gap))
+        if col >= cols or row >= rows:
+            return
+
+        idx = row * cols + col
+        if idx >= len(SETTINGS_ITEMS):
+            return
+
+        item_id = SETTINGS_ITEMS[idx]["id"]
+        logger.info("Settings tap: {}", item_id)
+
+        loop = self._loop
+        if loop:
+            loop.call_soon_threadsafe(
+                asyncio.ensure_future, self._handle_settings_action(item_id)
+            )
+
+    def _handle_language_tap(self, tx: int, ty: int):
+        """Handle tap on language selection screen.
+
+        3 big buttons vertically: btn_h=72, gap=12, start_y=55, pad_x=20.
+        """
+        from display.card_ui import LANGUAGES
+
+        if ty < 40:
+            self._card_go_back()
+            return
+
+        btn_h = 72
+        gap = 12
+        start_y = 55
+
+        rel_y = ty - start_y
+        if rel_y < 0:
+            return
+        btn_idx = int(rel_y / (btn_h + gap))
+        if btn_idx >= len(LANGUAGES):
+            return
+
+        lang = LANGUAGES[btn_idx]
+        logger.info("Language selected: {}", lang["name"])
+
+        loop = self._loop
+        if loop:
+            loop.call_soon_threadsafe(
+                asyncio.ensure_future, self._handle_language_change(lang["id"])
+            )
+
+    async def _handle_settings_action(self, item_id: str):
+        """Execute a settings action from the new settings grid."""
+        try:
+            speech = None
+
+            if item_id == "volume":
+                # Cycle volume: 20 → 40 → 60 → 80 → 100 → 20
+                new_vol = (self.state.volume + 20) % 120
+                if new_vol == 0:
+                    new_vol = 20
+                self.state.volume = new_vol
+                if self._audio_player:
+                    self._audio_player.set_volume(new_vol)
+                speech = f"Volume {new_vol} percent"
+
+            elif item_id == "language":
+                # Open language sub-screen
+                self.state.card_mode = "settings_lang"
+                return
+
+            elif item_id == "mode":
+                if self.state.llm_mode == LLMMode.ONLINE:
+                    self.config_manager.update_nested("llm", mode="offline")
+                    self.state.llm_mode = LLMMode.OFFLINE
+                    speech = "Offline mode"
+                else:
+                    self.config_manager.update_nested("llm", mode="online")
+                    self.state.llm_mode = LLMMode.ONLINE
+                    speech = "Online mode"
+
+            elif item_id == "mic":
+                self.state.mic_enabled = not self.state.mic_enabled
+                status = "on" if self.state.mic_enabled else "off"
+                speech = f"Microphone {status}"
+
+            elif item_id == "projector":
+                if self._projector:
+                    from modules.projector import ProjectorMode
+                    if self._projector.mode == ProjectorMode.OFF:
+                        if self._ensure_projector():
+                            self._projector.set_mode(ProjectorMode.BLANK)
+                            self.state.projector_mode = "blank"
+                            speech = "Projector on"
+                        else:
+                            speech = "No projector detected"
+                    else:
+                        self._projector.set_mode(ProjectorMode.OFF)
+                        self.state.projector_mode = "off"
+                        speech = "Projector off"
+                else:
+                    if self._ensure_projector():
+                        from modules.projector import ProjectorMode
+                        self._projector.set_mode(ProjectorMode.BLANK)
+                        self.state.projector_mode = "blank"
+                        speech = "Projector on"
+                    else:
+                        speech = "No projector detected"
+
+            elif item_id == "car":
+                if self.state.car_connected and self._car:
+                    asyncio.ensure_future(self._disconnect_car_module())
+                    speech = "Disconnecting the car."
+                elif self.state.car_connecting:
+                    speech = "Still connecting, please wait."
+                else:
+                    asyncio.ensure_future(self._connect_car_module())
+                    speech = "Looking for the car."
+
+            elif item_id == "wifi":
+                # Refresh WiFi info and open WiFi sub-screen
+                self._refresh_wifi_info()
+                self.state.card_mode = "settings_wifi"
+                return
+
+            elif item_id == "sleep":
+                self.state.mic_enabled = False
+                self.state.card_mode = "off"
+                speech = "Good night! Long press to wake me up."
+
+            if speech:
+                self._pending_speech = speech
+                self.state.wake_event.set()
+
+        except Exception as e:
+            logger.error("Settings action error: {}", e)
+
+    async def _handle_language_change(self, lang_id: str):
+        """Change the bot language and TTS voice."""
+        try:
+            self.state.language = lang_id
+            self.config_manager.update_nested("child", language=lang_id)
+
+            lang_names = {"en": "English", "hi": "Hindi", "te": "Telugu"}
+            name = lang_names.get(lang_id, lang_id)
+
+            # Switch TTS voice
+            if self._tts:
+                voice_map = {
+                    "en": "en_US-lessac-medium",
+                    "hi": "hi_IN-rohan-medium",
+                    "te": "te_IN-padmavathi-medium",
+                }
+                voice = voice_map.get(lang_id, "en_US-lessac-medium")
+                try:
+                    self._tts.set_voice(voice)
+                    logger.info("TTS voice switched to: {}", voice)
+                except Exception as e:
+                    logger.warning("Failed to switch TTS voice: {}", e)
+
+            # Go back to settings
+            self.state.card_mode = "settings"
+
+            self._pending_speech = f"Language changed to {name}"
+            self.state.wake_event.set()
+
+        except Exception as e:
+            logger.error("Language change error: {}", e)
+
+    def _refresh_wifi_info(self):
+        """Refresh WiFi connection details into state."""
+        import subprocess
+        try:
+            # Get SSID
+            result = subprocess.run(
+                ["nmcli", "-t", "-f", "ACTIVE,SSID", "dev", "wifi"],
+                capture_output=True, text=True, timeout=5
+            )
+            ssid = None
+            for line in result.stdout.strip().split("\n"):
+                if line.startswith("yes:"):
+                    ssid = line.split(":", 1)[1]
+                    break
+            self.state.wifi_ssid = ssid
+
+            # Get IP address
+            result = subprocess.run(
+                ["hostname", "-I"],
+                capture_output=True, text=True, timeout=5
+            )
+            ip = result.stdout.strip().split()[0] if result.stdout.strip() else None
+            self.state.wifi_ip = ip
+
+            # Get signal strength
+            result = subprocess.run(
+                ["nmcli", "-t", "-f", "ACTIVE,SIGNAL", "dev", "wifi"],
+                capture_output=True, text=True, timeout=5
+            )
+            signal = 0
+            for line in result.stdout.strip().split("\n"):
+                if line.startswith("yes:"):
+                    try:
+                        signal = int(line.split(":", 1)[1])
+                    except ValueError:
+                        pass
+                    break
+            self.state.wifi_signal = signal
+
+            logger.info("WiFi info: SSID={}, IP={}, Signal={}%", ssid, ip, signal)
+        except Exception as e:
+            logger.debug("WiFi info refresh error: {}", e)
+
+    def _ensure_projector(self) -> bool:
+        """Ensure projector is initialized, detected, and render thread running.
+
+        Returns True if projector is ready, False otherwise.
+        """
+        from modules.projector import Projector
+
+        if not self._projector:
+            try:
+                self._projector = Projector()
+            except Exception:
+                return False
+
+        if not self._projector.connected:
+            if self._projector.detect():
+                self._projector.start()
+                self.state.projector_connected = True
+            else:
+                return False
+
+        # Render thread might not be running even if connected
+        if not self._projector._running:
+            self._projector.start()
+
+        return True
+
+    async def _handle_card_action(self, action_type: str, item: dict):
+        """Handle an action triggered by card UI selection.
+
+        Runs in the main asyncio loop (called via call_soon_threadsafe).
+        """
+        try:
+            if action_type == "arts":
+                item_id = item.get("id", "")
+                item_name = item.get("name", "")
+
+                if item_id == "imagine":
+                    # Imagine Art — prompt user to describe what to draw
+                    self.state.card_mode = "off"
+                    self._pending_speech = (
+                        "Imagine Art mode! Tell me what you want to draw, "
+                        "and I'll create it for you to trace. Just say, let's draw, "
+                        "followed by what you want!"
+                    )
+                    self.state.wake_event.set()
+
+                elif item_id.startswith("craft"):
+                    # Paper craft — set up projector with craft template
+                    self.state.card_mode = "off"
+                    if self._ensure_projector():
+                        from modules.projector import ProjectorMode
+                        self._projector.set_sketch(item_id)
+                        self._projector.set_mode(ProjectorMode.SKETCH)
+                        self.state.projector_mode = "sketch"
+                        info = self._projector.get_sketch_info()
+                        if info:
+                            name, step, total, instruction = info
+                            self._pending_speech = (
+                                f"Let's build a {name}! Get your scissors and paper ready. "
+                                f"Step 1: {instruction}"
+                            )
+                        else:
+                            self._pending_speech = f"Let's build a {item_name}! Get your paper ready."
+                    else:
+                        self._pending_speech = "Connect the projector first to start crafting!"
+                    self.state.wake_event.set()
+
+                else:
+                    # Regular drawing — set up projector with sketch
+                    self.state.card_mode = "off"
+                    if self._ensure_projector():
+                        from modules.projector import ProjectorMode
+                        self._projector.set_sketch(item_id)
+                        self._projector.set_mode(ProjectorMode.SKETCH)
+                        self.state.projector_mode = "sketch"
+                        info = self._projector.get_sketch_info()
+                        if info:
+                            name, step, total, instruction = info
+                            self._pending_speech = (
+                                f"Let's draw a {name}! Get your paper and pencil ready. "
+                                f"Step 1: {instruction}"
+                            )
+                        else:
+                            self._pending_speech = f"Let's draw a {item_name}!"
+                    else:
+                        self._pending_speech = "Connect the projector first to start drawing!"
+                    self.state.wake_event.set()
+
+            elif action_type == "activity":
+                skill = item.get("skill", {})
+                activity = item.get("activity", "")
+                skill_name = skill.get("name", "")
+
+                # Close card UI and announce the activity via speech
+                self.state.card_mode = "off"
+                self._pending_speech = (
+                    f"Let's explore {skill_name}! "
+                    f"Starting {activity}. "
+                    f"{skill.get('desc', '')}"
+                )
+                self.state.wake_event.set()
+
+            elif action_type == "story":
+                story = item.get("story", {})
+                page_idx = item.get("page", 0)
+                pages = story.get("pages", [])
+
+                if page_idx < len(pages):
+                    page = pages[page_idx]
+                    page_text = page["text"]
+
+                    # Project illustration on HDMI projector
+                    if self._ensure_projector():
+                        if page.get("image"):
+                            # AI-generated image (PIL Image object)
+                            self._projector.show_generated_image(
+                                page["image"], story.get("title", "")
+                            )
+                        elif page.get("scene"):
+                            # Static PIL-drawn scene
+                            bg_color = story.get("bg_color", (10, 10, 30))
+                            self._projector.set_story_scene(
+                                page["scene"], bg_color, story.get("title", "")
+                            )
+
+                    # Narrate the page text via TTS (don't close card UI)
+                    # Use direct speech + auto-advance instead of _pending_speech
+                    await self._speak_text(page_text)
+
+                    # Auto-advance to next page after TTS finishes
+                    if self.state.card_mode == "story_reader":
+                        if page_idx < len(pages) - 1:
+                            # Small pause between pages
+                            await asyncio.sleep(1.0)
+                            if self.state.card_mode == "story_reader":
+                                next_idx = page_idx + 1
+                                self.state.card_scroll_offset = next_idx
+                                # Recurse to next page
+                                await self._handle_card_action(
+                                    "story", {"story": story, "page": next_idx}
+                                )
+                        else:
+                            # Last page — say goodnight and close
+                            await asyncio.sleep(1.5)
+                            if self.state.card_mode == "story_reader":
+                                await self._speak_text(
+                                    "The end. Sweet dreams, little one. Goodnight!"
+                                )
+                                self.state.card_mode = "off"
+                                self.state.set_state(BotState.READY)
+                                # Turn off projector scene
+                                if self._projector:
+                                    from modules.projector import ProjectorMode
+                                    self._projector.set_mode(ProjectorMode.BLANK)
+
+        except Exception as e:
+            logger.error("Card action error: {}", e)
+            self.state.card_mode = "off"
 
     async def _handle_menu_select_safe(self):
         """Handle menu item selection — applies action and queues speech for main loop.
@@ -1716,6 +2609,20 @@ class Orchestrator:
             if t in lower:
                 return {"action": "off"}
 
+        # Rotate image 180°
+        rotate_triggers = [
+            "rotate the image", "rotate image", "rotate 180",
+            "rotate the picture", "rotate picture",
+            "flip the image", "flip image", "flip the screen",
+            "flip screen", "flip it", "rotate it",
+            "turn the image", "upside down",
+            "rotate projector", "flip projector",
+            "table mode", "wall mode",
+        ]
+        for t in rotate_triggers:
+            if t in lower:
+                return {"action": "rotate"}
+
         # Flashcard mode
         flashcard_triggers = [
             "show flashcard", "flashcard", "show me flashcard",
@@ -1733,17 +2640,73 @@ class Orchestrator:
                         break
                 return {"action": "flashcard", "category": category}
 
-        # Next flashcard
-        next_triggers = ["next", "next one", "next card", "show next"]
+        # Craft / paper craft triggers
+        craft_triggers = [
+            "let's make a ", "let's build a ", "let's craft a ",
+            "make a paper ", "craft a ", "build a paper ",
+            "paper craft ", "cut and fold a ",
+        ]
+        from modules.sketch_pro import PRO_DRAWINGS as _PRO
+        for t in craft_triggers:
+            if t in lower:
+                subject = lower[lower.index(t) + len(t):].strip().rstrip("?.!")
+                for name in _PRO:
+                    if any(w in subject for w in name.split()):
+                        return {"action": "sketch", "subject": name}
+
+        # Sketch / drawing tracing — BEFORE imagination triggers
+        # Longer triggers first to avoid partial matches
+        sketch_triggers = [
+            "teach me to draw a ", "teach me to draw an ", "teach me to draw ",
+            "teach me how to draw a ", "teach me how to draw an ", "teach me how to draw ",
+            "show me how to draw a ", "show me how to draw an ", "show me how to draw ",
+            "let's draw a ", "let's draw an ", "let's draw ",
+            "help me draw a ", "help me draw an ", "help me draw ",
+            "i want to draw a ", "i want to draw an ", "i want to draw ",
+            "can you draw a ", "can you draw an ", "can you draw ",
+            "draw me a ", "draw me an ", "draw me ",
+            "sketch a ", "sketch an ", "sketch ",
+            "trace a ", "trace an ", "trace ",
+            "draw a realistic ", "draw a real ",
+            "draw a ", "draw an ",
+            "project the ", "project a ", "project an ",
+        ]
+        from modules.sketch_drawings import SKETCH_DRAWINGS
+        from modules.sketch_pro import PRO_DRAWINGS
+        # Check pro drawings first (longer/specific names), then basic
+        all_drawing_names = list(PRO_DRAWINGS.keys()) + list(SKETCH_DRAWINGS.keys())
+        for t in sketch_triggers:
+            if t in lower:
+                subject = lower[lower.index(t) + len(t):].strip().rstrip("?.!")
+                if not subject:
+                    continue
+                # Only use pre-built drawings for simple requests (1-2 words)
+                # Complex descriptions like "dog sitting on elephant" → AI generation
+                subject_words = subject.split()
+                if len(subject_words) <= 3:
+                    for name in sorted(all_drawing_names, key=len, reverse=True):
+                        if name in subject:
+                            return {"action": "sketch", "subject": name}
+                # No pre-built match or complex description → generate via AI
+                return {"action": "sketch_generate", "subject": subject}
+
+        # Next step / next flashcard
+        next_triggers = ["next step", "next", "next one", "next card", "show next"]
         for t in next_triggers:
             if t in lower:
                 return {"action": "next"}
 
-        # Previous
-        prev_triggers = ["previous", "go back", "last one", "show previous"]
+        # Previous step / previous flashcard
+        prev_triggers = ["previous step", "last step", "go back", "previous", "last one", "show previous"]
         for t in prev_triggers:
             if t in lower:
                 return {"action": "previous"}
+
+        # Start over (sketch)
+        restart_triggers = ["start over", "start again", "restart", "from the beginning", "begin again"]
+        for t in restart_triggers:
+            if t in lower:
+                return {"action": "start_over"}
 
         # Alphabet mode
         alpha_triggers = [
@@ -1778,6 +2741,22 @@ class Orchestrator:
                     if 1 <= num <= 20:
                         return {"action": "highlight_number", "number": num}
 
+        # Story generation (must be BEFORE imagine triggers)
+        story_triggers = [
+            "tell me a story about", "tell me a story of",
+            "make a story about", "make a story of",
+            "create a story about", "create a story of",
+            "story about a", "story about an", "story about the",
+            "story about", "bedtime story about",
+            "tell me a bedtime story about",
+        ]
+        for t in story_triggers:
+            if t in lower:
+                idx = lower.index(t) + len(t)
+                prompt = transcript[idx:].strip().rstrip("?.!")
+                if prompt:
+                    return {"action": "imagine_story", "prompt": prompt}
+
         # Imagination / image generation (must be AFTER flashcard/alphabet/number checks)
         # Only triggers if projector is connected and we're in online mode
         imagine_triggers = [
@@ -1803,6 +2782,79 @@ class Orchestrator:
                     return {"action": "imagine", "prompt": prompt}
 
         return None
+
+    async def _handle_trace_image(self, trace_data: dict):
+        """Handle a line art image from phone upload — project directly."""
+        from modules.projector import ProjectorMode
+
+        if not self._projector:
+            try:
+                from modules.projector import Projector
+                self._projector = Projector()
+            except Exception:
+                await self._speak_text("I can't find my projector module.")
+                return
+
+        if not self._projector.connected:
+            if self._projector.detect():
+                self._projector.start()
+                self.state.projector_connected = True
+            else:
+                await self._speak_text("I don't see a projector connected.")
+                return
+
+        name = trace_data.get("name", "your picture")
+        pil_image = trace_data.get("image")
+
+        if not pil_image:
+            await self._speak_text("Something went wrong with the image.")
+            return
+
+        self._projector.show_trace_image(pil_image, name)
+        self.state.projector_mode = "trace"
+
+        await self._speak_text(
+            "Here's your tracing! Place your paper under the projection and trace the lines."
+        )
+
+    async def _handle_sketch_from_image(self, sketch_data: dict):
+        """Handle an image uploaded from phone, converted to tracing steps."""
+        from modules.projector import ProjectorMode
+
+        if not self._projector:
+            try:
+                from modules.projector import Projector
+                self._projector = Projector()
+            except Exception:
+                await self._speak_text("I can't find my projector module.")
+                return
+
+        if not self._projector.connected:
+            if self._projector.detect():
+                self._projector.start()
+                self.state.projector_connected = True
+            else:
+                await self._speak_text("I don't see a projector connected.")
+                return
+
+        name = sketch_data.get("name", "your picture")
+        steps = sketch_data.get("steps", [])
+
+        if not steps:
+            await self._speak_text("I couldn't find any lines to trace in that image. Try a clearer picture.")
+            return
+
+        self._projector.set_custom_sketch(name, steps)
+        self._projector.set_mode(ProjectorMode.SKETCH)
+        self.state.projector_mode = "sketch"
+
+        info = self._projector.get_sketch_info()
+        if info:
+            _, step, total, instruction = info
+            await self._speak_text(
+                f"I turned your picture into a tracing with {total} steps! "
+                f"Get your paper ready. Step 1: {instruction}"
+            )
 
     async def _handle_projector_command(self, cmd: dict):
         """Execute a parsed projector command."""
@@ -1838,6 +2890,11 @@ class Orchestrator:
             self.state.projector_mode = "off"
             await self._speak_text("Projector is off!")
 
+        elif action == "rotate":
+            self._projector.rotate()
+            orientation = "table" if self._projector.rotated else "wall"
+            await self._speak_text(f"Image rotated! Now set for {orientation} projection.")
+
         elif action == "flashcard":
             category = cmd.get("category", "animals")
             self._projector.set_flashcard_category(category)
@@ -1849,17 +2906,62 @@ class Orchestrator:
                     f"Let's learn about {category}! This is a {card[0]}. {card[1]}"
                 )
 
+        elif action == "sketch":
+            subject = cmd.get("subject", "cat")
+            self._projector.set_sketch(subject)
+            self._projector.set_mode(ProjectorMode.SKETCH)
+            self.state.projector_mode = "sketch"
+            info = self._projector.get_sketch_info()
+            if info:
+                name, step, total, instruction = info
+                await self._speak_text(
+                    f"Let's draw a {name}! Get your paper ready. "
+                    f"Step 1: {instruction}"
+                )
+
+        elif action == "sketch_generate":
+            subject = cmd.get("subject", "")
+            await self._handle_sketch_generate(subject)
+
         elif action == "next":
-            self._projector.next_flashcard()
-            card = self._projector.get_current_flashcard()
-            if card:
-                await self._speak_text(f"This is a {card[0]}. {card[1]}")
+            if self._projector.mode == ProjectorMode.SKETCH:
+                self._projector.next_sketch_step()
+                info = self._projector.get_sketch_info()
+                if info:
+                    name, step, total, instruction = info
+                    if step >= total:
+                        await self._speak_text(
+                            "You finished the drawing! Great job! "
+                            "Say start over to try again, or pick a new drawing."
+                        )
+                    else:
+                        await self._speak_text(f"Step {step + 1}: {instruction}")
+            else:
+                self._projector.next_flashcard()
+                card = self._projector.get_current_flashcard()
+                if card:
+                    await self._speak_text(f"This is a {card[0]}. {card[1]}")
 
         elif action == "previous":
-            self._projector.prev_flashcard()
-            card = self._projector.get_current_flashcard()
-            if card:
-                await self._speak_text(f"This is a {card[0]}. {card[1]}")
+            if self._projector.mode == ProjectorMode.SKETCH:
+                self._projector.prev_sketch_step()
+                info = self._projector.get_sketch_info()
+                if info:
+                    await self._speak_text(f"Back to step {info[1] + 1}: {info[3]}")
+            else:
+                self._projector.prev_flashcard()
+                card = self._projector.get_current_flashcard()
+                if card:
+                    await self._speak_text(f"This is a {card[0]}. {card[1]}")
+
+        elif action == "start_over":
+            if self._projector.mode == ProjectorMode.SKETCH:
+                self._projector.restart_sketch()
+                info = self._projector.get_sketch_info()
+                if info:
+                    await self._speak_text(f"Starting over! Step 1: {info[3]}")
+            else:
+                await self._speak_text("Nothing to start over!")
 
         elif action == "alphabet":
             self._projector.set_mode(ProjectorMode.ALPHABET)
@@ -1883,8 +2985,217 @@ class Orchestrator:
             self._projector.highlight_number(num)
             await self._speak_text(f"Number {num}!")
 
+        elif action == "imagine_story":
+            await self._handle_imagine_story(cmd.get("prompt", ""))
+
         elif action == "imagine":
             await self._handle_imagine(cmd.get("prompt", ""))
+
+    async def _handle_imagine_story(self, prompt: str):
+        """Generate an AI story with DALL-E images from the child's imagination.
+
+        Flow:
+          1. LLM generates a 4-page story as JSON
+          2. For each page, DALL-E generates a matching illustration
+          3. Story is narrated page-by-page with images on projector
+        """
+        from modules.projector import ProjectorMode
+
+        # Check prerequisites
+        if self.state.llm_mode != LLMMode.ONLINE:
+            await self._speak_text(
+                "I need internet to create stories! Ask a grown-up to turn on online mode."
+            )
+            return
+
+        api_key = self.config_manager.config.api_keys.openai
+        if not api_key:
+            await self._speak_text(
+                "I need an API key to create stories. Ask a grown-up to set it up!"
+            )
+            return
+
+        # Lazy init image generator
+        if self._image_generator is None:
+            from vision.image_generator import ImageGenerator
+            save_dir = DATA_DIR / "images" / "generated"
+            self._image_generator = ImageGenerator(api_key=api_key, save_dir=save_dir)
+        else:
+            self._image_generator.update_api_key(api_key)
+
+        # Show generating state on TFT
+        self.state.generated_story = {"title": f"Story about {prompt}", "color": (255, 200, 80), "pages": []}
+        self.state.card_sub_index = 0
+        self.state.card_scroll_offset = 0
+        self.state.card_mode = "story_reader"
+
+        # Show loading on projector
+        if self._ensure_projector():
+            self._projector.show_loading_message(f"Creating a story about {prompt}...")
+
+        await self._speak_text(f"Let me create a magical story about {prompt} for you! Give me a moment.")
+
+        # Step 1: Generate story text via LLM
+        logger.info("Generating story about: '{}'", prompt)
+        provider = await self._llm_router.get_provider()
+
+        story_prompt = (
+            f"Create a short bedtime story for a young child (ages 3-6) about: {prompt}\n\n"
+            "The story must have exactly 4 pages. Each page should have:\n"
+            "- 2-3 sentences of simple, warm, soothing text\n"
+            "- A visual scene description for illustration\n\n"
+            "Respond ONLY with valid JSON in this exact format, no other text:\n"
+            '{"title": "Story Title", "pages": [\n'
+            '  {"text": "Page 1 story text here.", "scene_desc": "A colorful illustration of..."},\n'
+            '  {"text": "Page 2 story text here.", "scene_desc": "A colorful illustration of..."},\n'
+            '  {"text": "Page 3 story text here.", "scene_desc": "A colorful illustration of..."},\n'
+            '  {"text": "Page 4 story text here. Goodnight!", "scene_desc": "A colorful illustration of..."}\n'
+            "]}\n\n"
+            "Make it gentle, magical, and end with a sleepy/goodnight moment. "
+            "Scene descriptions should be vivid and child-friendly for image generation."
+        )
+
+        messages = [
+            {"role": "system", "content": "You are a children's story writer. Output only valid JSON."},
+            {"role": "user", "content": story_prompt},
+        ]
+
+        # Collect full response (non-streaming for JSON parsing)
+        response_text = []
+        try:
+            async for token in provider.stream(messages):
+                response_text.append(token)
+        except Exception as e:
+            logger.error("Story generation LLM error: {}", e)
+            await self._speak_text("Oops, I couldn't think of a story right now. Let's try again!")
+            self.state.card_mode = "off"
+            return
+
+        raw_response = "".join(response_text).strip()
+        logger.debug("Story LLM response: {}", raw_response[:200])
+
+        # Parse JSON (handle markdown code blocks)
+        import json
+        if raw_response.startswith("```"):
+            # Strip markdown code block
+            raw_response = raw_response.split("\n", 1)[-1]  # remove ```json line
+            if raw_response.endswith("```"):
+                raw_response = raw_response[:-3]
+
+        try:
+            story_data = json.loads(raw_response)
+        except json.JSONDecodeError:
+            # Try to extract JSON from response
+            try:
+                json_start = raw_response.index("{")
+                json_end = raw_response.rindex("}") + 1
+                story_data = json.loads(raw_response[json_start:json_end])
+            except (ValueError, json.JSONDecodeError) as e:
+                logger.error("Failed to parse story JSON: {} — response: {}", e, raw_response[:300])
+                await self._speak_text("I got confused writing the story. Let me try again!")
+                self.state.card_mode = "off"
+                return
+
+        title = story_data.get("title", f"A Story About {prompt}")
+        pages = story_data.get("pages", [])
+        if not pages or len(pages) < 2:
+            await self._speak_text("The story didn't come out right. Let's try again!")
+            self.state.card_mode = "off"
+            return
+
+        logger.info("Story generated: '{}' with {} pages", title, len(pages))
+        await self._speak_text(f"I wrote a story called {title}! Now let me draw the pictures.")
+
+        # Step 2: Generate DALL-E images for each page
+        generated_pages = []
+        for i, page in enumerate(pages):
+            scene_desc = page.get("scene_desc", page.get("text", ""))
+            page_text = page.get("text", "")
+
+            # Update projector loading message
+            if self._projector:
+                self._projector.show_loading_message(f"Drawing picture {i + 1} of {len(pages)}...")
+
+            # Generate image
+            safe_scene = (
+                f"A warm, colorful, cartoon-style children's book illustration: {scene_desc}. "
+                "Style: soft pastel colors, cute characters, dreamy nighttime atmosphere, "
+                "gentle and cozy, suitable for a bedtime story for ages 3-6, "
+                "no text overlays, digital art, storybook illustration."
+            )
+
+            image = None
+            try:
+                self._image_generator._ensure_client()
+                import httpx
+
+                response = await self._image_generator._client.images.generate(
+                    model="dall-e-3",
+                    prompt=safe_scene,
+                    size="1024x1024",
+                    quality="standard",
+                    n=1,
+                )
+                image_url = response.data[0].url
+                async with httpx.AsyncClient() as http:
+                    img_response = await http.get(image_url, timeout=30)
+                    img_response.raise_for_status()
+
+                from io import BytesIO
+                from PIL import Image
+                image = Image.open(BytesIO(img_response.content)).convert("RGB")
+                logger.info("Story image {}/{} generated", i + 1, len(pages))
+            except Exception as e:
+                logger.error("Story image {} generation failed: {}", i + 1, e)
+
+            generated_pages.append({
+                "text": page_text,
+                "image": image,  # PIL Image or None
+                "scene_desc": scene_desc,
+            })
+
+            # Update the story in state progressively so TFT shows pages as they're ready
+            self.state.generated_story = {
+                "title": title,
+                "color": (255, 200, 80),
+                "pages": generated_pages,
+            }
+
+        logger.info("All {} story images generated for '{}'", len(generated_pages), title)
+
+        # Step 3: Start narrating with projector images
+        self.state.card_scroll_offset = 0
+        self.state.card_mode = "story_reader"
+
+        # Play each page: show image on projector, narrate text
+        for i, page in enumerate(generated_pages):
+            if self.state.card_mode != "story_reader":
+                break  # User navigated away
+
+            self.state.card_scroll_offset = i
+
+            # Show image on projector
+            if page["image"] and self._projector:
+                self._projector.show_generated_image(page["image"], title)
+
+            # Narrate the page
+            await self._speak_text(page["text"])
+
+            if self.state.card_mode != "story_reader":
+                break
+
+            # Pause between pages
+            if i < len(generated_pages) - 1:
+                await asyncio.sleep(1.5)
+
+        # End
+        if self.state.card_mode == "story_reader":
+            await asyncio.sleep(1.0)
+            await self._speak_text("The end. Sweet dreams, little one. Goodnight!")
+            self.state.card_mode = "off"
+            if self._projector:
+                self._projector.set_mode(ProjectorMode.BLANK)
+        self.state.set_state(BotState.READY)
 
     async def _handle_imagine(self, prompt: str):
         """Handle imagination requests — generate image via DALL-E 3 and show on projector."""
@@ -1940,6 +3251,102 @@ class Orchestrator:
             await self._stream_response(
                 f"Describe in vivid, child-friendly detail what {prompt} would look like. "
                 "Use simple words for a 4-year-old."
+            )
+
+    async def _handle_sketch_generate(self, subject: str):
+        """Generate a line art tracing image via DALL-E and project it."""
+        from modules.projector import ProjectorMode
+
+        # Check prerequisites (same as imagine)
+        if self.state.llm_mode != LLMMode.ONLINE:
+            await self._speak_text(
+                "I need internet to draw that! Ask a grown-up to turn on online mode."
+            )
+            return
+
+        api_key = self.config_manager.config.api_keys.openai
+        if not api_key:
+            await self._speak_text(
+                "I need an API key to draw pictures. Ask a grown-up to set it up!"
+            )
+            return
+
+        if not self._projector or not self._projector.connected:
+            if self._projector and self._projector.detect():
+                self._projector.start()
+                self.state.projector_connected = True
+            else:
+                await self._speak_text("I need a projector to show you the drawing!")
+                return
+
+        # Lazy init image generator
+        if self._image_generator is None:
+            from vision.image_generator import ImageGenerator
+            save_dir = DATA_DIR / "images" / "generated"
+            self._image_generator = ImageGenerator(api_key=api_key, save_dir=save_dir)
+        else:
+            self._image_generator.update_api_key(api_key)
+
+        # Show loading and speak
+        self._projector.show_loading_message(f"Drawing {subject}...")
+        await self._speak_text(
+            f"Let me draw a {subject} for you to trace! Give me a moment."
+        )
+
+        # Generate line art coloring page via DALL-E
+        line_art_prompt = (
+            f"A clean black and white line art drawing of {subject}, "
+            "coloring book style, thick clear outlines, no shading, no fill, "
+            "no background, no color, simple clean lines on pure white background, "
+            "suitable for a child to trace with a pencil"
+        )
+        logger.info("Generating line art for tracing: '{}'", subject)
+
+        # Use a custom prompt directly (bypass safety wrapper for line art)
+        try:
+            if self._image_generator._client is None:
+                self._image_generator._ensure_client()
+
+            import httpx
+            response = await self._image_generator._client.images.generate(
+                model="dall-e-3",
+                prompt=line_art_prompt,
+                size="1024x1024",
+                quality="standard",
+                n=1,
+            )
+            image_url = response.data[0].url
+            async with httpx.AsyncClient() as http:
+                img_response = await http.get(image_url, timeout=30)
+                img_response.raise_for_status()
+
+            from PIL import Image, ImageOps
+            from io import BytesIO
+            image = Image.open(BytesIO(img_response.content)).convert("RGB")
+            logger.info("Line art generated for '{}' ({}x{})", subject, image.width, image.height)
+
+            # Convert to high-contrast line art for projection
+            # DALL-E gives black lines on white → invert so projector shows white lines on black
+            gray = image.convert("L")
+            # Threshold — keep dark and medium-dark lines
+            threshold = 160
+            bw = gray.point(lambda p: 255 if p < threshold else 0)
+            # Convert to RGB for projector
+            pil_bw = bw.convert("RGB")
+            logger.info("Converted to B&W trace ({}x{})", pil_bw.width, pil_bw.height)
+
+            # Project using show_generated_image (proven rendering path)
+            self._projector.show_generated_image(pil_bw, subject)
+            self.state.projector_mode = "imagine"
+            await self._speak_text(
+                f"Here's your {subject}! Place your paper under the projection and trace the lines."
+            )
+
+        except Exception as e:
+            logger.error("Line art generation failed: {}", e)
+            self._projector.set_mode(ProjectorMode.BLANK)
+            await self._speak_text(
+                f"Sorry, I couldn't draw a {subject} right now. Try again later!"
             )
 
     def _get_cloud_stt(self):
